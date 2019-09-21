@@ -11,6 +11,7 @@ import { WidgetProperties } from "@dojo/framework/core/interfaces";
  * @property widgetId           部件标识
  * @property widgetName         部件名称
  * @property widgetCode         部件编码
+ * @property canHasChild        是否能包含子部件
  * @property properties         部件属性
  * @property overlay            是否在部件上添加遮盖层，默认为 false
  */
@@ -20,6 +21,7 @@ export interface AttachedWidget {
 	widgetId: number;
 	widgetName: string;
 	widgetCode: string;
+	canHasChildren: boolean;
 	properties: AttachedWidgetProperties;
 }
 

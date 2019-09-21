@@ -17,6 +17,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		@beforeProperties()
 		protected beforeProperties(properties: any) {
 			console.log("widget designable beforeProperties");
+			console.log("can has children:", this.canHasChildren());
 			return properties;
 		}
 
@@ -24,6 +25,15 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		protected afterRender(result: DNode | DNode[]): DNode | DNode[] {
 			console.log("widget designable afterRender");
 			return result;
+		}
+
+		/**
+		 * 是否可以包含子部件，能包含子部件则返回 true，不能包含子部件则返回 false。
+		 *
+		 * canHasChildren 已经在部件的基本信息中指定。
+		 */
+		private canHasChildren(): boolean {
+			return this.properties.widget.canHasChildren || false;
 		}
 	}
 	return WidgetDesignable;
