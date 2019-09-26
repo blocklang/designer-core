@@ -33,13 +33,8 @@ export interface InstWidget {
  * @type InstWidgetProperties
  *
  * 部件的属性值
- *
- * @property id      id 属性的值
- * @property value   value 属性的值
  */
 export interface InstWidgetProperties extends WidgetProperties {
-	id: string;
-	value: string;
 	[propName: string]: any;
 }
 
