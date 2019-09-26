@@ -1,44 +1,74 @@
 import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
 import { WidgetProperties } from "@dojo/framework/core/interfaces";
 
+// 关于 AttachedWidget 和 InstWidget 两个名字的区别：
+// 1. 两个多表示添加到页面中的部件信息；
+// 2. InstWidget 是由 AttachedWidget 转换来的，是更贴近于部件的数据格式;
+// 3. InstWidget 中的属性在渲染时候使用，而 AttachedWiget 是在定义关系时使用。
+
 /**
- * @type UIInstWidget
+ * @type InstWidget
  *
- * 编辑器专用的 UI 部件，在渲染时使用
+ * 存储两类信息：
+ *
+ * 1. Widget 基本信息
+ * 2. Widget 放到页面之后新增的信息
  *
  * @property id                 页面中的部件标识
  * @property parentId           页面中父部件标识，根部件的父标识为 -1
- * @property widgetId           部件标识
  * @property widgetName         部件名称
  * @property widgetCode         部件编码
  * @property canHasChildren     是否能包含子部件
  * @property properties         部件属性
- * @property overlay            是否在部件上添加遮盖层，默认为 false
  */
-export interface AttachedWidget {
+export interface InstWidget {
 	id: string;
 	parentId: string;
-	widgetId: number;
 	widgetName: string;
 	widgetCode: string;
 	canHasChildren: boolean;
-	properties: AttachedWidgetProperties;
 }
 
-export interface AttachedWidgetProperties extends WidgetProperties {
+/**
+ * @type InstWidgetProperties
+ *
+ * 部件的属性值
+ *
+ * @property id      id 属性的值
+ * @property value   value 属性的值
+ */
+export interface InstWidgetProperties extends WidgetProperties {
 	id: string;
 	value: string;
 	[propName: string]: any;
 }
 
 /**
- * @type EditableWidgetProperties
+ * @type EditableProperties
  *
- * 编辑器专用部件属性
+ * 将常规的部件转换为可在设计器中集成的部件时，需要扩充或覆盖的属性。
+ *
+ * @property onMouseUp        当鼠标点击部件并松开后触发的事件
+ * @property onFocus          当部件获取焦点后触发的事件
+ * @property activeWidgetId   当前获取焦点的部件 id
  */
-export interface EditableWidgetProperties extends WidgetProperties {
-	widget: AttachedWidget;
+export interface EditableProperties {
 	onMouseUp?: (event: MouseEvent) => void;
 	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string | number }) => void;
 	activeWidgetId: string | number;
+}
+
+/**
+ * @type EditableWidgetProperties
+ *
+ * 为在编辑器中集成的部件定义统一的接口。
+ *
+ * @property widget                部件基本信息以及放入页面后新增的信息
+ * @property originalProperties    部件的常规属性
+ * @property extendProperties      部件的扩展属性，支持在设计器中交互
+ */
+export interface EditableWidgetProperties extends WidgetProperties {
+	widget: InstWidget;
+	originalProperties: InstWidgetProperties;
+	extendProperties: EditableProperties;
 }
