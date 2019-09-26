@@ -15,18 +15,18 @@
     "prettier": "prettier --write 'src/**/*.{ts,tsx}' 'src/**/*.css' 'tests/**/*.ts'"
   },
   "dependencies": {
-    "@dojo/framework": "^6.0.0",
+    "@dojo/framework": "^6.0.3",
     "tslib": "~1.9.1"
   },
   "devDependencies": {
     "@dojo/cli": "^6.0.0",
-    "@dojo/cli-build-widget": "^6.0.0",
+    "@dojo/cli-build-widget": "^6.0.1",
     "@dojo/cli-test-intern": "^6.0.0",
     "@types/node": "~9.6.5",
-    "typescript": "~3.4.5",
     "husky": "3.0.4",
     "lint-staged": "9.2.5",
-    "prettier": "1.18.2"
+    "prettier": "1.18.2",
+    "typescript": "~3.4.5"
   },
   "lint-staged": {
     "*.{ts,tsx,css}": [
