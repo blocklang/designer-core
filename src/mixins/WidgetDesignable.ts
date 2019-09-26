@@ -17,7 +17,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		@beforeProperties()
 		protected beforeProperties(properties: any) {
 			console.log("widget designable beforeProperties");
-			console.log("can has children:", this.canHasChildren());
+			console.log("can has children:", this.canHasChildren(properties.widget.canHasChildren));
 			return properties;
 		}
 
@@ -32,8 +32,8 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		 *
 		 * canHasChildren 已经在部件的基本信息中指定。
 		 */
-		private canHasChildren(): boolean {
-			return this.properties.widget.canHasChildren || false;
+		private canHasChildren(defaultValue?: boolean): boolean {
+			return defaultValue || false;
 		}
 	}
 	return WidgetDesignable;
