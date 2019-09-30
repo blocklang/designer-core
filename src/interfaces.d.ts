@@ -19,7 +19,6 @@ import { WidgetProperties } from "@dojo/framework/core/interfaces";
  * @property widgetName         部件名称
  * @property widgetCode         部件编码
  * @property canHasChildren     是否能包含子部件
- * @property properties         部件属性
  */
 export interface InstWidget {
 	id: string;
