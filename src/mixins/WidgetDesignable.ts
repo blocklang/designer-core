@@ -9,6 +9,8 @@ interface WidgetDesignableMixin {
 	properties: EditableWidgetProperties;
 }
 
+const ROOT_WIDGET_PARENT_ID = "-1";
+
 export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBase>(
 	Base: T
 ): T & Constructor<WidgetDesignableMixin> {
@@ -34,6 +36,10 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 
 			// 一、当用鼠标点击部件时，让部件获取焦点
 			bindMouseUpEventNode.properties.onmouseup = this._onMouseUp;
+			// 添加高亮显示部件
+			bindMouseUpEventNode.properties.onmouseover = this._onMouseOver;
+			// 移除高亮显示部件
+			bindMouseUpEventNode.properties.onmouseout = this._onMouseOut;
 
 			console.log("widget designable afterRender");
 
@@ -51,6 +57,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 
 		private _onMouseUp(event: MouseEvent) {
 			event.stopImmediatePropagation();
+
 			const {
 				widget,
 				extendProperties: { onFocus }
@@ -58,6 +65,32 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			const activeWidgetDimensions = this.meta(Dimensions).get(this._key);
 			const activeWidgetId = widget.id;
 			onFocus && onFocus({ activeWidgetDimensions, activeWidgetId });
+		}
+
+		private _onMouseOver(event: MouseEvent) {
+			event.stopImmediatePropagation();
+
+			const {
+				widget,
+				extendProperties: { onHighlight }
+			} = this.properties;
+			const highlightWidgetDimensions = this.meta(Dimensions).get(this._key);
+			const highlightWidgetId = widget.id;
+			// 添加高亮效果
+			onHighlight && onHighlight({ highlightWidgetDimensions, highlightWidgetId });
+		}
+
+		private _onMouseOut(event: MouseEvent) {
+			event.stopImmediatePropagation();
+
+			const {
+				widget,
+				extendProperties: { onHighlight }
+			} = this.properties;
+			if (widget.parentId === ROOT_WIDGET_PARENT_ID) {
+				// 移除高亮效果
+				onHighlight && onHighlight({});
+			}
 		}
 	}
 	return WidgetDesignable;

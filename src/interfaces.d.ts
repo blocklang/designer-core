@@ -42,14 +42,20 @@ export interface InstWidgetProperties extends WidgetProperties {
  *
  * 将常规的部件转换为可在设计器中集成的部件时，需要扩充或覆盖的属性。
  *
- * @property onMouseUp        当鼠标点击部件并松开后触发的事件
  * @property onFocus          当部件获取焦点后触发的事件
- * @property activeWidgetId   当前获取焦点的部件 id
+ * @property activeWidgetId   当前获取焦点的部件 id FIXME: 需考虑是否可以删除此属性
+ * @property onHighlight      当高亮显示部件时触发的事件，如果存在 highlightWidgetDimensions 参数，则显示高亮效果，否则删除高亮效果
  */
 export interface EditableProperties {
-	onMouseUp?: (event: MouseEvent) => void;
-	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string | number }) => void;
-	activeWidgetId: string | number;
+	// 以下为聚焦相关的属性
+	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string }) => void;
+	activeWidgetId: string | number; // FIXME: 是否可以删除此属性？
+
+	// 以下为高亮相关的属性
+	onHighlight: (payload: {
+		highlightWidgetDimensions?: Readonly<DimensionResults>;
+		highlightWidgetId?: string;
+	}) => void;
 }
 
 /**
