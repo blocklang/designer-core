@@ -37,9 +37,8 @@ describe("Widget Designable mixin", () => {
 			canHasChildren: true
 		};
 		const originalProperties = {};
-		const extendProperties = {
+		const extendProperties: EditableProperties = {
 			onFocus: onFocusStub,
-			activeWidgetId: "1",
 			onHighlight: stub()
 		};
 
@@ -69,8 +68,7 @@ describe("Widget Designable mixin", () => {
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
 			onFocus: stub(),
-			onHighlight: onHighlightStub,
-			activeWidgetId: "1"
+			onHighlight: onHighlightStub
 		};
 
 		const h = harness(() =>
@@ -98,10 +96,9 @@ describe("Widget Designable mixin", () => {
 			canHasChildren: true
 		};
 		const originalProperties = {};
-		const extendProperties = {
+		const extendProperties: EditableProperties = {
 			onFocus: stub(),
-			onHighlight: onHighlightStub,
-			activeWidgetId: "1"
+			onHighlight: onHighlightStub
 		};
 
 		const h = harness(() =>
@@ -129,10 +126,9 @@ describe("Widget Designable mixin", () => {
 			canHasChildren: true
 		};
 		const originalProperties = {};
-		const extendProperties = {
+		const extendProperties: EditableProperties = {
 			onFocus: stub(),
-			onHighlight: onHighlightStub,
-			activeWidgetId: "1"
+			onHighlight: onHighlightStub
 		};
 
 		const h = harness(() =>

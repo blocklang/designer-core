@@ -49,7 +49,6 @@ export interface InstWidgetProperties extends WidgetProperties {
 export interface EditableProperties {
 	// 以下为聚焦相关的属性
 	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string }) => void;
-	activeWidgetId: string | number; // FIXME: 是否可以删除此属性？
 
 	// 以下为高亮相关的属性
 	onHighlight: (payload: {
