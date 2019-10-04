@@ -40,20 +40,48 @@ describe("Widget Designable mixin", () => {
 		const extendProperties: EditableProperties = {
 			onFocus: onFocusStub,
 			onHighlight: stub(),
-			autoFocus: true
+			autoFocus: () => true
 		};
 
-		const h = harness(() =>
-			w(Foo, {
-				widget,
-				originalProperties,
-				extendProperties
-			})
-		);
+		const foo = new Foo();
+		foo.__setProperties__({
+			widget,
+			originalProperties,
+			extendProperties
+		});
 
-		h.expect(() => v("div", { key: "key1", onmouseup: () => {}, onmouseover: () => {}, onmouseout: () => {} }));
+		foo.__render__();
 
 		assert.isTrue(onFocusStub.calledOnce);
+	});
+
+	it("not auto focus", () => {
+		const onFocusStub = stub();
+
+		const widget: InstWidget = {
+			id: "1",
+			parentId: "-1",
+			widgetCode: "0001",
+			widgetName: "Widget1",
+			canHasChildren: true
+		};
+		const originalProperties = {};
+		const extendProperties: EditableProperties = {
+			onFocus: onFocusStub,
+			onHighlight: stub(),
+			autoFocus: () => false
+		};
+
+		const foo = new Foo();
+		foo.__setProperties__({
+			widget,
+			originalProperties,
+			extendProperties
+		});
+
+		foo.__render__();
+
+		assert.isTrue(onFocusStub.notCalled);
 	});
 
 	it("When there is one root node, bind onMouseUp event to the single root node", () => {

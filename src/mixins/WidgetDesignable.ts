@@ -1,7 +1,6 @@
 import { DNode, Constructor, VNode } from "@dojo/framework/core/interfaces";
 import { WidgetBase } from "@dojo/framework/core/WidgetBase";
 import { afterRender } from "@dojo/framework/core/decorators/afterRender";
-import { beforeRender } from "@dojo/framework/core/decorators/beforeRender";
 import { beforeProperties } from "@dojo/framework/core/decorators/beforeProperties";
 import { EditableWidgetProperties } from "../interfaces";
 import Dimensions from "@dojo/framework/core/meta/Dimensions";
@@ -26,19 +25,6 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			return properties;
 		}
 
-		@beforeRender()
-		protected beforeRender(
-			renderFunc: () => DNode | DNode[],
-			properties: EditableWidgetProperties,
-			children: DNode[]
-		) {
-			const { autoFocus = false } = properties.extendProperties;
-			if (autoFocus) {
-				this._tryFocus();
-			}
-			return renderFunc;
-		}
-
 		@afterRender()
 		protected afterRender(result: DNode | DNode[]): DNode | DNode[] {
 			// 一个部件可能返回一到多个 DNode，大多数情况下只返回一个 DNode，但也会返回多个 DNode
@@ -46,16 +32,15 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			// 此时需要根据 key 的值找到这个 DNode
 			this._key = (result as VNode).properties.key as string;
 
-			const bindMouseUpEventNode = result as VNode;
+			this._autoFocus();
 
+			const bindMouseUpEventNode = result as VNode;
 			// 一、当用鼠标点击部件时，让部件获取焦点
 			bindMouseUpEventNode.properties.onmouseup = this._onMouseUp;
 			// 添加高亮显示部件
 			bindMouseUpEventNode.properties.onmouseover = this._onMouseOver;
 			// 移除高亮显示部件
 			bindMouseUpEventNode.properties.onmouseout = this._onMouseOut;
-
-			console.log("widget designable afterRender");
 
 			return result;
 		}
@@ -87,6 +72,24 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			this._removeHighlight();
 		}
 
+		/**
+		 * 页面加载完后，默认聚焦的部件，发生在页面初始化阶段。
+		 */
+		private _autoFocus() {
+			const { autoFocus } = this.properties.extendProperties;
+			const {
+				widget: { id: activeWidgetId }
+			} = this.properties;
+
+			// 此段代码不能放到 beforeRender 中，因为此时 this._key 尚未设置值
+			if (autoFocus && autoFocus(activeWidgetId)) {
+				this._tryFocus();
+			}
+		}
+
+		/**
+		 * 此方法只能在获取到聚焦节点自身的 key 值后才能调用。
+		 */
 		private _tryFocus() {
 			const {
 				widget,
