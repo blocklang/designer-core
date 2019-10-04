@@ -78,11 +78,11 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _autoFocus() {
 			const { autoFocus } = this.properties.extendProperties;
 			const {
-				widget: { id: activeWidgetId }
+				widget: { id: widgetId }
 			} = this.properties;
 
 			// 此段代码不能放到 beforeRender 中，因为此时 this._key 尚未设置值
-			if (autoFocus && autoFocus(activeWidgetId)) {
+			if (autoFocus && autoFocus(widgetId)) {
 				this._tryFocus();
 			}
 		}

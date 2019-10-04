@@ -47,7 +47,8 @@ export interface InstWidgetProperties extends WidgetProperties {
  * @property onHighlight      当高亮显示部件时触发的事件，如果存在 highlightWidgetDimensions 参数，则显示高亮效果，否则删除高亮效果
  */
 export interface EditableProperties {
-	autoFocus?: (activeWidgetId: string) => boolean;
+	// widgetId 传入的是当前部件的 id，用于跟 activeWidgetId 对比，判断是否需要聚焦
+	autoFocus?: (widgetId: string) => boolean;
 	// 以下为聚焦相关的属性
 	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string }) => void;
 
