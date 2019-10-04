@@ -26,6 +26,36 @@ describe("Widget Designable mixin", () => {
 
 	// 确认本 mixin 默认为部件设置了 onMouseUp 事件
 	// 当触发 onMouseUp 后，会调用 onFocus 事件
+	it("auto focus", () => {
+		const onFocusStub = stub();
+
+		const widget: InstWidget = {
+			id: "1",
+			parentId: "-1",
+			widgetCode: "0001",
+			widgetName: "Widget1",
+			canHasChildren: true
+		};
+		const originalProperties = {};
+		const extendProperties: EditableProperties = {
+			onFocus: onFocusStub,
+			onHighlight: stub(),
+			autoFocus: true
+		};
+
+		const h = harness(() =>
+			w(Foo, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
+
+		h.expect(() => v("div", { key: "key1", onmouseup: () => {}, onmouseover: () => {}, onmouseout: () => {} }));
+
+		assert.isTrue(onFocusStub.calledOnce);
+	});
+
 	it("When there is one root node, bind onMouseUp event to the single root node", () => {
 		const onFocusStub = stub();
 

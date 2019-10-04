@@ -1,6 +1,7 @@
 import { DNode, Constructor, VNode } from "@dojo/framework/core/interfaces";
 import { WidgetBase } from "@dojo/framework/core/WidgetBase";
 import { afterRender } from "@dojo/framework/core/decorators/afterRender";
+import { beforeRender } from "@dojo/framework/core/decorators/beforeRender";
 import { beforeProperties } from "@dojo/framework/core/decorators/beforeProperties";
 import { EditableWidgetProperties } from "../interfaces";
 import Dimensions from "@dojo/framework/core/meta/Dimensions";
@@ -19,10 +20,23 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _key: string = "";
 
 		@beforeProperties()
-		protected beforeProperties(properties: any) {
+		protected beforeProperties(properties: EditableWidgetProperties) {
 			console.log("widget designable beforeProperties");
 			console.log("can has children:", this.canHasChildren(properties.widget.canHasChildren));
 			return properties;
+		}
+
+		@beforeRender()
+		protected beforeRender(
+			renderFunc: () => DNode | DNode[],
+			properties: EditableWidgetProperties,
+			children: DNode[]
+		) {
+			const { autoFocus = false } = properties.extendProperties;
+			if (autoFocus) {
+				this._tryFocus();
+			}
+			return renderFunc;
 		}
 
 		@afterRender()
@@ -58,6 +72,22 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _onMouseUp(event: MouseEvent) {
 			event.stopImmediatePropagation();
 
+			this._tryFocus();
+		}
+
+		private _onMouseOver(event: MouseEvent) {
+			event.stopImmediatePropagation();
+
+			this._addHighlight();
+		}
+
+		private _onMouseOut(event: MouseEvent) {
+			event.stopImmediatePropagation();
+
+			this._removeHighlight();
+		}
+
+		private _tryFocus() {
 			const {
 				widget,
 				extendProperties: { onFocus }
@@ -67,29 +97,31 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			onFocus && onFocus({ activeWidgetDimensions, activeWidgetId });
 		}
 
-		private _onMouseOver(event: MouseEvent) {
-			event.stopImmediatePropagation();
-
+		private _addHighlight() {
 			const {
-				widget,
+				widget: { id: highlightWidgetId },
 				extendProperties: { onHighlight }
 			} = this.properties;
+			if (!onHighlight) {
+				return;
+			}
+
 			const highlightWidgetDimensions = this.meta(Dimensions).get(this._key);
-			const highlightWidgetId = widget.id;
 			// 添加高亮效果
-			onHighlight && onHighlight({ highlightWidgetDimensions, highlightWidgetId });
+			onHighlight({ highlightWidgetDimensions, highlightWidgetId });
 		}
 
-		private _onMouseOut(event: MouseEvent) {
-			event.stopImmediatePropagation();
-
+		private _removeHighlight() {
 			const {
 				widget,
 				extendProperties: { onHighlight }
 			} = this.properties;
+			if (!onHighlight) {
+				return;
+			}
 			if (widget.parentId === ROOT_WIDGET_PARENT_ID) {
 				// 移除高亮效果
-				onHighlight && onHighlight({});
+				onHighlight({});
 			}
 		}
 	}

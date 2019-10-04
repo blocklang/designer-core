@@ -42,11 +42,12 @@ export interface InstWidgetProperties extends WidgetProperties {
  *
  * 将常规的部件转换为可在设计器中集成的部件时，需要扩充或覆盖的属性。
  *
+ * @property autoFocus        页面渲染完成后，对应的部件是否自动获取焦点，通过此属性设置页面的默认聚焦部件，默认为 false
  * @property onFocus          当部件获取焦点后触发的事件
- * @property activeWidgetId   当前获取焦点的部件 id FIXME: 需考虑是否可以删除此属性
  * @property onHighlight      当高亮显示部件时触发的事件，如果存在 highlightWidgetDimensions 参数，则显示高亮效果，否则删除高亮效果
  */
 export interface EditableProperties {
+	autoFocus?: boolean;
 	// 以下为聚焦相关的属性
 	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string }) => void;
 
