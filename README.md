@@ -87,3 +87,57 @@ npm install designer-core
 
    }
    ```
+
+## 设计器插件
+
+设计器插件是一种集成方式，用于将第三方的 Widget 或功能组件集成到页面设计器中。要在入口文件（通常是 `main.ts`）的**最后**调用 `blocklang.registerWidgets` 函数来注册部件。设计器插件要发布为 Webpack Library，然后通过动态添加 `script` 节点来加载插件，当插件加载完成后，会执行 `blocklang.registerWidgets` 函数。
+
+定义 `TextInput` 部件
+
+> text-input/index.ts
+
+```ts
+export default class TextInput extends WidgetBase {}
+```
+
+定义 `TextInput` 的属性面板
+
+> text-input/propertiesLayout.ts
+
+```ts
+export default {
+
+};
+```
+
+在 `main.ts` 文件中调用 `blocklang.registerWidgets()` 函数注册 Widget
+
+> main.ts
+
+```ts
+import * as blocklang from './blocklang';
+import TextInput from './text-input';
+import TextInputPropertiesLayout from './text-input/propertiesLayout';
+import { GitUrlSegment, ExtensionWidgetMap } from '../../src/interfaces';
+
+const gitUrlSegment: GitUrlSegment = {website: "github.com", owner: "blocklang", repoName: "repo"};
+const widgets: ExtensionWidgetMap = {"text-input": {widget: TextInput, propertiesLayout: TextInputPropertiesLayout}};
+
+blocklang.registerWidgets(gitUrlSegment, widgets);
+```
+
+从注册的 Widget 列表中获取其中一个 Widget：
+
+```ts
+import * as blocklang from './blocklang';
+import { GitUrlSegment } from '../../src/interfaces';
+
+const gitUrlSegment: GitUrlSegment = {website: "github.com", owner: "blocklang", repoName: "repo"};
+
+// 根据仓库的地址信息获取
+const widgetType = blocklang.findWidgetType(gitUrlSegment, "text-input");
+
+// 直接根据仓库的 url 获取
+const gitRepoUrl = blocklang.getRepoUrl(gitUrlSegment);
+const widgetType = blocklang.findWidgetType(gitRepoUrl, "text-input");
+```

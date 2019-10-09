@@ -73,3 +73,28 @@ export interface EditableWidgetProperties extends WidgetProperties {
 	originalProperties: InstWidgetProperties;
 	extendProperties: EditableProperties;
 }
+
+/****************以下为第三方组件库的模型*****************/
+interface WidgetMeta {
+	widget: any;
+	propertiesLayout: any;
+}
+
+export interface ExtensionWidgetMap {
+	[propName: string]: WidgetMeta;
+}
+
+/**
+ * @type GitUrlSegment
+ *
+ * git 仓库的地址信息
+ *
+ * @property website     网址，如 github.com
+ * @property owner       仓库拥有者，如 blocklang
+ * @property repoName    仓库名，如 designer-core
+ */
+export interface GitUrlSegment {
+	website: string;
+	owner: string;
+	repoName: string;
+}
