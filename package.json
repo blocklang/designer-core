@@ -12,7 +12,7 @@
     "test:functional": "dojo build --mode functional && dojo test --functional --config local",
     "test:all": "dojo build --mode unit && dojo build --mode functional && dojo test --all --config local",
     "precommit": "lint-staged",
-    "prettier": "prettier --write 'src/**/*.{ts,tsx}' 'src/**/*.css' 'tests/**/*.ts'"
+    "prettier": "prettier --write 'src/**/*.{ts,tsx}' 'src/**/*.css' 'tests/**/*.{ts,tsx}'"
   },
   "dependencies": {
     "@dojo/framework": "^6.0.3",
