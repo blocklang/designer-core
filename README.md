@@ -121,7 +121,10 @@ import TextInputPropertiesLayout from './text-input/propertiesLayout';
 import { GitUrlSegment, ExtensionWidgetMap } from '../../src/interfaces';
 
 const gitUrlSegment: GitUrlSegment = {website: "github.com", owner: "blocklang", repoName: "repo"};
-const widgets: ExtensionWidgetMap = {"text-input": {widget: TextInput, propertiesLayout: TextInputPropertiesLayout}};
+const widgets: ExtensionWidgetMap = {
+    // key 必须与 Widget 所在的文件夹同名
+    "text-input": {widget: TextInput, propertiesLayout: TextInputPropertiesLayout}
+};
 
 blocklang.registerWidgets(gitUrlSegment, widgets);
 ```
