@@ -77,7 +77,7 @@ export interface EditableWidgetProperties extends WidgetProperties {
 /****************以下为第三方组件库的模型*****************/
 interface WidgetMeta {
 	widget: any;
-	propertiesLayout: any;
+	propertiesLayout: Array<any>;
 }
 
 export interface ExtensionWidgetMap {

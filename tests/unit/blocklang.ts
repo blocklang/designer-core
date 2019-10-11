@@ -1,4 +1,4 @@
-const { describe, it } = intern.getInterface("bdd");
+const { describe, it, afterEach } = intern.getInterface("bdd");
 const { assert } = intern.getPlugin("chai");
 
 import * as blocklang from "../../src/blocklang";
@@ -6,16 +6,40 @@ import { GitUrlSegment, ExtensionWidgetMap } from "../../src/interfaces";
 import WidgetBase from "@dojo/framework/core/WidgetBase";
 
 class Foo extends WidgetBase {}
-const propertiesLayout = {};
 
 describe("blocklang", () => {
-	it("register widgets", () => {
+	afterEach(() => {
+		blocklang.clearExtensionComponents();
+	});
+
+	it("register widgets - repeat register", () => {
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
-		const widgets: ExtensionWidgetMap = { "text-input": { widget: Foo, propertiesLayout } };
+		const widgets: ExtensionWidgetMap = { "text-input": { widget: Foo, propertiesLayout: [] } };
+		blocklang.registerWidgets(gitUrlSegment, widgets);
+		assert.throw(() => {
+			blocklang.registerWidgets(gitUrlSegment, widgets);
+		});
+	});
+
+	it("register widgets - find widget type", () => {
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const widgets: ExtensionWidgetMap = { "text-input": { widget: Foo, propertiesLayout: [] } };
 		blocklang.registerWidgets(gitUrlSegment, widgets);
 
 		assert.isUndefined(blocklang.findWidgetType(gitUrlSegment, "not-exist"));
 		assert.deepEqual(blocklang.findWidgetType(gitUrlSegment, "text-input"), Foo);
 		assert.deepEqual(blocklang.findWidgetType("a/b/c", "text-input"), Foo);
+	});
+
+	it("register widgets - find widget properties layout", () => {
+		const propertiesLayout: any[] = [{ propertyName: "name", propertyLabel: "名称" }];
+
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const widgets: ExtensionWidgetMap = { "text-input": { widget: Foo, propertiesLayout } };
+		blocklang.registerWidgets(gitUrlSegment, widgets);
+
+		assert.isUndefined(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "not-exist"));
+		assert.deepEqual(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "text-input"), propertiesLayout);
+		assert.deepEqual(blocklang.findWidgetPropertiesLayout("a/b/c", "text-input"), propertiesLayout);
 	});
 });
