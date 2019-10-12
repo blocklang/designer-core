@@ -1,5 +1,5 @@
 import global from "@dojo/framework/shim/global";
-import { ExtensionWidgetMap, GitUrlSegment } from "./interfaces";
+import { ExtensionWidgetMap, GitUrlSegment, PropertyLayout } from "./interfaces";
 
 /**
  * 注册第三方 UI 组件库中的 Widget
@@ -29,7 +29,7 @@ export function registerWidgets(gitUrlSegment: GitUrlSegment, widgets: Extension
  * @param gitUrlSegment    部件托管的 git 仓库地址信息
  * @param widgetName       部件名称，在一个 git 仓库中必须确保唯一
  *
- * @returns                返回的是继承 WidgetBase 的类型
+ * @returns                返回的是继承 WidgetBase 的类型；如果没有找到，则返回 undefined
  */
 export function findWidgetType(gitUrlSegment: GitUrlSegment | string, widgetName: string): any {
 	const repoUrl = typeof gitUrlSegment === "string" ? gitUrlSegment : getRepoUrl(gitUrlSegment);
@@ -49,7 +49,10 @@ export function findWidgetType(gitUrlSegment: GitUrlSegment | string, widgetName
  *
  * @returns                返回属性面板的布局信息，是一个数组
  */
-export function findWidgetPropertiesLayout(gitUrlSegment: GitUrlSegment | string, widgetName: string): Array<any> {
+export function findWidgetPropertiesLayout(
+	gitUrlSegment: GitUrlSegment | string,
+	widgetName: string
+): Array<PropertyLayout> {
 	const repoUrl = typeof gitUrlSegment === "string" ? gitUrlSegment : getRepoUrl(gitUrlSegment);
 	return (
 		global._block_lang_widgets_ &&

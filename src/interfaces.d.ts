@@ -75,11 +75,56 @@ export interface EditableWidgetProperties extends WidgetProperties {
 }
 
 /****************以下为第三方组件库的模型*****************/
-interface WidgetMeta {
-	widget: any;
-	propertiesLayout: Array<any>;
+
+// FIXME: 此接口中的值需要逐步细化
+
+/**
+ * 属性分隔符，分为垂直、水平和中划线三种
+ */
+type Divider = "vertical" | "horizontal" | "segement";
+/**
+ * 部件定位，{self} 表示当前部件；{parent} 表示当前部件的父部件
+ */
+type WidgetPointer = "{self}" | "{parent}";
+
+interface PropertyTarget {
+	[index: number]: string | { widget: WidgetPointer; propertyName: string };
 }
 
+/**
+ * 一个属性布局信息
+ *
+ * @property propertyLabel    属性的显示名
+ * @property propertyWidget   属性部件
+ * @property propertyName     属性名
+ * @property propertyGroup    属性组，将多个属性组合在一个属性布局中
+ * @property if               只有满足 if 条件，才显示对应的属性部件
+ * @property target           当多个属性在一个属性部件中展示的时候，在此标识出对应的多个属性
+ */
+interface PropertyLayout {
+	propertyLabel: string;
+	propertyWidget: any;
+	propertyName?: string;
+	propertyGroup?: { propertyName?: string; target?: string[]; divider?: Divider }[];
+	if?: { widget: WidgetPointer; propertyName: string; propertyValue: string[] };
+	// 如果是针对当前部件的，则直接填写属性名，否则指定部件地址信息
+	target?: PropertyTarget;
+}
+
+/**
+ * 部件元信息
+ *
+ * @property widget             部件类型，是基于类的部件，继承自 WidgetBase 类
+ * @property propertiesLayout   部件的属性面板布局信息
+ */
+interface WidgetMeta {
+	widget: any;
+	propertiesLayout: Array<PropertyLayout>;
+}
+
+/**
+ * 属性名与部件及其属性布局信息的对应关系
+ */
 export interface ExtensionWidgetMap {
 	[propName: string]: WidgetMeta;
 }

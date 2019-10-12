@@ -2,7 +2,7 @@ const { describe, it, afterEach } = intern.getInterface("bdd");
 const { assert } = intern.getPlugin("chai");
 
 import * as blocklang from "../../src/blocklang";
-import { GitUrlSegment, ExtensionWidgetMap } from "../../src/interfaces";
+import { GitUrlSegment, ExtensionWidgetMap, PropertyLayout } from "../../src/interfaces";
 import WidgetBase from "@dojo/framework/core/WidgetBase";
 
 class Foo extends WidgetBase {}
@@ -41,5 +41,28 @@ describe("blocklang", () => {
 		assert.isUndefined(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "not-exist"));
 		assert.deepEqual(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "text-input"), propertiesLayout);
 		assert.deepEqual(blocklang.findWidgetPropertiesLayout("a/b/c", "text-input"), propertiesLayout);
+	});
+
+	it("property layout interface", () => {
+		const layout1: PropertyLayout = {
+			propertyLabel: "label",
+			propertyWidget: "widget",
+			propertyGroup: [
+				{
+					divider: "vertical"
+				},
+				{
+					divider: "horizontal"
+				},
+				{
+					propertyName: "name",
+					target: ["marginLeft"]
+				}
+			],
+			target: [{ widget: "{parent}", propertyName: "flexDirection" }, "alignSelf"],
+			if: { widget: "{parent}", propertyName: "display", propertyValue: ["flex", "inlineFlex"] }
+		};
+
+		assert.isObject(layout1);
 	});
 });
