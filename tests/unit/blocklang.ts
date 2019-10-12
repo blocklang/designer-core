@@ -38,7 +38,9 @@ describe("blocklang", () => {
 		const widgets: ExtensionWidgetMap = { "text-input": { widget: Foo, propertiesLayout } };
 		blocklang.registerWidgets(gitUrlSegment, widgets);
 
-		assert.isUndefined(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "not-exist"));
+		// 如果没有找到，则返回空数组，而不是 undefined
+		assert.isArray(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "not-exist"));
+		assert.equal(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "not-exist").length, 0);
 		assert.deepEqual(blocklang.findWidgetPropertiesLayout(gitUrlSegment, "text-input"), propertiesLayout);
 		assert.deepEqual(blocklang.findWidgetPropertiesLayout("a/b/c", "text-input"), propertiesLayout);
 	});

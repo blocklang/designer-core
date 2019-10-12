@@ -47,7 +47,7 @@ export function findWidgetType(gitUrlSegment: GitUrlSegment | string, widgetName
  * @param gitUrlSegment    部件托管的 git 仓库地址信息
  * @param widgetName       部件名称，在一个 git 仓库中必须确保唯一
  *
- * @returns                返回属性面板的布局信息，是一个数组
+ * @returns                返回属性面板的布局信息，是一个数组，如果没有找到，则返回空数组
  */
 export function findWidgetPropertiesLayout(
 	gitUrlSegment: GitUrlSegment | string,
@@ -55,10 +55,11 @@ export function findWidgetPropertiesLayout(
 ): Array<PropertyLayout> {
 	const repoUrl = typeof gitUrlSegment === "string" ? gitUrlSegment : getRepoUrl(gitUrlSegment);
 	return (
-		global._block_lang_widgets_ &&
-		global._block_lang_widgets_[repoUrl] &&
-		global._block_lang_widgets_[repoUrl][widgetName] &&
-		global._block_lang_widgets_[repoUrl][widgetName].propertiesLayout
+		(global._block_lang_widgets_ &&
+			global._block_lang_widgets_[repoUrl] &&
+			global._block_lang_widgets_[repoUrl][widgetName] &&
+			global._block_lang_widgets_[repoUrl][widgetName].propertiesLayout) ||
+		[]
 	);
 }
 
