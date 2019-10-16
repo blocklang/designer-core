@@ -112,6 +112,8 @@ export default {
 
 在 `main.ts` 文件中调用 `blocklang.registerWidgets()` 函数注册 Widget
 
+注意：在注册部件时，部件的 key 值必须与 API 仓库中定义的部件名相同，具体是指新建部件时指定的 `name` 属性，即 changelog 文件中 `newWidget` 操作中的 `name` 属性。因为在设计器中会根据这个 `name` 属性查找 IDE 版部件类。如以下代码中的 key 值为 `TextInput`。
+
 > main.ts
 
 ```ts
@@ -122,8 +124,8 @@ import { GitUrlSegment, ExtensionWidgetMap } from '../../src/interfaces';
 
 const gitUrlSegment: GitUrlSegment = {website: "github.com", owner: "blocklang", repoName: "repo"};
 const widgets: ExtensionWidgetMap = {
-    // key 必须与 Widget 所在的文件夹同名
-    "text-input": {widget: TextInput, propertiesLayout: TextInputPropertiesLayout}
+    // key 必须与 API 仓库中定义的部件名相同，即必须与 newWidget 操作中的 name 属性保持一致
+    "TextInput": {widget: TextInput, propertiesLayout: TextInputPropertiesLayout}
 };
 
 blocklang.registerWidgets(gitUrlSegment, widgets);
@@ -137,10 +139,12 @@ import { GitUrlSegment } from '../../src/interfaces';
 
 const gitUrlSegment: GitUrlSegment = {website: "github.com", owner: "blocklang", repoName: "repo"};
 
+// 注意，widgetName 必须与注册部件时为部件指定的 key 值相同
+const widgetName = "TextInput";
 // 根据仓库的地址信息获取
-const widgetType = blocklang.findWidgetType(gitUrlSegment, "text-input");
+const widgetType = blocklang.findWidgetType(gitUrlSegment, widgetName);
 
 // 直接根据仓库的 url 获取
 const gitRepoUrl = blocklang.getRepoUrl(gitUrlSegment);
-const widgetType = blocklang.findWidgetType(gitRepoUrl, "text-input");
+const widgetType = blocklang.findWidgetType(gitRepoUrl, widgetName);
 ```
