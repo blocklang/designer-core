@@ -122,6 +122,8 @@ import TextInput from './text-input';
 import TextInputPropertiesLayout from './text-input/propertiesLayout';
 import { GitUrlSegment, ExtensionWidgetMap } from '../../src/interfaces';
 
+import { widgetInstanceMap } from "@dojo/framework/core/vdom";
+
 const gitUrlSegment: GitUrlSegment = {website: "github.com", owner: "blocklang", repoName: "repo"};
 const widgets: ExtensionWidgetMap = {
     // key 必须与 API 仓库中定义的部件名相同，即必须与 newWidget 操作中的 name 属性保持一致
@@ -129,6 +131,11 @@ const widgets: ExtensionWidgetMap = {
 };
 
 blocklang.registerWidgets(gitUrlSegment, widgets);
+
+// 注意，当前只支持基于类的部件
+// 当使用基于类的部件，需要调用此函数缓存第三方库中的 widgetInstanceMap 对象
+// 如果是标准库，则不需要填写这段代码，因为标准库是直接 import 的
+blocklang.cacheWidgetInstanceMap(gitUrlSegment, widgetInstanceMap);
 ```
 
 从注册的 Widget 列表中获取其中一个 Widget：
@@ -147,4 +154,12 @@ const widgetType = blocklang.findWidgetType(gitUrlSegment, widgetName);
 // 直接根据仓库的 url 获取
 const gitRepoUrl = blocklang.getRepoUrl(gitUrlSegment);
 const widgetType = blocklang.findWidgetType(gitRepoUrl, widgetName);
+```
+
+在页面设计器中监听并同步第三方库中 widgetInstanceMap 的变化
+
+```ts
+import { widgetInstanceMap } from "@dojo/framework/core/vdom";
+
+blocklang.watchingWidgetInstanceMap(widgetInstanceMap);
 ```

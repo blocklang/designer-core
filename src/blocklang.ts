@@ -1,5 +1,7 @@
 import global from "@dojo/framework/shim/global";
 import { ExtensionWidgetMap, GitUrlSegment, PropertyLayout } from "./interfaces";
+import { WidgetBaseInterface } from "@dojo/framework/core/interfaces";
+import { WidgetData } from "@dojo/framework/core/vdom";
 
 /**
  * 注册第三方 UI 组件库中的 Widget
@@ -14,10 +16,8 @@ export function registerWidgets(gitUrlSegment: GitUrlSegment, widgets: Extension
 	}
 
 	const repoUrl = getRepoUrl(gitUrlSegment);
-
-	// 如果已经注册过，则以最后一次的为准，但要给出警告信息
 	if (global._block_lang_widgets_[repoUrl]) {
-		throw `重复在 ${repoUrl} 下注册 Widget，会以最后一次注册为准！`;
+		throw `已注册过 ${repoUrl} 下的部件，不能重复注册！`;
 	}
 
 	global._block_lang_widgets_[repoUrl] = widgets;
@@ -77,4 +77,57 @@ export function getRepoUrl(gitUrlSegment: GitUrlSegment): string {
  */
 export function clearExtensionComponents(): void {
 	global._block_lang_widgets_ = {};
+}
+
+/**
+ * 缓存第三方中 dojo 的 widgetInstanceMap 对象，因为基于类的部件会存在这个对象中，而这个对象只能在 library 内使用。
+ *
+ * 在组件库中调用。
+ *
+ * @param gitUrlSegment          部件托管的 git 仓库地址信息
+ * @param widgetInstanceMap      位于第三方库中，@dojo/framework/core/vdom 中的 widgetInstanceMap 对象
+ */
+export function cacheWidgetInstanceMap(
+	gitUrlSegment: GitUrlSegment,
+	widgetInstanceMap: WeakMap<WidgetBaseInterface, WidgetData>
+) {
+	if (!global._widget_instance_map) {
+		global._widget_instance_map = {};
+	}
+
+	const repoUrl = getRepoUrl(gitUrlSegment);
+	if (global._widget_instance_map[repoUrl]) {
+		throw `已注册过 ${repoUrl} 下的 widgetInstanceMap 对象，不能重复注册！`;
+	}
+
+	global._widget_instance_map[repoUrl] = widgetInstanceMap;
+}
+
+/**
+ * 清空缓存的 widgetInstanceMap
+ */
+export function clearWidgetInstanceMap(): void {
+	global._widget_instance_map = {};
+}
+
+/**
+ * 监听第三方库中 widgetInstanceMap 的变化，并同步到 Page Designer 的 widgetInstanceMap 中。
+ *
+ * TODO: 跟 dojo 开发团队协商调整 @dojo/framework/core/vdom 实现，不再使用 export widgetInstanceMap 的写法
+ *
+ * 在 Page Designer 中调用
+ *
+ * @param widgetInstanceMap    位于 Page Designer 中，@dojo/framework/core/vdom 中的 widgetInstanceMap 对象
+ */
+export function watchingWidgetInstanceMap(widgetInstanceMap: WeakMap<WidgetBaseInterface, WidgetData>) {
+	if (!global._widget_instance_map) {
+		return;
+	}
+	Object.values(global._widget_instance_map).forEach(
+		(item: any) =>
+			(item.set = function(key: any, value: any) {
+				widgetInstanceMap.set(key, value);
+				return this;
+			})
+	);
 }

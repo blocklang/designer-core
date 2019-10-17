@@ -10,6 +10,7 @@ class Foo extends WidgetBase {}
 describe("blocklang", () => {
 	afterEach(() => {
 		blocklang.clearExtensionComponents();
+		blocklang.clearWidgetInstanceMap();
 	});
 
 	it("register widgets - repeat register", () => {
@@ -66,5 +67,29 @@ describe("blocklang", () => {
 		};
 
 		assert.isObject(layout1);
+	});
+
+	it("repeat cache", () => {
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const libraryWeakMap = new WeakMap();
+		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
+		assert.throw(() => {
+			blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
+		});
+	});
+
+	it("cache weakMap A, then watch weakMap B, then A pass to B", () => {
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const libraryWeakMap = new WeakMap();
+		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
+
+		const appWeakMap = new WeakMap();
+		blocklang.watchingWidgetInstanceMap(appWeakMap);
+
+		const key = {};
+		assert.isFalse(appWeakMap.has(key));
+		libraryWeakMap.set(key, "value1");
+		console.log(libraryWeakMap, appWeakMap);
+		assert.isTrue(appWeakMap.has(key));
 	});
 });
