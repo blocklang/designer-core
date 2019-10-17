@@ -7,10 +7,24 @@ import { WidgetDesignableMixin } from "../../../src/mixins/WidgetDesignable";
 import WidgetBase from "@dojo/framework/core/WidgetBase";
 import { InstWidget, EditableProperties } from "../../../src/interfaces";
 import { stub } from "sinon";
+import Overlay from "../../../src/widgets/overlay";
 
 class Foo extends WidgetDesignableMixin(WidgetBase) {
 	protected render() {
 		return v("div", { key: "key1" });
+	}
+}
+
+/**
+ * 需要在此部件上添加遮盖层
+ */
+class Bar extends WidgetDesignableMixin(WidgetBase) {
+	protected render() {
+		return v("input", { key: "input1" });
+	}
+
+	protected needOverlay() {
+		return true;
 	}
 }
 
@@ -43,14 +57,33 @@ describe("Widget Designable mixin", () => {
 			autoFocus: () => true
 		};
 
-		const foo = new Foo();
-		foo.__setProperties__({
-			widget,
-			originalProperties,
-			extendProperties
-		});
+		// const foo = new Foo();
+		// foo.__setProperties__({
+		// 	widget,
+		// 	originalProperties,
+		// 	extendProperties
+		// });
 
-		foo.__render__();
+		// foo.__render__();
+
+		// assert.isTrue(onFocusStub.calledOnce);
+
+		// foo.__render__();
+		// assert.isTrue(onFocusStub.calledTwice);
+
+		// const div = document.createElement('div');
+		// const r = renderer(() => w(Foo, {widget, originalProperties, extendProperties}));
+		// r.mount({ domNode: div });
+
+		// assert.isTrue(onFocusStub.calledOnce);
+
+		harness(() =>
+			w(Foo, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
 
 		assert.isTrue(onFocusStub.calledOnce);
 	});
@@ -200,5 +233,35 @@ describe("Widget Designable mixin", () => {
 		h.trigger("@key1", "onmouseout", { stopImmediatePropagation: () => {} });
 
 		assert.isTrue(onHighlightStub.notCalled);
+	});
+
+	it("need add overlay", () => {
+		// not root node
+		const widget: InstWidget = {
+			id: "2",
+			parentId: "1", // 约定值为 -1 时，表示根部件
+			widgetCode: "0001",
+			widgetName: "Widget1",
+			canHasChildren: true
+		};
+		const originalProperties = {};
+		const extendProperties: EditableProperties = {
+			onFocus: stub(),
+			onHighlight: stub()
+		};
+
+		const h = harness(() => w(Bar, { widget, originalProperties, extendProperties }));
+		h.expect(() => [
+			v("input", { key: "input1" }),
+			w(Overlay, {
+				top: 0,
+				left: 0,
+				height: 0,
+				width: 0,
+				onmouseup: () => {},
+				onmouseover: () => {},
+				onmouseout: () => {}
+			})
+		]);
 	});
 });

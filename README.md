@@ -52,6 +52,14 @@ npm install designer-core
    export default class Page extends WidgetDesignableMixin(PageBase) {}
    ```
 
+1. 为部件添加遮盖层。在设计器版部件中覆写 `needOverlay` 方法（默认返回 `false`），输入框之类的部件需要在设计器中屏蔽点击事件等。
+
+   ```ts
+   protected needOverlay(): boolean {
+       return false;
+   }
+   ```
+
 ### 示例
 
 1. 自定义部件
