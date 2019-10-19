@@ -30,7 +30,7 @@ npm install designer-core
 
 约定：
 
-1. 每个部件的根节点都需要设置 `key` 属性；
+1. 每个部件的根节点都需要设置 `key` 属性，将设置 `key` 的代码提取到 `getRootKey(): string` 方法中；
 
 ### 如何开发设计器版部件
 
