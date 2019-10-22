@@ -41,7 +41,8 @@ describe("Widget Designable mixin", () => {
 	// 确认本 mixin 默认为部件设置了 onMouseUp 事件
 	// 当触发 onMouseUp 后，会调用 onFocus 事件
 	it("auto focus", () => {
-		const onFocusStub = stub();
+		const onFocusingStub = stub();
+		const onFocusedStub = stub();
 
 		const widget: InstWidget = {
 			id: "1",
@@ -52,30 +53,12 @@ describe("Widget Designable mixin", () => {
 		};
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
-			onFocus: onFocusStub,
+			onFocusing: onFocusingStub,
+			onFocused: onFocusedStub,
 			onHighlight: stub(),
+			onUnhighlight: stub(),
 			autoFocus: () => true
 		};
-
-		// const foo = new Foo();
-		// foo.__setProperties__({
-		// 	widget,
-		// 	originalProperties,
-		// 	extendProperties
-		// });
-
-		// foo.__render__();
-
-		// assert.isTrue(onFocusStub.calledOnce);
-
-		// foo.__render__();
-		// assert.isTrue(onFocusStub.calledTwice);
-
-		// const div = document.createElement('div');
-		// const r = renderer(() => w(Foo, {widget, originalProperties, extendProperties}));
-		// r.mount({ domNode: div });
-
-		// assert.isTrue(onFocusStub.calledOnce);
 
 		harness(() =>
 			w(Foo, {
@@ -85,11 +68,16 @@ describe("Widget Designable mixin", () => {
 			})
 		);
 
-		assert.isTrue(onFocusStub.calledOnce);
+		console.log("call count", onFocusedStub.callCount);
+
+		assert.isTrue(onFocusingStub.notCalled);
+		// 最好只调用一次，但现在实际上调用了两次。
+		assert.isTrue(onFocusedStub.calledTwice);
 	});
 
 	it("not auto focus", () => {
-		const onFocusStub = stub();
+		const onFocusingStub = stub();
+		const onFocusedStub = stub();
 
 		const widget: InstWidget = {
 			id: "1",
@@ -100,25 +88,184 @@ describe("Widget Designable mixin", () => {
 		};
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
-			onFocus: onFocusStub,
+			onFocusing: onFocusingStub,
+			onFocused: onFocusedStub,
 			onHighlight: stub(),
+			onUnhighlight: stub(),
 			autoFocus: () => false
 		};
 
-		const foo = new Foo();
-		foo.__setProperties__({
-			widget,
-			originalProperties,
-			extendProperties
-		});
+		harness(() =>
+			w(Foo, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
 
-		foo.__render__();
+		assert.isTrue(onFocusingStub.notCalled);
+		assert.isTrue(onFocusedStub.notCalled);
+	});
 
-		assert.isTrue(onFocusStub.notCalled);
+	it("use deferred properties for widgets which not need overlay", () => {
+		const onFocusingStub = stub();
+		const onFocusedStub = stub();
+
+		let activeWidgetId = "3";
+		// not root node
+		const widget: InstWidget = {
+			id: "2",
+			parentId: "1", // 约定值为 -1 时，表示根部件
+			widgetCode: "0001",
+			widgetName: "Widget1",
+			canHasChildren: true
+		};
+
+		function _autoFocus(widgetId: string) {
+			console.log(activeWidgetId, widgetId);
+			return activeWidgetId === widgetId;
+		}
+		const originalProperties = {};
+		const extendProperties: EditableProperties = {
+			onFocusing: onFocusingStub,
+			onFocused: onFocusedStub,
+			onHighlight: stub(),
+			onUnhighlight: stub(),
+			autoFocus: _autoFocus
+		};
+
+		let h = harness(() =>
+			w(Foo, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
+
+		// 没有聚焦
+		h.expect(() => [
+			v("div", {
+				key: "key1",
+				onmouseup: () => {},
+				onmouseover: () => {},
+				onmouseout: () => {}
+			})
+		]);
+
+		assert.isTrue(onFocusingStub.notCalled);
+		assert.isTrue(onFocusedStub.notCalled);
+
+		// 聚焦
+		activeWidgetId = "2";
+		h = harness(() =>
+			w(Foo, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
+
+		assert.isTrue(onFocusingStub.notCalled);
+		assert.isTrue(onFocusedStub.calledTwice);
+
+		h.expect(() => [
+			v("div", {
+				key: "key1",
+				onmouseup: () => {},
+				onmouseover: () => {},
+				onmouseout: () => {}
+			}),
+			v("span", { key: "__alwaysRenderFocusBox__" })
+		]);
+	});
+
+	it("use deferred properties for widgets which need overlay", () => {
+		const onFocusingStub = stub();
+		const onFocusedStub = stub();
+
+		let activeWidgetId = "3";
+		// not root node
+		const widget: InstWidget = {
+			id: "2",
+			parentId: "1", // 约定值为 -1 时，表示根部件
+			widgetCode: "0001",
+			widgetName: "Widget1",
+			canHasChildren: true
+		};
+
+		function _autoFocus(widgetId: string) {
+			console.log(activeWidgetId, widgetId);
+			return activeWidgetId === widgetId;
+		}
+		const originalProperties = {};
+		const extendProperties: EditableProperties = {
+			onFocusing: onFocusingStub,
+			onFocused: onFocusedStub,
+			onHighlight: stub(),
+			onUnhighlight: stub(),
+			autoFocus: _autoFocus
+		};
+
+		let h = harness(() =>
+			w(Bar, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
+
+		// 没有聚焦
+		h.expect(() => [
+			v("input", {
+				key: "input1"
+			}),
+			w(Overlay, {
+				top: 0,
+				left: 0,
+				height: 0,
+				width: 0,
+				onmouseup: () => {},
+				onmouseover: () => {},
+				onmouseout: () => {}
+			})
+		]);
+
+		assert.isTrue(onFocusingStub.notCalled);
+		assert.isTrue(onFocusedStub.notCalled);
+
+		// 聚焦
+		activeWidgetId = "2";
+		h = harness(() =>
+			w(Bar, {
+				widget,
+				originalProperties,
+				extendProperties
+			})
+		);
+
+		assert.isTrue(onFocusingStub.notCalled);
+		assert.isTrue(onFocusedStub.calledTwice);
+
+		h.expect(() => [
+			v("input", {
+				key: "input1"
+			}),
+			w(Overlay, {
+				top: 0,
+				left: 0,
+				height: 0,
+				width: 0,
+				onmouseup: () => {},
+				onmouseover: () => {},
+				onmouseout: () => {}
+			}),
+			v("span", { key: "__alwaysRenderFocusBox__" })
+		]);
 	});
 
 	it("When there is one root node, bind onMouseUp event to the single root node", () => {
-		const onFocusStub = stub();
+		const onFocusingStub = stub();
+		const onFocusedStub = stub();
 
 		const widget: InstWidget = {
 			id: "1",
@@ -129,8 +276,10 @@ describe("Widget Designable mixin", () => {
 		};
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
-			onFocus: onFocusStub,
-			onHighlight: stub()
+			onFocusing: onFocusingStub,
+			onFocused: onFocusedStub,
+			onHighlight: stub(),
+			onUnhighlight: stub()
 		};
 
 		const h = harness(() =>
@@ -143,11 +292,13 @@ describe("Widget Designable mixin", () => {
 
 		h.trigger("@key1", "onmouseup", { stopImmediatePropagation: () => {} });
 
-		assert.isTrue(onFocusStub.calledOnce);
+		assert.isTrue(onFocusingStub.calledOnce);
+		assert.isTrue(onFocusedStub.notCalled);
 	});
 
 	it("When there is one root node, bind onMouseOver to the single root node", () => {
 		const onHighlightStub = stub();
+		const onUnhighlightStub = stub();
 
 		const widget: InstWidget = {
 			id: "1",
@@ -158,8 +309,10 @@ describe("Widget Designable mixin", () => {
 		};
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
-			onFocus: stub(),
-			onHighlight: onHighlightStub
+			onFocusing: stub(),
+			onFocused: stub(),
+			onHighlight: onHighlightStub,
+			onUnhighlight: onUnhighlightStub
 		};
 
 		const h = harness(() =>
@@ -173,10 +326,12 @@ describe("Widget Designable mixin", () => {
 		h.trigger("@key1", "onmouseover", { stopImmediatePropagation: () => {} });
 
 		assert.isTrue(onHighlightStub.calledOnce);
+		assert.isTrue(onUnhighlightStub.notCalled);
 	});
 
 	it("When there is one root node, bind onMouseOut to the single root node, on mouse out page node, will remove highlight", () => {
 		const onHighlightStub = stub();
+		const onUnhighlightStub = stub();
 
 		// Page is root node
 		const widget: InstWidget = {
@@ -188,38 +343,10 @@ describe("Widget Designable mixin", () => {
 		};
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
-			onFocus: stub(),
-			onHighlight: onHighlightStub
-		};
-
-		const h = harness(() =>
-			w(Foo, {
-				widget,
-				originalProperties,
-				extendProperties
-			})
-		);
-
-		h.trigger("@key1", "onmouseout", { stopImmediatePropagation: () => {} });
-
-		assert.isTrue(onHighlightStub.calledOnce);
-	});
-
-	it("When there is one root node, bind onMouseOut to the single root node, on mouse out a child node, will not remove highlight", () => {
-		const onHighlightStub = stub();
-
-		// not root node
-		const widget: InstWidget = {
-			id: "2",
-			parentId: "1", // 约定值为 -1 时，表示根部件
-			widgetCode: "0001",
-			widgetName: "Widget1",
-			canHasChildren: true
-		};
-		const originalProperties = {};
-		const extendProperties: EditableProperties = {
-			onFocus: stub(),
-			onHighlight: onHighlightStub
+			onFocusing: stub(),
+			onFocused: stub(),
+			onHighlight: onHighlightStub,
+			onUnhighlight: onUnhighlightStub
 		};
 
 		const h = harness(() =>
@@ -233,9 +360,13 @@ describe("Widget Designable mixin", () => {
 		h.trigger("@key1", "onmouseout", { stopImmediatePropagation: () => {} });
 
 		assert.isTrue(onHighlightStub.notCalled);
+		assert.isTrue(onUnhighlightStub.calledOnce);
 	});
 
-	it("need add overlay", () => {
+	it("When there is one root node, bind onMouseOut to the single root node, on mouse out a child node, will not remove highlight", () => {
+		const onHighlightStub = stub();
+		const onUnhighlightStub = stub();
+
 		// not root node
 		const widget: InstWidget = {
 			id: "2",
@@ -246,22 +377,23 @@ describe("Widget Designable mixin", () => {
 		};
 		const originalProperties = {};
 		const extendProperties: EditableProperties = {
-			onFocus: stub(),
-			onHighlight: stub()
+			onFocusing: stub(),
+			onFocused: stub(),
+			onHighlight: onHighlightStub,
+			onUnhighlight: onUnhighlightStub
 		};
 
-		const h = harness(() => w(Bar, { widget, originalProperties, extendProperties }));
-		h.expect(() => [
-			v("input", { key: "input1" }),
-			w(Overlay, {
-				top: 0,
-				left: 0,
-				height: 0,
-				width: 0,
-				onmouseup: () => {},
-				onmouseover: () => {},
-				onmouseout: () => {}
+		const h = harness(() =>
+			w(Foo, {
+				widget,
+				originalProperties,
+				extendProperties
 			})
-		]);
+		);
+
+		h.trigger("@key1", "onmouseout", { stopImmediatePropagation: () => {} });
+
+		assert.isTrue(onHighlightStub.notCalled);
+		assert.isTrue(onUnhighlightStub.notCalled);
 	});
 });

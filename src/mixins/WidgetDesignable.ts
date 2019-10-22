@@ -4,7 +4,7 @@ import { afterRender } from "@dojo/framework/core/decorators/afterRender";
 import { beforeProperties } from "@dojo/framework/core/decorators/beforeProperties";
 import { EditableWidgetProperties } from "../interfaces";
 import Dimensions from "@dojo/framework/core/meta/Dimensions";
-import { w } from "@dojo/framework/core/vdom";
+import { w, v } from "@dojo/framework/core/vdom";
 import Overlay from "../widgets/overlay";
 
 interface WidgetDesignableMixin {
@@ -43,8 +43,6 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		 * 在聚焦部件后添加一个子节点，然后在子部件上传入 deferred properties 来延迟触发 tryFocus 方法，
 		 * 即每次绘制完聚焦部件后，都会调用 tryFocus 方法，从而获取到正确的位置信息，实现聚焦框的准确定位。
 		 */
-		// private _triggerResizeWidgetKey: string = '__triggerResize__'; // 如果是系统内使用的字符串，则在字符串的前后分别增加两个 '_'
-
 		@beforeProperties()
 		protected beforeProperties(properties: EditableWidgetProperties) {
 			console.log("widget designable beforeProperties");
@@ -66,8 +64,6 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 				resultArray = [result];
 			}
 
-			this._autoFocus();
-
 			if (this.needOverlay()) {
 				const dimensions = this.meta(Dimensions).get(this._key);
 				const top = dimensions.offset.top;
@@ -85,7 +81,8 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 						onmouseup: this._onMouseUp,
 						onmouseover: this._onMouseOver,
 						onmouseout: this._onMouseOut
-					})
+					}),
+					this._alwaysRenderFocusBox()
 				];
 			}
 
@@ -97,7 +94,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			// 移除高亮显示部件
 			bindMouseUpEventNode.properties.onmouseout = this._onMouseOut;
 
-			return result;
+			return [...resultArray, this._alwaysRenderFocusBox()];
 		}
 
 		/**
@@ -118,10 +115,30 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			return false;
 		}
 
+		private _alwaysRenderFocusBox(): DNode<any> {
+			if (!this._shouldFocus()) {
+				return;
+			}
+			return v("span", (inserted: boolean) => {
+				this._measureActiveWidget();
+				// 如果是系统内使用的字符串，则在字符串的前后分别增加两个 '_'
+				return { key: "__alwaysRenderFocusBox__" };
+			});
+		}
+
+		private _shouldFocus() {
+			const { autoFocus } = this.properties.extendProperties;
+			const {
+				widget: { id: widgetId }
+			} = this.properties;
+
+			return autoFocus && autoFocus(widgetId);
+		}
+
 		private _onMouseUp(event: MouseEvent) {
 			event.stopImmediatePropagation();
-
-			this._tryFocus();
+			// 应该在此处调整 activeWidgetId 的值，而不调整 activeDimensions 的值
+			this._setActiveWidgetId();
 		}
 
 		private _onMouseOver(event: MouseEvent) {
@@ -137,31 +154,35 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		}
 
 		/**
-		 * 页面加载完后，默认聚焦的部件，发生在页面初始化阶段。
-		 */
-		private _autoFocus() {
-			const { autoFocus } = this.properties.extendProperties;
-			const {
-				widget: { id: widgetId }
-			} = this.properties;
-
-			// 此段代码不能放到 beforeRender 中，因为此时 this._key 尚未设置值
-			if (autoFocus && autoFocus(widgetId)) {
-				this._tryFocus();
-			}
-		}
-
-		/**
 		 * 此方法只能在获取到聚焦节点自身的 key 值后才能调用。
+		 *
+		 * 注意，先设置聚焦部件 id，然后再调用 _measureActiveWidget 测量部件
 		 */
-		private _tryFocus() {
+		private _setActiveWidgetId() {
 			const {
 				widget,
-				extendProperties: { onFocus }
+				extendProperties: { onFocusing }
 			} = this.properties;
-			const activeWidgetDimensions = this.meta(Dimensions).get(this._key);
+
+			if (!onFocusing) {
+				return;
+			}
+
 			const activeWidgetId = widget.id;
-			onFocus && onFocus({ activeWidgetDimensions, activeWidgetId });
+			onFocusing(activeWidgetId);
+		}
+
+		private _measureActiveWidget() {
+			const {
+				extendProperties: { onFocused }
+			} = this.properties;
+
+			if (!onFocused) {
+				return;
+			}
+
+			const activeWidgetDimensions = this.meta(Dimensions).get(this._key);
+			onFocused(activeWidgetDimensions);
 		}
 
 		private _addHighlight() {
@@ -175,38 +196,22 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 
 			const highlightWidgetDimensions = this.meta(Dimensions).get(this._key);
 			// 添加高亮效果
-			onHighlight({ highlightWidgetDimensions, highlightWidgetId });
+			onHighlight({ highlightWidgetId, highlightWidgetDimensions });
 		}
 
 		private _removeHighlight() {
 			const {
 				widget,
-				extendProperties: { onHighlight }
+				extendProperties: { onUnhighlight }
 			} = this.properties;
-			if (!onHighlight) {
+			if (!onUnhighlight) {
 				return;
 			}
 			if (widget.parentId === ROOT_WIDGET_PARENT_ID) {
 				// 移除高亮效果
-				onHighlight({});
+				onUnhighlight();
 			}
 		}
-
-		// private _reRenderFocusBox(): DNode {
-		// 	const { autoFocus } = this.properties.extendProperties;
-		// 	const {
-		// 		widget: { id: widgetId }
-		// 	} = this.properties;
-
-		// 	if (autoFocus && autoFocus(widgetId)) {
-		// 		// 防止渲染多个 triggerResizeWidget 造成 key 重复报错
-		// 		return v('virtual', () => {
-		// 			this._tryFocus();
-		// 			return { key: this._triggerResizeWidgetKey };
-		// 		});
-		// 	}
-		// 	return null;
-		// }
 	}
 	return WidgetDesignable;
 }

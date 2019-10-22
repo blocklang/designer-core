@@ -43,20 +43,28 @@ export interface InstWidgetProperties extends WidgetProperties {
  * 将常规的部件转换为可在设计器中集成的部件时，需要扩充或覆盖的属性。
  *
  * @property autoFocus        页面渲染完成后，对应的部件是否自动获取焦点，通过此属性设置页面的默认聚焦部件，默认为 false
- * @property onFocus          当部件获取焦点后触发的事件
- * @property onHighlight      当高亮显示部件时触发的事件，如果存在 highlightWidgetDimensions 参数，则显示高亮效果，否则删除高亮效果
+ * @property onFocusing       当部件正在获取焦点时触发的事件
+ * @property onFocused        当部件已经获取焦点之后出发的事件
+ * @property onHighlight      当高亮显示部件时触发的事件
+ * @property onUnhighlight    当撤销高亮显示部件时触发的事件
  */
 export interface EditableProperties {
+	// 以下为聚焦相关的属性
 	// widgetId 传入的是当前部件的 id，用于跟 activeWidgetId 对比，判断是否需要聚焦
 	autoFocus?: (widgetId: string) => boolean;
-	// 以下为聚焦相关的属性
-	onFocus: (payload: { activeWidgetDimensions: Readonly<DimensionResults>; activeWidgetId: string }) => void;
+	// 将聚焦过程分为两个阶段
+	// 一个是正在聚焦，用于设置聚焦的部件 id
+	// 一个是聚焦完成，用于设置聚焦部件的尺寸信息
+	onFocusing: (activeWidgetId: string) => void;
+	onFocused: (activeWidgetDimensions: Readonly<DimensionResults>) => void;
 
 	// 以下为高亮相关的属性
+	// 注意，不需要将高亮事件拆分为两个阶段，因为目前只在此一处调用，且一定会同时传这两个属性
 	onHighlight: (payload: {
-		highlightWidgetDimensions?: Readonly<DimensionResults>;
-		highlightWidgetId?: string;
+		highlightWidgetId: string;
+		highlightWidgetDimensions: Readonly<DimensionResults>;
 	}) => void;
+	onUnhighlight: () => void;
 }
 
 /**
