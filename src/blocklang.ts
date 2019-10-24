@@ -24,7 +24,7 @@ export function registerWidgets(gitUrlSegment: GitUrlSegment, widgets: Extension
 }
 
 /**
- * 获取部件类型
+ * 获取部件类型，预览页面时使用
  *
  * @param gitUrlSegment    部件托管的 git 仓库地址信息
  * @param widgetName       部件名称，在一个 git 仓库中必须确保唯一
@@ -38,6 +38,24 @@ export function findWidgetType(gitUrlSegment: GitUrlSegment | string, widgetName
 		global._block_lang_widgets_[repoUrl] &&
 		global._block_lang_widgets_[repoUrl][widgetName] &&
 		global._block_lang_widgets_[repoUrl][widgetName].widget
+	);
+}
+
+/**
+ * 获取部件类型，设计页面时使用
+ *
+ * @param gitUrlSegment    部件托管的 git 仓库地址信息
+ * @param widgetName       部件名称，在一个 git 仓库中必须确保唯一
+ *
+ * @returns                返回的是继承 WidgetBase 的类型；如果没有找到，则返回 undefined
+ */
+export function findIdeWidgetType(gitUrlSegment: GitUrlSegment | string, widgetName: string): any {
+	const repoUrl = typeof gitUrlSegment === "string" ? gitUrlSegment : getRepoUrl(gitUrlSegment);
+	return (
+		global._block_lang_widgets_ &&
+		global._block_lang_widgets_[repoUrl] &&
+		global._block_lang_widgets_[repoUrl][widgetName] &&
+		global._block_lang_widgets_[repoUrl][widgetName].ideWidget
 	);
 }
 

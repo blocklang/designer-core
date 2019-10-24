@@ -122,11 +122,13 @@ interface PropertyLayout {
 /**
  * 部件元信息
  *
- * @property widget             部件类型，是基于类的部件，继承自 WidgetBase 类
+ * @property widget             **预览**页面时使用的部件类型，是基于类的部件，继承自 WidgetBase 类
+ * @property ideWidget          **设计**页面时使用的部件类型，是基于类的部件，通常继承自 widget 的值
  * @property propertiesLayout   部件的属性面板布局信息
  */
 interface WidgetMeta {
 	widget: any;
+	ideWidget: any;
 	propertiesLayout: Array<PropertyLayout>;
 }
 

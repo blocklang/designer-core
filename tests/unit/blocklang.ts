@@ -7,6 +7,8 @@ import WidgetBase from "@dojo/framework/core/WidgetBase";
 
 class Foo extends WidgetBase {}
 
+class IdeFoo extends Foo {}
+
 describe("blocklang", () => {
 	afterEach(() => {
 		blocklang.clearExtensionComponents();
@@ -15,28 +17,32 @@ describe("blocklang", () => {
 
 	it("register widgets - repeat register", () => {
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
-		const widgets: ExtensionWidgetMap = { TextInput: { widget: Foo, propertiesLayout: [] } };
+		const widgets: ExtensionWidgetMap = { TextInput: { widget: Foo, ideWidget: IdeFoo, propertiesLayout: [] } };
 		blocklang.registerWidgets(gitUrlSegment, widgets);
 		assert.throw(() => {
 			blocklang.registerWidgets(gitUrlSegment, widgets);
 		});
 	});
 
-	it("register widgets - find widget type", () => {
+	it("register widgets - find widget type and ide widget type", () => {
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
-		const widgets: ExtensionWidgetMap = { TextInput: { widget: Foo, propertiesLayout: [] } };
+		const widgets: ExtensionWidgetMap = { TextInput: { widget: Foo, ideWidget: IdeFoo, propertiesLayout: [] } };
 		blocklang.registerWidgets(gitUrlSegment, widgets);
 
 		assert.isUndefined(blocklang.findWidgetType(gitUrlSegment, "not-exist"));
 		assert.deepEqual(blocklang.findWidgetType(gitUrlSegment, "TextInput"), Foo);
 		assert.deepEqual(blocklang.findWidgetType("a/b/c", "TextInput"), Foo);
+
+		assert.isUndefined(blocklang.findIdeWidgetType(gitUrlSegment, "not-exist"));
+		assert.deepEqual(blocklang.findIdeWidgetType(gitUrlSegment, "TextInput"), IdeFoo);
+		assert.deepEqual(blocklang.findIdeWidgetType("a/b/c", "TextInput"), IdeFoo);
 	});
 
 	it("register widgets - find widget properties layout", () => {
 		const propertiesLayout: any[] = [{ propertyName: "name", propertyLabel: "名称" }];
 
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
-		const widgets: ExtensionWidgetMap = { TextInput: { widget: Foo, propertiesLayout } };
+		const widgets: ExtensionWidgetMap = { TextInput: { widget: Foo, ideWidget: IdeFoo, propertiesLayout } };
 		blocklang.registerWidgets(gitUrlSegment, widgets);
 
 		// 如果没有找到，则返回空数组，而不是 undefined
@@ -89,7 +95,6 @@ describe("blocklang", () => {
 		const key = {};
 		assert.isFalse(appWeakMap.has(key));
 		libraryWeakMap.set(key, "value1");
-		console.log(libraryWeakMap, appWeakMap);
 		assert.isTrue(appWeakMap.has(key));
 	});
 });
