@@ -140,6 +140,48 @@ export interface ExtensionWidgetMap {
 }
 
 /**
+ * @type ChangedPropertyValue
+ *
+ * 存储修改的属性值，onPropertyChanged 事件的参数
+ *
+ * @property index        当前的 property 在 Widget 的 properties 数组中的索引，用于定位属性信息
+ * @property newValue     新设置的值
+ * @property isChanging   是否属于试衣式设置值，true 表示属性值正在变化中，即处于试衣过程中；false 表示已选定最终值
+ * @property isExpr       newValue 的值是表达式，还是字面值，true 表示绑定的是表达式，即变量名或方法名；false 表示没有绑定表达式
+ */
+interface ChangedPropertyValue {
+	index: number;
+	newValue: string;
+	// 属性值的设置过程有两种：
+	// 1. 直接设置最终值，即直接生效
+	// 2. 试衣式设置值，即尝试设置不同的值，然后选取一个最终值，此种情况主要用于类似 Slider 部件
+	isChanging: boolean;
+	// 如果 isExpr 的值为 true，则需要增加解析环节
+	// isExpr?: boolean; 这里使用 boolean 类型不合适，这里应该描述的是一种操作类型
+}
+
+/**
+ * 传给属性部件的属性，规范所有属性部件的属性接口
+ *
+ * 属性部件分两类：一是只能设置一个属性；二是只能设置多个属性。
+ *
+ */
+
+/**
+ * 属性部件专用，用于设置单个属性
+ *
+ * @property index            当前的 property 在 Widget 的 properties 数组中的索引，用于定位属性信息
+ * @event onPropertyChanged   当属性值发生变化后触发的事件
+ */
+interface SingleProperty {
+	index: number; // 部件的属性是按照数组存储的，一个属性对应一条记录，该属性指当前属性在数组中的索引
+	onPropertyChanged: (changedProperty: ChangedPropertyValue) => void;
+}
+
+// 预留
+interface MultipleProperties {}
+
+/**
  * @type GitUrlSegment
  *
  * git 仓库的地址信息
