@@ -171,11 +171,13 @@ interface ChangedPropertyValue {
  * 属性部件专用，用于设置单个属性
  *
  * @property index            当前的 property 在 Widget 的 properties 数组中的索引，用于定位属性信息
+ * @property value            用于为属性部件设置默认值，如果没有默认值则不设置
  * @event onPropertyChanged   当属性值发生变化后触发的事件
  */
 interface SingleProperty {
 	index: number; // 部件的属性是按照数组存储的，一个属性对应一条记录，该属性指当前属性在数组中的索引
-	onPropertyChanged: (changedProperty: ChangedPropertyValue) => void;
+	value?: string;
+	onPropertyChanged: (changedProperty: ChangedPropertyValue) => void; // TODO: 即能传入单个对象，也能传入数组？
 }
 
 // 预留
