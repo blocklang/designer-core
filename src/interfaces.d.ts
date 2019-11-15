@@ -147,7 +147,7 @@ export interface ExtensionWidgetMap {
  * @property index        当前的 property 在 Widget 的 properties 数组中的索引，用于定位属性信息
  * @property newValue     新设置的值
  * @property isChanging   是否属于试衣式设置值，true 表示属性值正在变化中，即处于试衣过程中；false 表示已选定最终值
- * @property isExpr       newValue 的值是表达式，还是字面值，true 表示绑定的是表达式，即变量名或方法名；false 表示没有绑定表达式
+ * @property isExpr       默认为 false。newValue 的值是表达式，还是字面值，true 表示绑定的是表达式，即变量名或方法名等；false 表示是字面值
  */
 interface ChangedPropertyValue {
 	index: number;
@@ -157,7 +157,7 @@ interface ChangedPropertyValue {
 	// 2. 试衣式设置值，即尝试设置不同的值，然后选取一个最终值，此种情况主要用于类似 Slider 部件
 	isChanging: boolean;
 	// 如果 isExpr 的值为 true，则需要增加解析环节
-	// isExpr?: boolean; 这里使用 boolean 类型不合适，这里应该描述的是一种操作类型
+	isExpr: boolean;
 }
 
 /**
