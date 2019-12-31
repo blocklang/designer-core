@@ -89,6 +89,7 @@ npm install designer-core
 
    ```ts
    import PageBase from "std-widget-web/page";
+   // 注意：WidgetDesignableMixin 一定要用大括号括住
    import { WidgetDesignableMixin } from "designer-core/mixins/WidgetDesignable";
 
    export default class Page extends WidgetDesignableMixin(PageBase) {
