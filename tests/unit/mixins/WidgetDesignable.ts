@@ -28,9 +28,23 @@ class Bar extends WidgetDesignableMixin(WidgetBase) {
 	}
 }
 
-class CanEditPropertyWidget extends WidgetDesignableMixin(WidgetBase) {
+class InputWidget extends WidgetDesignableMixin(WidgetBase) {
 	protected render() {
 		return v("input", { key: "input1" });
+	}
+
+	protected needOverlay() {
+		return false;
+	}
+
+	protected getCanEditingPropertyName() {
+		return "value";
+	}
+}
+
+class SpanWidget extends WidgetDesignableMixin(WidgetBase) {
+	protected render() {
+		return v("span", { key: "span1" });
 	}
 
 	protected needOverlay() {
@@ -418,7 +432,7 @@ describe("Widget Designable mixin", () => {
 		};
 
 		const h = harness(() =>
-			w(CanEditPropertyWidget, {
+			w(InputWidget, {
 				widget,
 				extendProperties
 			})
@@ -435,7 +449,7 @@ describe("Widget Designable mixin", () => {
 		);
 	});
 
-	it("When there is one widget, bind onPropertyChanged to this widget, on input, will trigger onPropertyChanged event", () => {
+	it("bind onPropertyChanged to widget, the target is a input node", () => {
 		const onPropertyChangedStub = stub();
 
 		// not root node
@@ -468,7 +482,7 @@ describe("Widget Designable mixin", () => {
 		};
 
 		const h = harness(() =>
-			w(CanEditPropertyWidget, {
+			w(InputWidget, {
 				widget,
 				extendProperties
 			})
@@ -484,8 +498,66 @@ describe("Widget Designable mixin", () => {
 			})
 		);
 
-		h.trigger("@input1", "oninput", { target: { value: "a" } });
+		h.trigger("@input1", "oninput", { target: { tagName: "INPUT", value: "a" } });
 
-		assert.isTrue(onPropertyChangedStub.calledOnce);
+		assert.isTrue(
+			onPropertyChangedStub.withArgs({ index: 0, newValue: "a", isChanging: false, isExpr: false }).calledOnce
+		);
+	});
+
+	it("bind onPropertyChanged to widget, the target is a span node", () => {
+		const onPropertyChangedStub = stub();
+
+		// not root node
+		const widget: AttachedWidget = {
+			id: "2",
+			parentId: "1", // 约定值为 -1 时，表示根部件
+			apiRepoId: 1,
+			widgetId: 1,
+			widgetCode: "0001",
+			widgetName: "Widget1",
+			canHasChildren: true,
+			properties: [
+				{
+					id: "1",
+					value: "",
+					isExpr: false,
+					code: "0011",
+					name: "value",
+					valueType: "string"
+				}
+			]
+		};
+
+		const extendProperties: EditableProperties = {
+			onFocusing: stub(),
+			onFocused: stub(),
+			onHighlight: stub(),
+			onUnhighlight: stub(),
+			onPropertyChanged: onPropertyChangedStub
+		};
+
+		const h = harness(() =>
+			w(SpanWidget, {
+				widget,
+				extendProperties
+			})
+		);
+
+		h.expectPartial("@span1", () =>
+			v("span", {
+				key: "span1",
+				onmouseup: () => {},
+				onmouseover: () => {},
+				onmouseout: () => {},
+				oninput: () => {}
+			})
+		);
+
+		h.trigger("@span1", "oninput", { target: { tagName: "SPAN", textContent: "a" } });
+
+		assert.isTrue(
+			onPropertyChangedStub.withArgs({ index: 0, newValue: "a", isChanging: false, isExpr: false }).calledOnce
+		);
 	});
 });

@@ -134,7 +134,13 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 				if (onPropertyChanged) {
 					bindEditableEventsNode.properties.oninput = (event: KeyboardEvent) => {
 						// 当属性值发生变化时，要发出通知
-						const value = (event.target as HTMLInputElement).value;
+						const tagName = (event.target as HTMLElement).tagName;
+						let value = "";
+						if (tagName === "SPAN") {
+							value = (event.target as HTMLSpanElement).textContent || "";
+						} else {
+							value = (event.target as HTMLInputElement).value;
+						}
 						onPropertyChanged({
 							index: this._canEditingPropertyIndex,
 							newValue: value,
