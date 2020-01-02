@@ -2,10 +2,11 @@ import { DNode, Constructor, VNode } from "@dojo/framework/core/interfaces";
 import { WidgetBase } from "@dojo/framework/core/WidgetBase";
 import { afterRender } from "@dojo/framework/core/decorators/afterRender";
 import { beforeProperties } from "@dojo/framework/core/decorators/beforeProperties";
-import { EditableWidgetProperties } from "../interfaces";
+import { EditableWidgetProperties, AttachedWidgetProperty } from "../interfaces";
 import Dimensions from "@dojo/framework/core/meta/Dimensions";
 import { w, v } from "@dojo/framework/core/vdom";
 import Overlay from "../widgets/overlay";
+import { findIndex } from "@dojo/framework/shim/array";
 
 interface WidgetDesignableMixin {
 	properties: EditableWidgetProperties;
@@ -29,6 +30,11 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		public abstract properties: EditableWidgetProperties;
 		private _key: string = "";
 
+		// 是否可以在部件中修改指定属性的值
+		// 判断逻辑为：如果覆写了 getCanEditingPropertyName 函数，并返回了属性
+		private _canEditingProperty: boolean = false;
+		private _canEditingPropertyIndex: number = -1;
+
 		/**
 		 * 问题描述
 		 * 部件聚焦时，当通过修改属性值调整聚焦部件的位置且不会触发 Resize Observer 时，
@@ -47,7 +53,30 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		protected beforeProperties(properties: EditableWidgetProperties) {
 			console.log("widget designable beforeProperties");
 			console.log("can has children:", this.canHasChildren(properties.widget.canHasChildren));
+
+			this._setEditingPropertyInfo(properties.widget.properties);
+
 			return properties;
+		}
+
+		/**
+		 * 设置在编辑器中可直接编辑的属性
+		 *
+		 * @param attachedWidgetProperties
+		 */
+		private _setEditingPropertyInfo(attachedWidgetProperties: AttachedWidgetProperty[]) {
+			const editingPropertyName = this.getCanEditingPropertyName();
+			if (!editingPropertyName) {
+				this._canEditingProperty = false;
+				this._canEditingPropertyIndex = -1;
+				return;
+			}
+
+			this._canEditingProperty = true;
+			this._canEditingPropertyIndex = findIndex(
+				attachedWidgetProperties,
+				(attachedWidgetProperty) => attachedWidgetProperty.name === editingPropertyName
+			);
 		}
 
 		@afterRender()
@@ -86,13 +115,35 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 				];
 			}
 
-			const bindMouseUpEventNode = result as VNode;
+			// TODO: 提取出一个函数，可覆写获取节点的逻辑。
+			// 将编辑扩展相关的事件绑定到相关的节点上。
+			const bindEditableEventsNode = result as VNode;
 			// 一、当用鼠标点击部件时，让部件获取焦点
-			bindMouseUpEventNode.properties.onmouseup = this._onMouseUp;
+			bindEditableEventsNode.properties.onmouseup = this._onMouseUp;
 			// 添加高亮显示部件
-			bindMouseUpEventNode.properties.onmouseover = this._onMouseOver;
+			bindEditableEventsNode.properties.onmouseover = this._onMouseOver;
 			// 移除高亮显示部件
-			bindMouseUpEventNode.properties.onmouseout = this._onMouseOut;
+			bindEditableEventsNode.properties.onmouseout = this._onMouseOut;
+			// 支持在部件中编辑属性
+			if (this._canEditingProperty) {
+				// 默认绑定到 oninput 事件上，后续按需扩展
+				const {
+					extendProperties: { onPropertyChanged }
+				} = this.properties;
+
+				if (onPropertyChanged) {
+					bindEditableEventsNode.properties.oninput = (event: KeyboardEvent) => {
+						// 当属性值发生变化时，要发出通知
+						const value = (event.target as HTMLInputElement).value;
+						onPropertyChanged({
+							index: this._canEditingPropertyIndex,
+							newValue: value,
+							isChanging: false,
+							isExpr: false
+						});
+					};
+				}
+			}
 
 			return [...resultArray, this._alwaysRenderFocusBox()];
 		}
@@ -113,6 +164,17 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		 */
 		protected needOverlay(): boolean {
 			return false;
+		}
+
+		/**
+		 * 设置在部件中可直接编辑的属性。默认为不在部件中编辑任何属性。
+		 *
+		 * 有两处可以编辑属性：
+		 * 1. 在属性面板中编辑各个属性；
+		 * 2. 在部件中直接编辑指定的属性，在部件中最多只能编辑一个属性；
+		 */
+		protected getCanEditingPropertyName(): string | undefined {
+			return;
 		}
 
 		private _alwaysRenderFocusBox(): DNode<any> {
@@ -164,10 +226,6 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 				extendProperties: { onFocusing }
 			} = this.properties;
 
-			if (!onFocusing) {
-				return;
-			}
-
 			const activeWidgetId = widget.id;
 			onFocusing(activeWidgetId);
 		}
@@ -176,10 +234,6 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			const {
 				extendProperties: { onFocused }
 			} = this.properties;
-
-			if (!onFocused) {
-				return;
-			}
 
 			const activeWidgetDimensions = this.meta(Dimensions).get(this._key);
 			onFocused(activeWidgetDimensions);
@@ -190,9 +244,6 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 				widget: { id: highlightWidgetId },
 				extendProperties: { onHighlight }
 			} = this.properties;
-			if (!onHighlight) {
-				return;
-			}
 
 			const highlightWidgetDimensions = this.meta(Dimensions).get(this._key);
 			// 添加高亮效果
@@ -204,9 +255,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 				widget,
 				extendProperties: { onUnhighlight }
 			} = this.properties;
-			if (!onUnhighlight) {
-				return;
-			}
+
 			if (widget.parentId === ROOT_WIDGET_PARENT_ID) {
 				// 移除高亮效果
 				onUnhighlight();

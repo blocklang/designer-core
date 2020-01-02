@@ -1,6 +1,7 @@
 const { describe, it, afterEach } = intern.getInterface("bdd");
 const { assert } = intern.getPlugin("chai");
 
+import global from "@dojo/framework/shim/global";
 import * as blocklang from "../../src/blocklang";
 import { GitUrlSegment, ExtensionWidgetMap, PropertyLayout } from "../../src/interfaces";
 import WidgetBase from "@dojo/framework/core/WidgetBase";
@@ -75,7 +76,16 @@ describe("blocklang", () => {
 		assert.isObject(layout1);
 	});
 
-	it("repeat cache", () => {
+	// 如果 _widget_instance_map 的值为 undefined，则先初始化为 {}
+	it("cacheWidgetInstanceMap: _widget_instance_map is undefined", () => {
+		global._widget_instance_map = undefined;
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const libraryWeakMap = new WeakMap();
+		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
+		assert.isNotNull(global._widget_instance_map);
+	});
+
+	it("cacheWidgetInstanceMap: repeat cache", () => {
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
 		const libraryWeakMap = new WeakMap();
 		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
@@ -84,7 +94,22 @@ describe("blocklang", () => {
 		});
 	});
 
-	it("cache weakMap A, then watch weakMap B, then A pass to B", () => {
+	it("watchingWidgetInstanceMap: global._widget_instance_map is undefined", () => {
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const libraryWeakMap = new WeakMap();
+		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
+
+		global._widget_instance_map = undefined;
+		const appWeakMap = new WeakMap();
+		blocklang.watchingWidgetInstanceMap(appWeakMap);
+
+		const key = {};
+		assert.isFalse(appWeakMap.has(key));
+		libraryWeakMap.set(key, "value1");
+		assert.isFalse(appWeakMap.has(key));
+	});
+
+	it("watchingWidgetInstanceMap: cache weakMap A, then watch weakMap B, then A pass to B", () => {
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
 		const libraryWeakMap = new WeakMap();
 		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);

@@ -17,7 +17,8 @@ npm install designer-core
 1. 测量聚焦部件的尺寸，以便为部件添加聚焦框;
 2. 测量光标指向部件的尺寸，以便为部件添加高亮框；
 3. 增加遮盖层，屏蔽部件默认的聚焦效果以及与设计器冲突的事件;
-4. 为空容器增加可视化效果等。
+4. 为空容器增加可视化效果等；
+5. 支持在部件中修改指定属性的值。
 
 注意：`WidgetDesignable` 只适用于基于类的部件，不能与基于函数的部件一起使用。
 
@@ -57,6 +58,14 @@ npm install designer-core
    ```ts
    protected needOverlay(): boolean {
        return false;
+   }
+   ```
+
+2. 支持在部件中直接编辑指定的属性，在此方法中指定可直接编辑的属性名。通常需要覆写 web 版部件，让其支持编辑功能。
+
+   ```ts
+   protected getCanEditingPropertyName(): string | undefined {
+       return;
    }
    ```
 

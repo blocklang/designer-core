@@ -1,40 +1,73 @@
 import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
 import { WidgetProperties } from "@dojo/framework/core/interfaces";
 
-// 关于 AttachedWidget 和 InstWidget 两个名字的区别：
-// 1. 两个多表示添加到页面中的部件信息；
-// 2. InstWidget 是由 AttachedWidget 转换来的，是更贴近于部件的数据格式;
-// 3. InstWidget 中的属性在渲染时候使用，而 AttachedWiget 是在定义关系时使用。
-
 /**
- * @type InstWidget
+ * @type Widget
  *
- * 存储两类信息：
+ * UI 部件信息
  *
- * 1. Widget 基本信息
- * 2. Widget 放到页面之后新增的信息
- *
- * @property id                 页面中的部件标识
- * @property parentId           页面中父部件标识，根部件的父标识为 -1
+ * @property widgetId           部件标识
  * @property widgetName         部件名称
  * @property widgetCode         部件编码
- * @property canHasChildren     是否能包含子部件
+ * @property canHasChildren     是否可以包含子部件
+ * @property apiRepoId          部件所属的 API 库标识
+ * @property properties         部件的属性列表，要按顺序加载全部属性
  */
-export interface InstWidget {
-	id: string;
-	parentId: string;
+export interface Widget {
+	widgetId: number;
 	widgetName: string;
 	widgetCode: string;
 	canHasChildren: boolean;
+	apiRepoId: number;
+	properties: WidgetProperty[];
+}
+
+export type PropertyValueType = "string" | "int" | "float" | "date" | "boolean" | "function";
+
+/**
+ * @interface WidgetProperty
+ *
+ * @property code           属性编码，是属性的基本信息，此字段要存入到页面模型中
+ * @property name           属性名，此字段仅做显示用，如果 label 有值则优先使用 label 的值
+ * @property defaultValue   属性的默认值
+ * @property valueType      属性值类型,支持 string、int、float、date、boolean 和 function 类型
+ */
+export interface WidgetProperty {
+	code: string;
+	name: string;
+	defaultValue?: string;
+	valueType: PropertyValueType;
 }
 
 /**
- * @type InstWidgetProperties
+ * @interface AttachedWidget
  *
- * 部件的属性值
+ * 添加到页面中的部件信息
+ *
+ * @property id          部件 id，部件添加到页面中后，新生成的 id
+ * @property parentId    部件的父 id，也是添加到页面中后，之前生成的 id
+ * @property properties  部件的属性列表，不论是否有值，都要加载全部属性
  */
-export interface InstWidgetProperties extends WidgetProperties {
-	[propName: string]: any;
+export interface AttachedWidget extends Widget {
+	id: string;
+	parentId: string;
+
+	properties: AttachedWidgetProperty[];
+}
+
+/**
+ * @interface AttachedWidgetProperty
+ *
+ * 部件添加到页面后，部件的属性信息
+ *
+ * @property id         属性标识，是部件添加到页面之后重新生成的 id
+ * @property value      属性值
+ * @property isExpr     属性值是不是包含表达式，默认为 false
+ */
+export interface AttachedWidgetProperty extends WidgetProperty {
+	id: string;
+	value?: string;
+	isExpr: boolean;
 }
 
 /**
@@ -42,11 +75,12 @@ export interface InstWidgetProperties extends WidgetProperties {
  *
  * 将常规的部件转换为可在设计器中集成的部件时，需要扩充或覆盖的属性。
  *
- * @property autoFocus        页面渲染完成后，对应的部件是否自动获取焦点，通过此属性设置页面的默认聚焦部件，默认为 false
- * @property onFocusing       当部件正在获取焦点时触发的事件
- * @property onFocused        当部件已经获取焦点之后出发的事件
- * @property onHighlight      当高亮显示部件时触发的事件
- * @property onUnhighlight    当撤销高亮显示部件时触发的事件
+ * @property autoFocus            页面渲染完成后，对应的部件是否自动获取焦点，通过此属性设置页面的默认聚焦部件，默认为 false
+ * @property onFocusing           当部件正在获取焦点时触发的事件
+ * @property onFocused            当部件已经获取焦点之后出发的事件
+ * @property onHighlight          当高亮显示部件时触发的事件
+ * @property onUnhighlight        当撤销高亮显示部件时触发的事件
+ * @property onPropertyChanged    当需要直接在部件上编辑某一个属性时触发该事件
  */
 export interface EditableProperties {
 	// 以下为聚焦相关的属性
@@ -65,6 +99,7 @@ export interface EditableProperties {
 		highlightWidgetDimensions: Readonly<DimensionResults>;
 	}) => void;
 	onUnhighlight: () => void;
+	onPropertyChanged?: (changedProperty: ChangedPropertyValue) => void;
 }
 
 /**
@@ -72,13 +107,13 @@ export interface EditableProperties {
  *
  * 为在编辑器中集成的部件定义统一的接口。
  *
- * @property widget                部件基本信息以及放入页面后新增的信息
- * @property originalProperties    部件的常规属性
+ * 注意，部件的常规属性存储在 widget 属性中。
+ *
+ * @property widget                部件基本信息和属性信息，以及放入页面后新增的信息，如 id 和 parentId
  * @property extendProperties      部件的扩展属性，支持在设计器中交互
  */
 export interface EditableWidgetProperties extends WidgetProperties {
-	widget: InstWidget;
-	originalProperties: InstWidgetProperties;
+	widget: AttachedWidget;
 	extendProperties: EditableProperties;
 }
 
