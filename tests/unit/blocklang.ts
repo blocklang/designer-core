@@ -120,6 +120,7 @@ describe("blocklang", () => {
 		const key = {};
 		assert.isFalse(appWeakMap.has(key));
 		libraryWeakMap.set(key, "value1");
+		assert.isTrue(libraryWeakMap.has(key));
 		assert.isTrue(appWeakMap.has(key));
 	});
 });
