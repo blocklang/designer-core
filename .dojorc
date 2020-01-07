@@ -2,7 +2,8 @@
 	"build-widget": {
 		"widgets": [
 			"src/mixins/WidgetDesignable.ts",
-			"src/blocklang.ts"
+			"src/blocklang.ts",
+			"src/store.ts"
 		]
 	}
 }
