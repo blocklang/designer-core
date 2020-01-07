@@ -1,7 +1,9 @@
 import { PageData } from "./interfaces";
-import { findIndex } from "@dojo/framework/shim/array";
+import { findIndex, find } from "@dojo/framework/shim/array";
 
 /**
+ * 将 dataId 转换为 json path，两者指向同一个数据。
+ *
  * 遵循 Json Path 规范 https://goessner.net/articles/JsonPath/
  *
  * @param pageData   页面数据列表
@@ -57,4 +59,55 @@ export function convertDataIdToJsonPath(pageData: PageData[], dataId: string): s
 		}
 	});
 	return jsonPath;
+}
+
+/**
+ * 获取 dataId 对应的数据，根据 type 返回不同的数据类型。
+ *
+ * @param pageData   页面数据列表
+ * @param dataId     数据项标识
+ */
+export function getValue(pageData: PageData[], dataId: string): any {
+	if (dataId.trim() === "") {
+		return;
+	}
+	const currentDataItem = find(pageData, (item) => item.id === dataId);
+	if (!currentDataItem) {
+		return;
+	}
+
+	function _getObjectValue(dataItem: PageData) {
+		const result: any = {};
+		pageData
+			.filter((item) => item.parentId === dataItem.id)
+			.forEach((item) => {
+				result[item.name] = _getValue(item);
+			});
+		return result;
+	}
+
+	function _getArrayValue(dataItem: PageData) {
+		const result: any[] = [];
+		pageData
+			.filter((item) => item.parentId === dataItem.id)
+			.forEach((item) => {
+				result.push(_getValue(item));
+			});
+		return result;
+	}
+
+	function _getValue(dataItem: PageData) {
+		if (dataItem.type === "Number") {
+			return Number(dataItem.value);
+		} else if (dataItem.type === "Boolean") {
+			return Boolean(dataItem.value);
+		} else if (dataItem.type === "Object") {
+			return _getObjectValue(dataItem);
+		} else if (dataItem.type === "Array") {
+			return _getArrayValue(dataItem);
+		}
+		return dataItem.value;
+	}
+
+	return _getValue(currentDataItem);
 }
