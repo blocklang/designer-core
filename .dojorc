@@ -3,7 +3,8 @@
 		"widgets": [
 			"src/mixins/WidgetDesignable.ts",
 			"src/blocklang.ts",
-			"src/store.ts"
+			"src/store.ts",
+			"src/pageData.ts"
 		]
 	}
 }
