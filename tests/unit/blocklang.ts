@@ -14,6 +14,7 @@ describe("blocklang", () => {
 	afterEach(() => {
 		blocklang.clearExtensionComponents();
 		blocklang.clearWidgetInstanceMap();
+		blocklang.clearMiddlewares();
 	});
 
 	it("register widgets - repeat register", () => {
@@ -78,7 +79,6 @@ describe("blocklang", () => {
 
 	// 如果 _widget_instance_map 的值为 undefined，则先初始化为 {}
 	it("cacheWidgetInstanceMap: _widget_instance_map is undefined", () => {
-		global._widget_instance_map = undefined;
 		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
 		const libraryWeakMap = new WeakMap();
 		blocklang.cacheWidgetInstanceMap(gitUrlSegment, libraryWeakMap);
@@ -106,6 +106,7 @@ describe("blocklang", () => {
 		const key = {};
 		assert.isFalse(appWeakMap.has(key));
 		libraryWeakMap.set(key, "value1");
+		// 断言未监听到
 		assert.isFalse(appWeakMap.has(key));
 	});
 
@@ -122,5 +123,15 @@ describe("blocklang", () => {
 		libraryWeakMap.set(key, "value1");
 		assert.isTrue(libraryWeakMap.has(key));
 		assert.isTrue(appWeakMap.has(key));
+	});
+
+	it("registerDimensionsMiddleware", () => {
+		assert.isUndefined(blocklang.getDimensionsMiddleware());
+
+		blocklang.registerDimensionsMiddleware(undefined);
+		assert.isUndefined(blocklang.getDimensionsMiddleware());
+
+		blocklang.registerDimensionsMiddleware("a");
+		assert.equal(blocklang.getDimensionsMiddleware(), "a");
 	});
 });

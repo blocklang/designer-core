@@ -94,7 +94,7 @@ export function getRepoUrl(gitUrlSegment: GitUrlSegment): string {
  * 清空所有扩展组件
  */
 export function clearExtensionComponents(): void {
-	global._block_lang_widgets_ = {};
+	delete global._block_lang_widgets_;
 }
 
 /**
@@ -125,7 +125,7 @@ export function cacheWidgetInstanceMap(
  * 清空缓存的 widgetInstanceMap
  */
 export function clearWidgetInstanceMap(): void {
-	global._widget_instance_map = {};
+	delete global._widget_instance_map;
 }
 
 /**
@@ -151,4 +151,39 @@ export function watchingWidgetInstanceMap(widgetInstanceMap: WeakMap<WidgetBaseI
 			return this;
 		};
 	});
+}
+
+/**
+ * 将 page-designer 中的中间件注册到此处，供第三方的 ide 版的组件库使用
+ *
+ * 	因为基于函数的部件，将所有的部件都存在 page-designer 项目中的 widgetMetaMap 实例中了，
+ * 	而调用 node 中间件时依然从 ide-widget-bootstrap 等第三方项目的 widgetMetaMap 中查找部件，
+ * 	所以就永远返回 null，因此考虑将 page-designer 中的中间件传过来，直接使用 page-designer
+ * 	项目中的中间件，不使用 ide-widget-bootstrap 等第三方项目中的中间件。
+ *
+ * @param dimensions 在 page-designer 项目中 import 的 dimensions
+ */
+export function registerDimensionsMiddleware(dimensions: any) {
+	if (!global._middlewares_) {
+		global._middlewares_ = {};
+	}
+
+	global._middlewares_._dimensions_ = dimensions;
+}
+
+export function getDimensionsMiddleware(): any {
+	if (!global._middlewares_) {
+		console.warn("请先调用 registerDimensionsMiddleware 函数注册 dimensions。");
+		return;
+	}
+	const dimensions = global._middlewares_._dimensions_;
+	if (!dimensions) {
+		console.warn("请先调用 registerDimensionsMiddleware 函数注册 dimensions。");
+		return;
+	}
+	return dimensions;
+}
+
+export function clearMiddlewares() {
+	delete global._middlewares_;
 }

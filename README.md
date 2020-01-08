@@ -10,7 +10,7 @@
 npm install designer-core
 ```
 
-## `WidgetDesignable`
+## 基于类的部件
 
 `WidgetDesignable` 是 Widget 的 Mixin，将用户自定义部件扩展为可在设计器中使用的部件，即为部件添加以下交互功能：
 
@@ -106,6 +106,20 @@ npm install designer-core
    }
    ```
 
+## 基于函数的部件
+
+`ide` 中间件专用于为基于函数的部件添加在设计器中交互功能。在部件中添加 `ide` 中间件即可。
+
+```ts
+import ide from 'designer-core/middleware/ide';
+
+const factory = create({ ide }).properties<PageDataProperties>();
+
+export default factory(function PageDataIde({ properties, middleware: { ide } }){
+
+});
+```
+
 ## 设计器插件
 
 设计器插件是一种集成方式，用于将第三方的 Widget 或功能组件集成到页面设计器中。要在入口文件（通常是 `main.ts`）的**最后**调用 `blocklang.registerWidgets` 函数来注册部件。设计器插件要发布为 Webpack Library，然后通过动态添加 `script` 节点来加载插件，当插件加载完成后，会执行 `blocklang.registerWidgets` 函数。
@@ -186,3 +200,20 @@ import { widgetInstanceMap } from "@dojo/framework/core/vdom";
 
 blocklang.watchingWidgetInstanceMap(widgetInstanceMap);
 ```
+
+## 注册中间件
+
+以下内容专用于基于函数的部件。
+
+第三方组件库中直接引用 `@dojo/framework` 中的 `node` 和 `dimensions` 等中间件会无法获得 node 节点，因为第三方库中的 widget 都注册到 page-designer 项目中的 `widgetMetaMap` 对象中，而在第三方组件库中直接引用 `@dojo/framework` 中的 `node` 和 `dimensions` 等中间件时是从第三方库中的 `widgetMetaMap` 对象中查找部件，当然找不到了。所以此处需要将 page-designer 中的 `dimensions` 缓存到 `global` 对象中，然后在第三方库中使用此 `dimensions` 就可查找到部件。
+
+在 page-designer 的顶层部件中调用 `blocklang.registerDimensionsMiddleware(dimensions: any)` 函数来注册 `dimensions`：
+
+```ts
+import dimensions from "@dojo/framework/core/middleware/dimensions";
+import * as blocklang from "designer-core/blocklang";
+
+blocklang.registerDimensionsMiddleware(dimensions);
+```
+
+在 designer-core 项目中的 `ide` 中间件中调用 `blocklang.getDimensionsMiddleware()` 函数来获取缓存的 `dimensions`。
