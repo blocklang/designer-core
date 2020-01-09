@@ -14,11 +14,10 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 
 	function setActiveWidgetId(): void {
 		const {
-			widget,
+			widget: { id: activeWidgetId },
 			extendProperties: { onFocusing }
 		} = properties();
 
-		const activeWidgetId = widget.id;
 		onFocusing(activeWidgetId);
 	}
 
@@ -35,11 +34,11 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 
 	function removeHighlight(): void {
 		const {
-			widget,
+			widget: { parentId },
 			extendProperties: { onUnhighlight }
 		} = properties();
 
-		if (widget.parentId === ROOT_WIDGET_PARENT_ID) {
+		if (parentId === ROOT_WIDGET_PARENT_ID) {
 			// 移除高亮效果
 			onUnhighlight();
 		}
@@ -88,11 +87,11 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 					setActiveWidgetId();
 				},
 				onmouseover: (event: MouseEvent) => {
+					event.stopImmediatePropagation();
 					if (!_nodeKey) {
 						console.warn("请先调用 setKey() 函数设置 node 的 key 值");
 						return;
 					}
-					event.stopImmediatePropagation();
 					addHighlight(_nodeKey);
 				},
 				onmouseout: (event: MouseEvent) => {
@@ -111,6 +110,11 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 			}
 		},
 		changePropertyValue(value: string) {
+			if (_canEditingPropertyIndex === -1) {
+				console.warn("未配置要编辑的属性名称");
+				return;
+			}
+
 			const {
 				extendProperties: { onPropertyChanged }
 			} = properties();
