@@ -4,7 +4,8 @@
 			"src/mixins/WidgetDesignable.ts",
 			"src/store.ts",
 			"src/pageData.ts",
-			"src/middleware/ide.ts"
+			"src/middleware/ide.ts",
+			"src/testing/mocks/middleware/ide.ts"
 		]
 	}
 }
