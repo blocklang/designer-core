@@ -2,11 +2,45 @@ import { create } from "@dojo/framework/core/vdom";
 import dimensions from "@dojo/framework/core/middleware/dimensions";
 import { EditableWidgetProperties, AttachedWidgetProperty } from "../../../interfaces";
 import { findIndex } from "@dojo/framework/shim/array";
+import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
 
 const factory = create({ dimensions }).properties<EditableWidgetProperties>();
 
+const defaultDimensions = {
+	client: {
+		height: 0,
+		left: 0,
+		top: 0,
+		width: 0
+	},
+	offset: {
+		height: 0,
+		left: 0,
+		top: 0,
+		width: 0
+	},
+	position: {
+		bottom: 0,
+		left: 0,
+		right: 0,
+		top: 0
+	},
+	scroll: {
+		height: 0,
+		left: 0,
+		top: 0,
+		width: 0
+	},
+	size: {
+		width: 0,
+		height: 0
+	}
+};
+
 export function createMockIdeMiddleware() {
-	const mockIdeFactory = factory(({ properties, middleware: { dimensions } }) => {
+	let _dimensionsResult: { [key: string]: DimensionResults } = {};
+
+	const mockIdeFactory = factory(({ properties, middleware }) => {
 		let _nodeKey = "";
 		let _canEditingPropertyIndex: number = -1;
 
@@ -26,7 +60,7 @@ export function createMockIdeMiddleware() {
 				extendProperties: { onHighlight }
 			} = properties();
 
-			const highlightWidgetDimensions = dimensions.get(key);
+			const highlightWidgetDimensions = _dimensionsResult[key] || defaultDimensions;
 			// 添加高亮效果
 			onHighlight({ highlightWidgetId, highlightWidgetDimensions });
 		}
@@ -56,7 +90,7 @@ export function createMockIdeMiddleware() {
 				extendProperties: { onFocused }
 			} = properties();
 
-			const activeWidgetDimensions = dimensions.get(key);
+			const activeWidgetDimensions = _dimensionsResult[key] || defaultDimensions;
 			onFocused(activeWidgetDimensions);
 		}
 
@@ -123,8 +157,14 @@ export function createMockIdeMiddleware() {
 		};
 	});
 
-	function mockIde() {
-		return mockIdeFactory();
+	function mockIde(): any; // TODO: 升级到 7.0 之后，类型调整为 DefaultMiddlewareResult
+	function mockIde(key: string, dimensionResults: DimensionResults): void;
+	function mockIde(key?: string, dimensionResults?: DimensionResults): void | any {
+		if (key) {
+			_dimensionsResult[key] = dimensionResults || defaultDimensions;
+		} else {
+			return mockIdeFactory();
+		}
 	}
 
 	return mockIde;
