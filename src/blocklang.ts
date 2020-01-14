@@ -2,6 +2,7 @@ import global from "@dojo/framework/shim/global";
 import { ExtensionWidgetMap, GitUrlSegment, PropertyLayout } from "./interfaces";
 import { WidgetBaseInterface } from "@dojo/framework/core/interfaces";
 import { WidgetData } from "@dojo/framework/core/vdom";
+import dimensions from "@dojo/framework/core/middleware/dimensions";
 
 /**
  * 注册第三方 UI 组件库中的 Widget
@@ -171,17 +172,26 @@ export function registerDimensionsMiddleware(dimensions: any) {
 	global._middlewares_._dimensions_ = dimensions;
 }
 
+/**
+ * 返回 dimensions 中间件。
+ *
+ * 此方法主要用于插件开发，通过使用 registerDimensionsMiddleware 注册的 middleware，可以让第三方插件使用主程序中的 dimensions 插件。
+ *
+ * 注意：之所以需要返回默认的 dimesions，是因为如果 ide 中间件不用于插件开发时，没有办法获取到 dimensions 中间件。
+ *
+ * @returns 如果注册了 dimensions，就返回注册的 dimensions 中间件；否则返回直接 import 的 dimensions 中间件。
+ */
 export function getDimensionsMiddleware(): any {
 	if (!global._middlewares_) {
-		console.warn("请先调用 registerDimensionsMiddleware 函数注册 dimensions。");
-		return;
+		console.warn("因为没有使用 registerDimensionsMiddleware 函数注册 dimensions，所以使用默认的 dimensions。");
+		return dimensions;
 	}
-	const dimensions = global._middlewares_._dimensions_;
-	if (!dimensions) {
-		console.warn("请先调用 registerDimensionsMiddleware 函数注册 dimensions。");
-		return;
+	const dimensionsMiddleware = global._middlewares_._dimensions_;
+	if (!dimensionsMiddleware) {
+		console.warn("因为没有使用 registerDimensionsMiddleware 函数注册 dimensions，所以使用默认的 dimensions。");
+		return dimensions;
 	}
-	return dimensions;
+	return dimensionsMiddleware;
 }
 
 export function clearMiddlewares() {
