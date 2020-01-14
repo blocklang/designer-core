@@ -4,7 +4,7 @@ import ideMiddleware from "../../../src/middleware/ide";
 import { stub } from "sinon";
 
 const dimensionsStub = {
-	get: stub()
+	get: stub().returns({ offset: { top: 1, left: 2 }, size: { height: 3, width: 4 } })
 };
 
 describe("middleware/ide", () => {
@@ -212,5 +212,47 @@ describe("middleware/ide", () => {
 
 		ide.changePropertyValue("a");
 		assert.isTrue(onPropertyChangedStub.calledOnce);
+	});
+
+	it("getFocusNodeOffset: not focused", () => {
+		const onPropertyChangedStub = stub();
+		const { callback } = ideMiddleware();
+		const ide = callback({
+			id: "test",
+			middleware: {
+				dimensions: dimensionsStub
+			},
+			properties: () => ({
+				widget: { properties: [{ name: "prop1" }] },
+				extendProperties: { onPropertyChanged: onPropertyChangedStub }
+			}),
+			children: () => []
+		});
+
+		ide.config("key", "prop1");
+		const offset = ide.getFocusNodeOffset();
+		assert.deepEqual(offset, { top: 0, left: 0, height: 0, width: 0 });
+	});
+
+	it("getFocusNodeOffset: focused", () => {
+		const onFocusedStub = stub();
+		const { callback } = ideMiddleware();
+		const ide = callback({
+			id: "test",
+			middleware: {
+				dimensions: dimensionsStub
+			},
+			properties: () => ({
+				widget: { properties: [{ name: "prop1" }] },
+				extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
+			}),
+			children: () => []
+		});
+
+		ide.config("key", "prop1");
+		ide.tryFocus();
+
+		const offset = ide.getFocusNodeOffset();
+		assert.deepEqual(offset, { top: 1, left: 2, height: 3, width: 4 });
 	});
 });
