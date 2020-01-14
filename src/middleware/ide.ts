@@ -75,12 +75,50 @@ export const ide = factory(({ properties, middleware: { dimensions } }) => {
 	}
 
 	return {
+		/**
+		 * 用于初始化配置。必须调用。
+		 *
+		 * 在基于函数的部件的最上面调用以下代码：
+		 *
+		 * ```ts
+		 * ide.config("root");
+		 * ide.tryFocus();
+		 * ```
+		 *
+		 * @param key                    节点的 key 值，需要根据此节点丈量当前部件的位置和尺寸。
+		 * @param editingPropertyName    如果要直接在部件中编辑某个属性，通过此属性指定属性名。
+		 */
 		config(key: string, editingPropertyName?: string) {
 			_nodeKey = key;
 			if (editingPropertyName) {
 				_canEditingPropertyIndex = getEditingPropertyIndex(editingPropertyName);
 			}
 		},
+
+		/**
+		 * 如果部件当前获取焦点，则测量该部件的位置和尺寸，并向父部件发出通知。
+		 *
+		 * * 在基于函数的部件的最上面调用以下代码：
+		 *
+		 * ```ts
+		 * ide.config("root");
+		 * ide.tryFocus();
+		 * ```
+		 *
+		 */
+		tryFocus() {
+			if (shouldFocus()) {
+				if (!_nodeKey) {
+					console.warn("请先调用 setKey() 函数设置 node 的 key 值");
+					return;
+				}
+				measureActiveWidget(_nodeKey);
+			}
+		},
+
+		/**
+		 * 获取为当前部件上绑定的 ide 相关的事件，分别为 `onmouseup`、`onmouseover` 和 `onmouseout`。
+		 */
 		activeWidgetEvents() {
 			return {
 				onmouseup: (event: MouseEvent) => {
@@ -101,15 +139,12 @@ export const ide = factory(({ properties, middleware: { dimensions } }) => {
 				}
 			};
 		},
-		tryFocus() {
-			if (shouldFocus()) {
-				if (!_nodeKey) {
-					console.warn("请先调用 setKey() 函数设置 node 的 key 值");
-					return;
-				}
-				measureActiveWidget(_nodeKey);
-			}
-		},
+
+		/**
+		 * 仅用于需要在部件中编辑某个属性值时。用于监听对应属性值的变化，并发出通知。
+		 *
+		 * @param value 当前属性的值
+		 */
 		changePropertyValue(value: string) {
 			if (_canEditingPropertyIndex === -1) {
 				console.warn("未配置要编辑的属性名称");
@@ -127,7 +162,12 @@ export const ide = factory(({ properties, middleware: { dimensions } }) => {
 				isExpr: false
 			});
 		},
-		// 是否需要添加遮盖层与当前部件是否获取焦点无关，只与部件的本身需要有关。
+
+		/**
+		 * 仅用于需要往部件上添加 Overlay 时，用于设置 Overlay 的位置和尺寸。
+		 *
+		 * 注意：是否需要添加遮盖层与当前部件是否获取焦点无关，只与部件的本身需要有关。
+		 */
 		getFocusNodeOffset(): TopLeft & Size {
 			const activeWidgetDimensions = dimensions.get(_nodeKey);
 			// 注意，聚焦框和高亮框的 top 算法考虑了滚动条，而此处没有考虑。
