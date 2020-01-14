@@ -9,7 +9,7 @@ const dimensions = blocklang.getDimensionsMiddleware();
 
 const factory = create({ dimensions }).properties<EditableWidgetProperties>();
 
-export const ideMiddleware = factory(({ properties, middleware: { dimensions } }) => {
+export const ide = factory(({ properties, middleware: { dimensions } }) => {
 	let _nodeKey: string;
 	let _canEditingPropertyIndex: number = -1;
 
@@ -142,4 +142,4 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 	};
 });
 
-export default ideMiddleware;
+export default ide;
