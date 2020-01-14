@@ -2,7 +2,7 @@ import { create } from "@dojo/framework/core/vdom";
 import { EditableWidgetProperties, AttachedWidgetProperty } from "../interfaces";
 import * as blocklang from "../blocklang";
 import { findIndex } from "@dojo/framework/shim/array";
-import { TopLeft, Size, DimensionResults } from "@dojo/framework/core/meta/Dimensions";
+import { TopLeft, Size } from "@dojo/framework/core/meta/Dimensions";
 
 const ROOT_WIDGET_PARENT_ID = "-1";
 const dimensions = blocklang.getDimensionsMiddleware();
@@ -12,7 +12,6 @@ const factory = create({ dimensions }).properties<EditableWidgetProperties>();
 export const ideMiddleware = factory(({ properties, middleware: { dimensions } }) => {
 	let _nodeKey: string;
 	let _canEditingPropertyIndex: number = -1;
-	let _activeWidgetDimensions: DimensionResults;
 
 	function setActiveWidgetId(): void {
 		const {
@@ -60,8 +59,8 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 			extendProperties: { onFocused }
 		} = properties();
 
-		_activeWidgetDimensions = dimensions.get(key);
-		onFocused(_activeWidgetDimensions);
+		const activeWidgetDimensions = dimensions.get(key);
+		onFocused(activeWidgetDimensions);
 	}
 
 	function getEditingPropertyIndex(propertyName: string) {
@@ -128,18 +127,16 @@ export const ideMiddleware = factory(({ properties, middleware: { dimensions } }
 				isExpr: false
 			});
 		},
+		// 是否需要添加遮盖层与当前部件是否获取焦点无关，只与部件的本身需要有关。
 		getFocusNodeOffset(): TopLeft & Size {
-			if (!_activeWidgetDimensions) {
-				console.warn("请先调用 tryFocus 方法让部件获取焦点");
-				return { top: 0, left: 0, height: 0, width: 0 };
-			}
+			const activeWidgetDimensions = dimensions.get(_nodeKey);
 			// 注意，聚焦框和高亮框的 top 算法考虑了滚动条，而此处没有考虑。
 			// 如果此处也需要考虑滚动条，则将 page_designer 项目中的 calculateOffset 函数移到此项目中
 			return {
-				top: _activeWidgetDimensions.offset.top,
-				left: _activeWidgetDimensions.offset.left,
-				height: _activeWidgetDimensions.size.height,
-				width: _activeWidgetDimensions.size.width
+				top: activeWidgetDimensions.offset.top,
+				left: activeWidgetDimensions.offset.left,
+				height: activeWidgetDimensions.size.height,
+				width: activeWidgetDimensions.size.width
 			};
 		}
 	};

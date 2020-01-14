@@ -43,7 +43,6 @@ export function createMockIdeMiddleware() {
 	const mockIdeFactory = factory(({ properties, middleware }) => {
 		let _nodeKey = "";
 		let _canEditingPropertyIndex: number = -1;
-		let _activeWidgetDimensions: DimensionResults;
 
 		function setActiveWidgetId(): void {
 			const {
@@ -91,8 +90,8 @@ export function createMockIdeMiddleware() {
 				extendProperties: { onFocused }
 			} = properties();
 
-			_activeWidgetDimensions = _dimensionsResult[key] || defaultDimensions;
-			onFocused(_activeWidgetDimensions);
+			const activeWidgetDimensions = _dimensionsResult[key] || defaultDimensions;
+			onFocused(activeWidgetDimensions);
 		}
 
 		function getEditingPropertyIndex(propertyName: string) {
@@ -156,11 +155,12 @@ export function createMockIdeMiddleware() {
 					});
 			},
 			getFocusNodeOffset() {
+				const activeWidgetDimensions = _dimensionsResult[_nodeKey] || defaultDimensions;
 				return {
-					top: _activeWidgetDimensions.offset.top,
-					left: _activeWidgetDimensions.offset.left,
-					height: _activeWidgetDimensions.size.height,
-					width: _activeWidgetDimensions.size.width
+					top: activeWidgetDimensions.offset.top,
+					left: activeWidgetDimensions.offset.left,
+					height: activeWidgetDimensions.size.height,
+					width: activeWidgetDimensions.size.width
 				};
 			}
 		};

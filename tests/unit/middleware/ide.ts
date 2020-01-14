@@ -231,7 +231,8 @@ describe("middleware/ide", () => {
 
 		ide.config("key", "prop1");
 		const offset = ide.getFocusNodeOffset();
-		assert.deepEqual(offset, { top: 0, left: 0, height: 0, width: 0 });
+		// 是否需要添加遮盖层与当前部件是否获取焦点无关，只与部件的本身需要有关。
+		assert.deepEqual(offset, { top: 1, left: 2, height: 3, width: 4 });
 	});
 
 	it("getFocusNodeOffset: focused", () => {
