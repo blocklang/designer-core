@@ -1,8 +1,9 @@
-import { create } from "@dojo/framework/core/vdom";
+import { create, v } from "@dojo/framework/core/vdom";
 import dimensions from "@dojo/framework/core/middleware/dimensions";
 import { EditableWidgetProperties, AttachedWidgetProperty } from "../../../interfaces";
 import { findIndex } from "@dojo/framework/shim/array";
 import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
+import { VNode } from "@dojo/framework/core/interfaces";
 
 const factory = create({ dimensions }).properties<EditableWidgetProperties>();
 
@@ -132,14 +133,20 @@ export function createMockIdeMiddleware() {
 					}
 				};
 			},
-			tryFocus() {
-				if (shouldFocus()) {
-					if (!_nodeKey) {
-						console.warn("请先调用 setKey() 函数设置 node 的 key 值");
-						return;
-					}
-					measureActiveWidget(_nodeKey);
+			alwaysRenderActiveWidget(): VNode | undefined {
+				if (!shouldFocus()) {
+					return;
 				}
+				if (!_nodeKey) {
+					console.warn("请先调用 config() 函数设置 node 的 key 值");
+					return;
+				}
+
+				return v("span", (inserted: boolean) => {
+					measureActiveWidget(_nodeKey);
+					// 如果是系统内使用的字符串，则在字符串的前后分别增加两个 '_'
+					return { key: "__alwaysRenderFocusBox__" };
+				});
 			},
 			changePropertyValue(value: string) {
 				const {
@@ -162,6 +169,10 @@ export function createMockIdeMiddleware() {
 					height: activeWidgetDimensions.size.height,
 					width: activeWidgetDimensions.size.width
 				};
+			},
+			cache(key: string, value: any) {},
+			getFromCache(key: string, defaultValue: any) {
+				return defaultValue;
 			}
 		};
 	});

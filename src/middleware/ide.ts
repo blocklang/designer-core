@@ -1,15 +1,17 @@
-import { create } from "@dojo/framework/core/vdom";
+import { create, v } from "@dojo/framework/core/vdom";
 import { EditableWidgetProperties, AttachedWidgetProperty } from "../interfaces";
 import * as blocklang from "../blocklang";
 import { findIndex } from "@dojo/framework/shim/array";
 import { TopLeft, Size } from "@dojo/framework/core/meta/Dimensions";
+import { VNode } from "@dojo/framework/core/interfaces";
 
 const ROOT_WIDGET_PARENT_ID = "-1";
 const dimensions = blocklang.getDimensionsMiddleware();
+const icache = blocklang.getICacheMiddleware();
 
-const factory = create({ dimensions }).properties<EditableWidgetProperties>();
+const factory = create({ dimensions, icache }).properties<EditableWidgetProperties>();
 
-export const ide = factory(({ properties, middleware: { dimensions } }) => {
+export const ide = factory(({ properties, middleware: { dimensions, icache } }) => {
 	let _nodeKey: string;
 	let _canEditingPropertyIndex: number = -1;
 
@@ -96,24 +98,26 @@ export const ide = factory(({ properties, middleware: { dimensions } }) => {
 		},
 
 		/**
+		 * 永远重新渲染激活的部件。
+		 *
 		 * 如果部件当前获取焦点，则测量该部件的位置和尺寸，并向父部件发出通知。
 		 *
-		 * * 在基于函数的部件的最上面调用以下代码：
-		 *
-		 * ```ts
-		 * ide.config("root");
-		 * ide.tryFocus();
-		 * ```
-		 *
+		 * @returns 返回 DNode 节点或者 undefined
 		 */
-		tryFocus() {
-			if (shouldFocus()) {
-				if (!_nodeKey) {
-					console.warn("请先调用 setKey() 函数设置 node 的 key 值");
-					return;
-				}
-				measureActiveWidget(_nodeKey);
+		alwaysRenderActiveWidget(): VNode | undefined {
+			if (!shouldFocus()) {
+				return;
 			}
+			if (!_nodeKey) {
+				console.warn("请先调用 config() 函数设置 node 的 key 值");
+				return;
+			}
+
+			return v("span", (inserted: boolean) => {
+				measureActiveWidget(_nodeKey);
+				// 如果是系统内使用的字符串，则在字符串的前后分别增加两个 '_'
+				return { key: "__alwaysRenderFocusBox__" };
+			});
 		},
 
 		/**
@@ -178,6 +182,14 @@ export const ide = factory(({ properties, middleware: { dimensions } }) => {
 				height: activeWidgetDimensions.size.height,
 				width: activeWidgetDimensions.size.width
 			};
+		},
+
+		cache(key: string, value: any) {
+			icache.set(key, value);
+		},
+
+		getFromCache(key: string, defaultValue: any) {
+			return icache.getOrSet(key, defaultValue);
 		}
 	};
 });
