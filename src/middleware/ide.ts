@@ -100,6 +100,8 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 		/**
 		 * 永远重新渲染激活的部件。
 		 *
+		 * 注意，目前不支持 tsx，只支持 HyperScript。约定放在所有节点之后。
+		 *
 		 * 如果部件当前获取焦点，则测量该部件的位置和尺寸，并向父部件发出通知。
 		 *
 		 * @returns 返回 DNode 节点或者 undefined
