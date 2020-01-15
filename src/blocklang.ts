@@ -3,6 +3,7 @@ import { ExtensionWidgetMap, GitUrlSegment, PropertyLayout } from "./interfaces"
 import { WidgetBaseInterface } from "@dojo/framework/core/interfaces";
 import { WidgetData } from "@dojo/framework/core/vdom";
 import dimensions from "@dojo/framework/core/middleware/dimensions";
+import icache from "@dojo/framework/core/middleware/icache";
 
 /**
  * 注册第三方 UI 组件库中的 Widget
@@ -192,6 +193,27 @@ export function getDimensionsMiddleware(): any {
 		return dimensions;
 	}
 	return dimensionsMiddleware;
+}
+
+export function registerICacheMiddleware(icache: any) {
+	if (!global._middlewares_) {
+		global._middlewares_ = {};
+	}
+
+	global._middlewares_._icache_ = icache;
+}
+
+export function getICacheMiddleware(): any {
+	if (!global._middlewares_) {
+		console.warn("因为没有使用 registerICacheMiddleware 函数注册 icache，所以使用默认的 icache。");
+		return icache;
+	}
+	const icacheMiddleware = global._middlewares_._icache_;
+	if (!icacheMiddleware) {
+		console.warn("因为没有使用 registerICacheMiddleware 函数注册 icache，所以使用默认的 icache。");
+		return icache;
+	}
+	return icacheMiddleware;
 }
 
 export function clearMiddlewares() {
