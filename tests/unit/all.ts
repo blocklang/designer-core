@@ -1,6 +1,6 @@
 import "./blocklang";
 import "./mixins/WidgetDesignable";
 import "./widgets/overlay";
-import "./pageData";
+import "./pageDataUtil";
 import "./middleware/ide";
 import "./testing/mocks/middleware/ide";

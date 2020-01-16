@@ -1,10 +1,10 @@
-import { convertDataIdToJsonPath, getValue } from "../../src/pageData";
+import { convertDataIdToJsonPath, getValue } from "../../src/pageDataUtil";
 import { PageData } from "../../src/interfaces";
 
 const { describe, it } = intern.getInterface("bdd");
 const { assert } = intern.getPlugin("chai");
 
-describe("pageData", () => {
+describe("pageDataUtil", () => {
 	it("convertDataIdToJsonPath: dataId is empty", () => {
 		const pageData: PageData[] = [
 			{
