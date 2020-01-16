@@ -1,9 +1,9 @@
 import { create, v } from "@dojo/framework/core/vdom";
-import { EditableWidgetProperties, AttachedWidgetProperty } from "../interfaces";
-import * as blocklang from "../blocklang";
 import { findIndex } from "@dojo/framework/shim/array";
 import { TopLeft, Size } from "@dojo/framework/core/meta/Dimensions";
 import { VNode } from "@dojo/framework/core/interfaces";
+import * as blocklang from "../blocklang";
+import { EditableWidgetProperties, AttachedWidgetProperty } from "../interfaces";
 
 const ROOT_WIDGET_PARENT_ID = "-1";
 const dimensions = blocklang.getDimensionsMiddleware();
