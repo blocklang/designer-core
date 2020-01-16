@@ -32,6 +32,27 @@ describe("pageDataUtil", () => {
 		assert.equal(convertDataIdToJsonPath(pageData, "1"), "");
 	});
 
+	it("convertDataIdToJsonPath: pageData is not empty, but dataId can not match any data", () => {
+		const pageData: PageData[] = [
+			{
+				id: "1",
+				parentId: "-1",
+				name: "$",
+				type: "Object",
+				open: true
+			},
+			{
+				id: "2",
+				parentId: "1",
+				name: "foo",
+				type: "String",
+				value: "a",
+				open: true
+			}
+		];
+		assert.equal(convertDataIdToJsonPath(pageData, "3"), "");
+	});
+
 	it("convertDataIdToJsonPath: result is $.foo", () => {
 		// 约定 data 的根节点的 name 为 $
 		const pageData: PageData[] = [
