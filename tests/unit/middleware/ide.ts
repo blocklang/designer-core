@@ -7,13 +7,16 @@ const dimensionsStub = {
 	get: stub().returns({ offset: { top: 1, left: 2 }, size: { height: 3, width: 4 } })
 };
 
+const icacheStub = stub();
+
 describe("middleware/ide", () => {
 	it("activeWidgetEvents", () => {
 		const { callback } = ideMiddleware();
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({}),
 			children: () => []
@@ -27,7 +30,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({ widget: { id: "1" }, extendProperties: { onFocusing: onFocusingStub } }),
 			children: () => []
@@ -42,7 +46,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({ widget: { id: "1" }, extendProperties: { onHighlight: onHighlightStub } }),
 			children: () => []
@@ -57,7 +62,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({ widget: { id: "1" }, extendProperties: { onHighlight: onHighlightStub } }),
 			children: () => []
@@ -73,7 +79,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { parentId: "1" /* not -1*/ },
@@ -92,7 +99,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({ widget: { parentId: "-1" }, extendProperties: { onUnhighlight: onUnhighlightStub } }),
 			children: () => []
@@ -108,7 +116,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { id: "1" },
@@ -126,7 +135,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { id: "1" },
@@ -144,7 +154,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { id: "1" },
@@ -163,7 +174,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({ extendProperties: { onPropertyChanged: onPropertyChangedStub } }),
 			children: () => []
@@ -178,7 +190,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },
@@ -199,7 +212,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },
@@ -220,7 +234,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },
@@ -241,7 +256,8 @@ describe("middleware/ide", () => {
 		const ide = callback({
 			id: "test",
 			middleware: {
-				dimensions: dimensionsStub
+				dimensions: dimensionsStub,
+				icache: icacheStub
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },

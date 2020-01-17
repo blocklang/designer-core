@@ -1,4 +1,4 @@
-import { PageData } from "./interfaces";
+import { PageDataItem } from "./interfaces";
 import { findIndex, find } from "@dojo/framework/shim/array";
 
 /**
@@ -9,7 +9,7 @@ import { findIndex, find } from "@dojo/framework/shim/array";
  * @param pageData   页面数据列表
  * @param dataId     数据项标识
  */
-export function convertDataIdToJsonPath(pageData: PageData[], dataId: string): string {
+export function convertDataIdToJsonPath(pageData: PageDataItem[], dataId: string): string {
 	if (dataId.trim() === "") {
 		return "";
 	}
@@ -23,9 +23,9 @@ export function convertDataIdToJsonPath(pageData: PageData[], dataId: string): s
 	const currentDataItem = pageData[currentDataIndex];
 	const currentDataId = currentDataItem.id;
 	let parentId = currentDataItem.parentId;
-	const dataPath: PageData[] = pageData
+	const dataPath: PageDataItem[] = pageData
 		.slice(0, currentDataIndex + 1)
-		.reduceRight((previousValue: PageData[], currentValue: PageData) => {
+		.reduceRight((previousValue: PageDataItem[], currentValue: PageDataItem) => {
 			if (currentValue.id === currentDataId) {
 				previousValue.push(currentValue);
 			} else if (currentValue.id === parentId) {
@@ -67,7 +67,7 @@ export function convertDataIdToJsonPath(pageData: PageData[], dataId: string): s
  * @param pageData   页面数据列表
  * @param dataId     数据项标识
  */
-export function getValue(pageData: PageData[], dataId: string): any {
+export function getValue(pageData: PageDataItem[], dataId: string): any {
 	if (dataId.trim() === "") {
 		return;
 	}
@@ -76,7 +76,7 @@ export function getValue(pageData: PageData[], dataId: string): any {
 		return;
 	}
 
-	function _getObjectValue(dataItem: PageData) {
+	function _getObjectValue(dataItem: PageDataItem) {
 		const result: any = {};
 		pageData
 			.filter((item) => item.parentId === dataItem.id)
@@ -86,7 +86,7 @@ export function getValue(pageData: PageData[], dataId: string): any {
 		return result;
 	}
 
-	function _getArrayValue(dataItem: PageData) {
+	function _getArrayValue(dataItem: PageDataItem) {
 		const result: any[] = [];
 		pageData
 			.filter((item) => item.parentId === dataItem.id)
@@ -96,7 +96,7 @@ export function getValue(pageData: PageData[], dataId: string): any {
 		return result;
 	}
 
-	function _getValue(dataItem: PageData) {
+	function _getValue(dataItem: PageDataItem) {
 		if (dataItem.type === "Number") {
 			return Number(dataItem.value);
 		} else if (dataItem.type === "Boolean") {

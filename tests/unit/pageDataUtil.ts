@@ -1,12 +1,12 @@
 import { convertDataIdToJsonPath, getValue } from "../../src/pageDataUtil";
-import { PageData } from "../../src/interfaces";
+import { PageDataItem } from "../../src/interfaces";
 
 const { describe, it } = intern.getInterface("bdd");
 const { assert } = intern.getPlugin("chai");
 
 describe("pageDataUtil", () => {
 	it("convertDataIdToJsonPath: dataId is empty", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -28,12 +28,12 @@ describe("pageDataUtil", () => {
 	});
 
 	it("convertDataIdToJsonPath: pageData is empty", () => {
-		const pageData: PageData[] = [];
+		const pageData: PageDataItem[] = [];
 		assert.equal(convertDataIdToJsonPath(pageData, "1"), "");
 	});
 
 	it("convertDataIdToJsonPath: pageData is not empty, but dataId can not match any data", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -55,7 +55,7 @@ describe("pageDataUtil", () => {
 
 	it("convertDataIdToJsonPath: result is $.foo", () => {
 		// 约定 data 的根节点的 name 为 $
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -76,7 +76,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("convertDataIdToJsonPath: result is $.foo.bar", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -104,7 +104,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("convertDataIdToJsonPath: result is $.foo[0]", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -132,7 +132,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("convertDataIdToJsonPath: result is $.foo[1]", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -168,7 +168,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("convertDataIdToJsonPath: result is $.foo.bar[0] or $.foo.bar[1]", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -213,13 +213,13 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: undefined", () => {
-		const pageData: PageData[] = [];
+		const pageData: PageDataItem[] = [];
 		assert.isUndefined(getValue(pageData, ""));
 		assert.isUndefined(getValue(pageData, "1"));
 	});
 
 	it("getValue: string value", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -240,7 +240,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: number value", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -261,7 +261,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: boolean value", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -282,7 +282,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: object value {foo: 'bar'}", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -303,7 +303,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: object value {foo: 'a', bar: 'b'}", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -332,7 +332,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: object value {foo: {bar: 'a'}}", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -360,7 +360,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: array value ['a', 'b']", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -397,7 +397,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: array value [{foo:'bar'}]", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",
@@ -433,7 +433,7 @@ describe("pageDataUtil", () => {
 	});
 
 	it("getValue: array value [{a:'1'}, {b:[{c:'2'}]}]", () => {
-		const pageData: PageData[] = [
+		const pageData: PageDataItem[] = [
 			{
 				id: "1",
 				parentId: "-1",

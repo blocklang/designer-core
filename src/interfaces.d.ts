@@ -324,13 +324,15 @@ export interface ComponentRepo {
 export interface PageModel {
 	pageId: number;
 	widgets: AttachedWidget[];
-	data: PageData[];
+	data: PageDataItem[];
 }
 
-export type PageDataValueType = "String" | "Number" | "Date" | "Boolean" | "Object" | "Array";
+export type PageDataItemValueType = "String" | "Number" | "Date" | "Boolean" | "Object" | "Array";
 
 /**
- * 页面数据
+ * 页面数据项。
+ *
+ * 页面数据是由多条有父子关系的数据项组成。
  *
  * @property id         页面数据标识
  * @property parentId   数据项的父标识
@@ -339,12 +341,12 @@ export type PageDataValueType = "String" | "Number" | "Date" | "Boolean" | "Obje
  * @property type       变量值的类型
  * @property open       如果包含子数据项，是否展开，默认为不展开
  */
-export interface PageData {
+export interface PageDataItem {
 	id: string;
 	parentId: string;
 	name: string;
 	value?: string;
-	type: PageDataValueType;
+	type: PageDataItemValueType;
 	open: boolean;
 }
 
