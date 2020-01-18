@@ -1,4 +1,4 @@
-import { PageDataItem } from "./interfaces";
+import { PageDataItem } from "../interfaces";
 import { findIndex, find } from "@dojo/framework/shim/array";
 
 /**
