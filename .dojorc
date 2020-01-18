@@ -3,11 +3,12 @@
 		"widgets": [
 			"src/mixins/WidgetDesignable.ts",
 			"src/store.ts",
-			"src/pageDataUtil.ts",
 			"src/blocklang.ts",
 			"src/testing/mocks/middleware/ide.ts",
 			"src/middleware/ide.ts",
 			"src/middleware/pageData.ts",
+			"src/utils/pageDataUtil.ts",
+			"src/utils/treeUtil.ts",
 			"src/_build.ts"
 		]
 	}
