@@ -4,6 +4,7 @@ import { WidgetBaseInterface } from "@dojo/framework/core/interfaces";
 import { WidgetData } from "@dojo/framework/core/vdom";
 import dimensions from "@dojo/framework/core/middleware/dimensions";
 import icache from "@dojo/framework/core/middleware/icache";
+import store from "./store";
 
 /**
  * 注册第三方 UI 组件库中的 Widget
@@ -214,6 +215,27 @@ export function getICacheMiddleware(): any {
 		return icache;
 	}
 	return icacheMiddleware;
+}
+
+export function registerStoreMiddleware(store: any) {
+	if (!global._middlewares_) {
+		global._middlewares_ = {};
+	}
+
+	global._middlewares_._store_ = store;
+}
+
+export function getStoreMiddleware(): any {
+	if (!global._middlewares_) {
+		console.warn("因为没有使用 registerICacheMiddleware 函数注册 store，所以使用默认的 store。");
+		return store;
+	}
+	const storeMiddleware = global._middlewares_._store_;
+	if (!storeMiddleware) {
+		console.warn("因为没有使用 registerICacheMiddleware 函数注册 store，所以使用默认的 store。");
+		return store;
+	}
+	return storeMiddleware;
 }
 
 export function clearMiddlewares() {

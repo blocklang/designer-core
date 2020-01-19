@@ -1,7 +1,8 @@
 import { create } from "@dojo/framework/core/vdom";
-import store from "../store";
 import { PageDataItem } from "../interfaces";
+import * as blocklang from "../blocklang";
 
+const store = blocklang.getStoreMiddleware();
 const factory = create({ store });
 
 export default factory(function pageData({ middleware: { store } }) {
