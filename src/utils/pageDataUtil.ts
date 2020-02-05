@@ -66,6 +66,7 @@ export function convertDataIdToJsonPath(pageData: PageDataItem[], dataId: string
  *
  * @param pageData   页面数据列表
  * @param dataId     数据项标识
+ * @returns          如果 dataId 为空字符串，或者在 pageData 中不存在指定的 dataId，则返回 undefined；否则返回对应的值
  */
 export function getValue(pageData: PageDataItem[], dataId: string): any {
 	if (dataId.trim() === "") {
