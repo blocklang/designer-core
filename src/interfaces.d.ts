@@ -203,16 +203,20 @@ interface ChangedPropertyValue {
  */
 
 /**
- * 属性部件专用，用于设置单个属性
+ * 属性部件专用，用于设置单个属性。
+ *
+ * 如果需要部件信息，则获取当前选中的部件。
  *
  * @property index            当前的 property 在 Widget 的 properties 数组中的索引，用于定位属性信息
  * @property value            用于为属性部件设置默认值，如果没有默认值则不设置
  * @event onPropertyChanged   当属性值发生变化后触发的事件
+ * @event onChangePaneLayout  用于切换面板，有的属性不能在当前属性面板中设置，需要切换到新的面板，或者切换到行为视图中去设置
  */
 interface SingleProperty {
 	index: number; // 部件的属性是按照数组存储的，一个属性对应一条记录，该属性指当前属性在数组中的索引
 	value?: string;
 	onPropertyChanged: (changedProperty: ChangedPropertyValue) => void; // TODO: 即能传入单个对象，也能传入数组？
+	onChangePaneLayout: (paneLayout: Partial<PaneLayout>) => void;
 }
 
 // 预留
@@ -351,6 +355,63 @@ export interface PageDataItem {
 }
 
 /**
+ * @type EditMode
+ *
+ * 编辑模式:
+ *
+ * 1. Preview: 预览
+ * 2. Edit: 编辑
+ */
+export type EditMode = "Preview" | "Edit";
+
+/**
+ * @type ViewType
+ *
+ * 一个页面的元素分为：
+ *
+ * 1. ui: 界面
+ * 2. behavior: 行为或交互
+ */
+export type PageViewType = "ui" | "behavior";
+
+/**
+ * @type FuncViewType
+ *
+ * 函数面板类型：
+ *
+ * 1. list: 显示函数列表的视图
+ * 2. item: 显示单个单数的定义视图
+ */
+export type FuncViewType = "funcList" | "funcItem";
+
+/**
+ * @type PaneLayout
+ *
+ * 控制编辑器中当前显示的面板。
+ *
+ * 当前支持三个层级：
+ *
+ * ```text
+ * editMode
+ *     Preview
+ *     Edit
+ *         ui
+ *         behavior
+ *             func_list
+ *             func_item
+ * ```
+ *
+ * @property editMode        设计器的编辑模式
+ * @property pageViewType    页面视图类型，分为界面和行为
+ * @property funcViewType    函数视图类型，分为函数列表和函数详情
+ */
+export interface PaneLayout {
+	editMode: EditMode;
+	pageViewType: PageViewType;
+	funcViewType: FuncViewType;
+}
+
+/**
  * @type State
  *
  * 设计器的共享状态
@@ -361,10 +422,12 @@ export interface PageDataItem {
  * @property pageModel                     页面模型
  * @property selectedWidgetIndex           当前选中的部件索引，是相对于全页面的索引
  * @property activeWidgetDimensions        当前选中部件的位置和大小信息等
+ * @property selectedWidgetPropertyIndex   当前选中的事件在属性列表中的索引，是相对于当前选中的部件，要跟 selectedWidgetIndex 结合使用
  * @property highlightWidgetIndex          高亮显示部件的索引，是相对于全页面的索引
  * @property highlightWidgetDimensions     高亮显示部件的位置和大小信息等
  * @property selectedBehaviorIndex         当前选中的行为元素（包括 data 和 method）的索引，是相对于全页面的索引
  * @property dirty                         判断是否有未保存的内容，如果有则 dirty 的值为 true，否则 dirty 的值为 false，默认为 false
+ * @property paneLayout                    定义设计器面板的布局
  */
 export interface State {
 	project: Project;
@@ -374,6 +437,8 @@ export interface State {
 	// ui 的焦点信息
 	selectedWidgetIndex: number;
 	activeWidgetDimensions: DimensionResults;
+	// behavior 面板中选中的部件事件的索引
+	selectedWidgetPropertyIndex: number;
 	// 页面中高亮显示部件的信息
 	highlightWidgetIndex: number;
 	highlightWidgetDimensions: DimensionResults;
@@ -381,4 +446,5 @@ export interface State {
 	selectedBehaviorIndex: number;
 	// 数据操作状态：保存
 	dirty: boolean;
+	paneLayout: PaneLayout;
 }
