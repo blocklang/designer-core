@@ -1,6 +1,6 @@
 {
   "name": "designer-core",
-  "version": "0.0.1-alpha.48",
+  "version": "0.0.1-alpha.49",
   "repository": {
     "type": "git",
     "url": "https://github.com/blocklang/designer-core.git"
@@ -17,8 +17,8 @@
     "prettier": "prettier --write 'src/**/*.{ts,tsx}' 'src/**/*.css' 'tests/**/*.{ts,tsx}'"
   },
   "dependencies": {
-    "@dojo/framework": "^6.0.3",
-    "tslib": "~1.9.1"
+    "@dojo/framework": "^6.0.4",
+    "tslib": "~1.10.0"
   },
   "devDependencies": {
     "@dojo/cli": "^6.0.0",
@@ -27,11 +27,11 @@
     "@dojo/cli-test-intern": "^6.0.1",
     "@types/node": "^9.6.55",
     "@types/sinon": "^7.5.1",
-    "husky": "^3.1.0",
-    "lint-staged": "^9.5.0",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
     "shx": "^0.3.2",
-    "sinon": "^7.5.0",
+    "sinon": "^8.1.1",
     "typescript": "~3.4.5"
   },
   "husky": {
