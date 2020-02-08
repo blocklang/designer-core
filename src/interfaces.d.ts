@@ -216,7 +216,8 @@ interface SingleProperty {
 	index: number; // 部件的属性是按照数组存储的，一个属性对应一条记录，该属性指当前属性在数组中的索引
 	value?: string;
 	onPropertyChanged: (changedProperty: ChangedPropertyValue) => void; // TODO: 即能传入单个对象，也能传入数组？
-	onChangePaneLayout: (paneLayout: Partial<PaneLayout>) => void;
+	// 当出现页面跳转时，需要记录下 propertyIndex
+	onChangePaneLayout: (propertyIndex: number, paneLayout: Partial<PaneLayout>) => void;
 }
 
 // 预留
@@ -422,7 +423,7 @@ export interface PaneLayout {
  * @property pageModel                     页面模型
  * @property selectedWidgetIndex           当前选中的部件索引，是相对于全页面的索引
  * @property activeWidgetDimensions        当前选中部件的位置和大小信息等
- * @property selectedWidgetPropertyIndex   当前选中的事件在属性列表中的索引，是相对于当前选中的部件，要跟 selectedWidgetIndex 结合使用
+ * @property selectedWidgetPropertyIndex   可选，当前选中的事件在属性列表中的索引，是相对于当前选中的部件，要跟 selectedWidgetIndex 结合使用
  * @property highlightWidgetIndex          高亮显示部件的索引，是相对于全页面的索引
  * @property highlightWidgetDimensions     高亮显示部件的位置和大小信息等
  * @property selectedBehaviorIndex         当前选中的行为元素（包括 data 和 method）的索引，是相对于全页面的索引
