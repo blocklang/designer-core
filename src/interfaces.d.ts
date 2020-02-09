@@ -217,7 +217,10 @@ interface SingleProperty {
 	value?: string;
 	onPropertyChanged: (changedProperty: ChangedPropertyValue) => void; // TODO: 即能传入单个对象，也能传入数组？
 	// 当出现页面跳转时，需要记录下 propertyIndex
-	onChangePaneLayout: (propertyIndex: number, paneLayout: Partial<PaneLayout>) => void;
+	onChangePaneLayout: (
+		paneLayout: Partial<PaneLayout>,
+		data: { propertyIndex: number; propertyValue?: string }
+	) => void;
 }
 
 // 预留
