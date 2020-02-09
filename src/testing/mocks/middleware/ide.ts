@@ -1,9 +1,10 @@
-import { create, v } from "@dojo/framework/core/vdom";
+import { create, v, invalidator } from "@dojo/framework/core/vdom";
 import dimensions from "@dojo/framework/core/middleware/dimensions";
 import { EditableWidgetProperties, AttachedWidgetProperty } from "../../../interfaces";
 import { findIndex } from "@dojo/framework/shim/array";
 import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
 import { VNode } from "@dojo/framework/core/interfaces";
+import Map from "@dojo/framework/shim/Map";
 
 const factory = create({ dimensions }).properties<EditableWidgetProperties>();
 
@@ -40,6 +41,7 @@ const defaultDimensions = {
 
 export function createMockIdeMiddleware() {
 	let _dimensionsResult: { [key: string]: DimensionResults } = {};
+	const cacheMap = new Map<string, any>();
 
 	const mockIdeFactory = factory(({ properties, middleware }) => {
 		let _nodeKey = "";
@@ -170,9 +172,12 @@ export function createMockIdeMiddleware() {
 					width: activeWidgetDimensions.size.width
 				};
 			},
-			cache(key: string, value: any) {},
+			cache(key: string, value: any) {
+				cacheMap.set(key, value);
+				invalidator();
+			},
 			getFromCache(key: string, defaultValue: any) {
-				return defaultValue;
+				return cacheMap.get(key) || defaultValue;
 			}
 		};
 	});

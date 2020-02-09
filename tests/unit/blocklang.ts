@@ -5,6 +5,7 @@ import global from "@dojo/framework/shim/global";
 import * as blocklang from "../../src/blocklang";
 import { GitUrlSegment, ExtensionWidgetMap, PropertyLayout } from "../../src/interfaces";
 import WidgetBase from "@dojo/framework/core/WidgetBase";
+import dimensions from "@dojo/framework/core/middleware/dimensions";
 
 class Foo extends WidgetBase {}
 
@@ -126,10 +127,11 @@ describe("blocklang", () => {
 	});
 
 	it("registerDimensionsMiddleware", () => {
-		assert.isUndefined(blocklang.getDimensionsMiddleware());
+		// 取默认值
+		assert.deepEqual(dimensions, blocklang.getDimensionsMiddleware());
 
 		blocklang.registerDimensionsMiddleware(undefined);
-		assert.isUndefined(blocklang.getDimensionsMiddleware());
+		assert.deepEqual(dimensions, blocklang.getDimensionsMiddleware());
 
 		blocklang.registerDimensionsMiddleware("a");
 		assert.equal(blocklang.getDimensionsMiddleware(), "a");

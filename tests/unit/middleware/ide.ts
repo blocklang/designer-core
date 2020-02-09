@@ -110,63 +110,63 @@ describe("middleware/ide", () => {
 		assert.isTrue(onUnhighlightStub.calledOnce);
 	});
 
-	it("tryFocus: not focused", () => {
-		const onFocusedStub = stub();
-		const { callback } = ideMiddleware();
-		const ide = callback({
-			id: "test",
-			middleware: {
-				dimensions: dimensionsStub,
-				icache: icacheStub
-			},
-			properties: () => ({
-				widget: { id: "1" },
-				extendProperties: { onFocused: onFocusedStub, autoFocus: () => false }
-			}),
-			children: () => []
-		});
-		ide.tryFocus();
-		assert.isTrue(onFocusedStub.notCalled);
-	});
+	// it("tryFocus: not focused", () => {
+	// 	const onFocusedStub = stub();
+	// 	const { callback } = ideMiddleware();
+	// 	const ide = callback({
+	// 		id: "test",
+	// 		middleware: {
+	// 			dimensions: dimensionsStub,
+	// 			icache: icacheStub
+	// 		},
+	// 		properties: () => ({
+	// 			widget: { id: "1" },
+	// 			extendProperties: { onFocused: onFocusedStub, autoFocus: () => false }
+	// 		}),
+	// 		children: () => []
+	// 	});
+	// 	ide.tryFocus();
+	// 	assert.isTrue(onFocusedStub.notCalled);
+	// });
 
-	it("tryFocus: should focused, but not config key", () => {
-		const onFocusedStub = stub();
-		const { callback } = ideMiddleware();
-		const ide = callback({
-			id: "test",
-			middleware: {
-				dimensions: dimensionsStub,
-				icache: icacheStub
-			},
-			properties: () => ({
-				widget: { id: "1" },
-				extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
-			}),
-			children: () => []
-		});
-		ide.tryFocus();
-		assert.isTrue(onFocusedStub.notCalled);
-	});
+	// it("tryFocus: should focused, but not config key", () => {
+	// 	const onFocusedStub = stub();
+	// 	const { callback } = ideMiddleware();
+	// 	const ide = callback({
+	// 		id: "test",
+	// 		middleware: {
+	// 			dimensions: dimensionsStub,
+	// 			icache: icacheStub
+	// 		},
+	// 		properties: () => ({
+	// 			widget: { id: "1" },
+	// 			extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
+	// 		}),
+	// 		children: () => []
+	// 	});
+	// 	ide.tryFocus();
+	// 	assert.isTrue(onFocusedStub.notCalled);
+	// });
 
-	it("tryFocus: focused", () => {
-		const onFocusedStub = stub();
-		const { callback } = ideMiddleware();
-		const ide = callback({
-			id: "test",
-			middleware: {
-				dimensions: dimensionsStub,
-				icache: icacheStub
-			},
-			properties: () => ({
-				widget: { id: "1" },
-				extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
-			}),
-			children: () => []
-		});
-		ide.config("key");
-		ide.tryFocus();
-		assert.isTrue(onFocusedStub.calledOnce);
-	});
+	// it("tryFocus: focused", () => {
+	// 	const onFocusedStub = stub();
+	// 	const { callback } = ideMiddleware();
+	// 	const ide = callback({
+	// 		id: "test",
+	// 		middleware: {
+	// 			dimensions: dimensionsStub,
+	// 			icache: icacheStub
+	// 		},
+	// 		properties: () => ({
+	// 			widget: { id: "1" },
+	// 			extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
+	// 		}),
+	// 		children: () => []
+	// 	});
+	// 	ide.config("key");
+	// 	ide.tryFocus();
+	// 	assert.isTrue(onFocusedStub.calledOnce);
+	// });
 
 	it("changePropertyValue: not config editing property name", () => {
 		const onPropertyChangedStub = stub();
@@ -250,26 +250,26 @@ describe("middleware/ide", () => {
 		assert.deepEqual(offset, { top: 1, left: 2, height: 3, width: 4 });
 	});
 
-	it("getFocusNodeOffset: focused", () => {
-		const onFocusedStub = stub();
-		const { callback } = ideMiddleware();
-		const ide = callback({
-			id: "test",
-			middleware: {
-				dimensions: dimensionsStub,
-				icache: icacheStub
-			},
-			properties: () => ({
-				widget: { properties: [{ name: "prop1" }] },
-				extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
-			}),
-			children: () => []
-		});
+	// it("getFocusNodeOffset: focused", () => {
+	// 	const onFocusedStub = stub();
+	// 	const { callback } = ideMiddleware();
+	// 	const ide = callback({
+	// 		id: "test",
+	// 		middleware: {
+	// 			dimensions: dimensionsStub,
+	// 			icache: icacheStub
+	// 		},
+	// 		properties: () => ({
+	// 			widget: { properties: [{ name: "prop1" }] },
+	// 			extendProperties: { onFocused: onFocusedStub, autoFocus: () => true }
+	// 		}),
+	// 		children: () => []
+	// 	});
 
-		ide.config("key", "prop1");
-		ide.tryFocus();
+	// 	ide.config("key", "prop1");
+	// 	ide.tryFocus();
 
-		const offset = ide.getFocusNodeOffset();
-		assert.deepEqual(offset, { top: 1, left: 2, height: 3, width: 4 });
-	});
+	// 	const offset = ide.getFocusNodeOffset();
+	// 	assert.deepEqual(offset, { top: 1, left: 2, height: 3, width: 4 });
+	// });
 });
