@@ -1,3 +1,5 @@
+import { findIndex } from "@dojo/framework/shim/array";
+
 /**
  * 获取当前部件（由 selectedIndex 指定）的**所有**子节点的个数，包含孙子节点。
  *
@@ -205,4 +207,34 @@ export function getChildrenIndex<T extends { id: string; parentId: string }>(
 		}
 	}
 	return result;
+}
+
+/**
+ * @function getParents
+ *
+ * 获取一个部件的所有父节点
+ *
+ * @param treeNodes         数据列表
+ * @param widgetId          部件 id
+ * @returns                 返回所有父节点数组，如果没有则返回空数组。
+ */
+export function getParents<T extends { id: string; parentId: string }>(
+	treeNodes: ReadonlyArray<T>,
+	widgetId: string
+): T[] {
+	const index = findIndex(treeNodes, (item) => item.id === widgetId);
+	if (index === -1) {
+		return [];
+	}
+
+	let parentId = treeNodes[index].parentId;
+	const parents = treeNodes.slice(0, index + 1).reduceRight((previousValue: T[], currentValue: T) => {
+		if (currentValue.id === parentId) {
+			previousValue.push(currentValue);
+			parentId = currentValue.parentId;
+		}
+		return previousValue;
+	}, []);
+	parents.reverse();
+	return parents;
 }

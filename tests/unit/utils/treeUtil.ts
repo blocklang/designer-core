@@ -5,7 +5,8 @@ import {
 	getPreviousIndex,
 	getNextIndex,
 	getParentIndex,
-	getChildrenIndex
+	getChildrenIndex,
+	getParents
 } from "../../../src/utils/treeUtil";
 
 describe("utils/treeUtil", () => {
@@ -185,6 +186,48 @@ describe("utils/treeUtil", () => {
 				1
 			),
 			0
+		);
+	});
+
+	it("getParents - treeNodes is empty", () => {
+		assert.deepEqual(getParents([], "1"), []);
+	});
+
+	it("getParents - widgetId not exists in treeNodes", () => {
+		assert.deepEqual(getParents([{ id: "1", parentId: "-1" }], "2"), []);
+	});
+
+	it("getParents - widgetId point to the root node", () => {
+		assert.deepEqual(getParents([{ id: "1", parentId: "-1" }], "1"), []);
+	});
+
+	it("getParents - has one parent", () => {
+		assert.deepEqual(
+			getParents(
+				[
+					{ id: "1", parentId: "-1" },
+					{ id: "2", parentId: "1" }
+				],
+				"2"
+			),
+			[{ id: "1", parentId: "-1" }]
+		);
+	});
+
+	it("getParents - has two parents", () => {
+		assert.deepEqual(
+			getParents(
+				[
+					{ id: "1", parentId: "-1" },
+					{ id: "2", parentId: "1" },
+					{ id: "3", parentId: "2" }
+				],
+				"3"
+			),
+			[
+				{ id: "1", parentId: "-1" },
+				{ id: "2", parentId: "1" }
+			]
 		);
 	});
 });
