@@ -310,6 +310,14 @@ export interface ComponentRepo {
 }
 
 /**
+ * 函数定义
+ *
+ */
+export interface Func {
+	id: string;
+}
+
+/**
  * 页面模型
  *
  * @property pageId      页面标识
@@ -333,6 +341,7 @@ export interface PageModel {
 	pageId: number;
 	widgets: AttachedWidget[];
 	data: PageDataItem[];
+	functions: Func[];
 }
 
 export type PageDataItemValueType = "String" | "Number" | "Date" | "Boolean" | "Object" | "Array";
@@ -379,14 +388,14 @@ export type EditMode = "Preview" | "Edit";
 export type PageViewType = "ui" | "behavior";
 
 /**
- * @type FuncViewType
+ * @type UIOperateTab
  *
- * 函数面板类型：
+ * UI 设计器操作面板中显示哪个 tab：
  *
- * 1. list: 显示函数列表的视图
- * 2. item: 显示单个单数的定义视图
+ * 1. widgets: 显示部件列表的 tab
+ * 2. properties: 显示属性列表的 tab
  */
-export type FuncViewType = "funcList" | "funcItem";
+export type UIOperateTab = "widgets" | "properties";
 
 /**
  * @type PaneLayout
@@ -400,19 +409,20 @@ export type FuncViewType = "funcList" | "funcItem";
  *     Preview
  *     Edit
  *         ui
+ *             operate-tab
+ *                 widgets
+ *                 properties
  *         behavior
- *             func_list
- *             func_item
  * ```
  *
  * @property editMode        设计器的编辑模式
  * @property pageViewType    页面视图类型，分为界面和行为
- * @property funcViewType    函数视图类型，分为函数列表和函数详情
+ * @property uiOperateTab
  */
 export interface PaneLayout {
 	editMode: EditMode;
 	pageViewType: PageViewType;
-	funcViewType: FuncViewType;
+	uiOperateTab: UIOperateTab;
 }
 
 /**
