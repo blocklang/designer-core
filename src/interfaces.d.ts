@@ -312,8 +312,11 @@ export interface ComponentRepo {
 /**
  * 函数定义
  *
+ * 因为 Function 算是关键字，所以在前面加上 Page。
+ *
+ * @property id 函数标识
  */
-export interface Func {
+export interface PageFunction {
 	id: string;
 }
 
@@ -341,7 +344,7 @@ export interface PageModel {
 	pageId: number;
 	widgets: AttachedWidget[];
 	data: PageDataItem[];
-	functions: Func[];
+	functions: PageFunction[];
 }
 
 export type PageDataItemValueType = "String" | "Number" | "Date" | "Boolean" | "Object" | "Array";

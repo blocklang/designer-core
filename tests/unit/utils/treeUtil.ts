@@ -210,7 +210,7 @@ describe("utils/treeUtil", () => {
 				],
 				"2"
 			),
-			[{ id: "1", parentId: "-1" }]
+			[{ node: { id: "1", parentId: "-1" }, index: 0 }]
 		);
 	});
 
@@ -225,8 +225,8 @@ describe("utils/treeUtil", () => {
 				"3"
 			),
 			[
-				{ id: "1", parentId: "-1" },
-				{ id: "2", parentId: "1" }
+				{ node: { id: "1", parentId: "-1" }, index: 0 },
+				{ node: { id: "2", parentId: "1" }, index: 1 }
 			]
 		);
 	});

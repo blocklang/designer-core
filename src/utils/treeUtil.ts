@@ -216,25 +216,28 @@ export function getChildrenIndex<T extends { id: string; parentId: string }>(
  *
  * @param treeNodes         数据列表
  * @param widgetId          部件 id
- * @returns                 返回所有父节点数组，如果没有则返回空数组。
+ * @returns 返回所有父节点数组，如果没有则返回空数组，其中的元素既包含节点也包含节点在 treeNodes 中的索引。
  */
 export function getParents<T extends { id: string; parentId: string }>(
 	treeNodes: ReadonlyArray<T>,
 	widgetId: string
-): T[] {
+): { node: T; index: number }[] {
 	const index = findIndex(treeNodes, (item) => item.id === widgetId);
 	if (index === -1) {
 		return [];
 	}
 
 	let parentId = treeNodes[index].parentId;
-	const parents = treeNodes.slice(0, index + 1).reduceRight((previousValue: T[], currentValue: T) => {
-		if (currentValue.id === parentId) {
-			previousValue.push(currentValue);
-			parentId = currentValue.parentId;
-		}
-		return previousValue;
-	}, []);
+	const parents = treeNodes
+		.slice(0, index + 1)
+		.reduceRight((previousValue: { node: T; index: number }[], currentValue: T, currentIndex: number) => {
+			if (currentValue.id === parentId) {
+				previousValue.push({ node: currentValue, index: currentIndex });
+				parentId = currentValue.parentId;
+			}
+			return previousValue;
+		}, []);
+
 	parents.reverse();
 	return parents;
 }
