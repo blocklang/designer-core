@@ -6,7 +6,7 @@ import {
 	getNextIndex,
 	getParentIndex,
 	getChildrenIndex,
-	getParents
+	getNodePath
 } from "../../../src/utils/treeUtil";
 
 describe("utils/treeUtil", () => {
@@ -189,44 +189,67 @@ describe("utils/treeUtil", () => {
 		);
 	});
 
-	it("getParents - treeNodes is empty", () => {
-		assert.deepEqual(getParents([], "1"), []);
+	it("getNodePath - treeNodes is empty", () => {
+		assert.deepEqual(getNodePath([], 0), []);
 	});
 
-	it("getParents - widgetId not exists in treeNodes", () => {
-		assert.deepEqual(getParents([{ id: "1", parentId: "-1" }], "2"), []);
+	it("getNodePath - index is out of range", () => {
+		assert.deepEqual(getNodePath([{ id: "1", parentId: "-1" }], 1), []);
+		assert.deepEqual(getNodePath([{ id: "1", parentId: "-1" }], -2), []);
 	});
 
-	it("getParents - widgetId point to the root node", () => {
-		assert.deepEqual(getParents([{ id: "1", parentId: "-1" }], "1"), []);
-	});
-
-	it("getParents - has one parent", () => {
+	it("getNodePath - root/[0]item", () => {
 		assert.deepEqual(
-			getParents(
+			getNodePath(
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" }
 				],
-				"2"
+				1
 			),
-			[{ node: { id: "1", parentId: "-1" }, index: 0 }]
+			[
+				{ node: { id: "1", parentId: "-1" }, index: -1 },
+				{ node: { id: "2", parentId: "1" }, index: 0 }
+			]
 		);
 	});
 
-	it("getParents - has two parents", () => {
+	it("getNodePath - root/[0]item/[0]item", () => {
 		assert.deepEqual(
-			getParents(
+			getNodePath(
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
 					{ id: "3", parentId: "2" }
 				],
-				"3"
+				2
 			),
 			[
-				{ node: { id: "1", parentId: "-1" }, index: 0 },
-				{ node: { id: "2", parentId: "1" }, index: 1 }
+				{ node: { id: "1", parentId: "-1" }, index: -1 },
+				{ node: { id: "2", parentId: "1" }, index: 0 },
+				{ node: { id: "3", parentId: "2" }, index: 0 }
+			]
+		);
+	});
+
+	it("getNodePath - root/[0]item/[1]item/[1]item", () => {
+		assert.deepEqual(
+			getNodePath(
+				[
+					{ id: "1", parentId: "-1" },
+					{ id: "2", parentId: "1" },
+					{ id: "3", parentId: "2" },
+					{ id: "4", parentId: "2" },
+					{ id: "5", parentId: "4" },
+					{ id: "6", parentId: "4" }
+				],
+				5
+			),
+			[
+				{ node: { id: "1", parentId: "-1" }, index: -1 },
+				{ node: { id: "2", parentId: "1" }, index: 0 },
+				{ node: { id: "4", parentId: "2" }, index: 1 },
+				{ node: { id: "6", parentId: "4" }, index: 1 }
 			]
 		);
 	});

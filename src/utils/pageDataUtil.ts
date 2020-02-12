@@ -1,5 +1,6 @@
 import { PageDataItem } from "../interfaces";
 import { findIndex, find } from "@dojo/framework/shim/array";
+import { getNodePath } from "./treeUtil";
 
 /**
  * 将 dataId 转换为 json path，两者指向同一个数据。
@@ -20,41 +21,20 @@ export function convertDataIdToJsonPath(pageData: PageDataItem[], dataId: string
 	}
 
 	// 依次获取当前节点的所有父节点，以生成表达式。
-	const currentDataItem = pageData[currentDataIndex];
-	const currentDataId = currentDataItem.id;
-	let parentId = currentDataItem.parentId;
-	const dataPath: PageDataItem[] = pageData
-		.slice(0, currentDataIndex + 1)
-		.reduceRight((previousValue: PageDataItem[], currentValue: PageDataItem) => {
-			if (currentValue.id === currentDataId) {
-				previousValue.push(currentValue);
-			} else if (currentValue.id === parentId) {
-				previousValue.push(currentValue);
-				parentId = currentValue.parentId;
-			}
-			return previousValue;
-		}, []);
-
-	dataPath.reverse();
+	const dataPath = getNodePath(pageData, currentDataIndex);
 
 	let jsonPath = "";
 	dataPath.forEach((item, index, array) => {
 		if (index === 0) {
-			jsonPath += item.name;
+			jsonPath += item.node.name;
 		} else {
 			// 存在这样的情况，前一步获取到的数组为 [obj,array,str], 其中 array 是数组，
 			// 当遍历到 str 时，不能直接将表达式拼接成 obj.array.str
 			// 需要计算出 str 在 array 中的索引，如 1, 则将表达式拼接成 obj.array[1]
-			if (array[index - 1].type === "Array") {
-				const preIndex = findIndex(pageData, (ele) => {
-					return ele.id === dataPath[index - 1].id;
-				});
-				const currentIndex = findIndex(pageData, (ele) => {
-					return ele.id === dataPath[index].id;
-				});
-				jsonPath += "[" + (currentIndex - preIndex - 1) + "]";
+			if (array[index - 1].node.type === "Array") {
+				jsonPath += `[${item.index}]`;
 			} else {
-				jsonPath += "." + item.name;
+				jsonPath += `.${item.node.name}`;
 			}
 		}
 	});

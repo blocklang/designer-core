@@ -1,5 +1,3 @@
-import { findIndex } from "@dojo/framework/shim/array";
-
 /**
  * 获取当前部件（由 selectedIndex 指定）的**所有**子节点的个数，包含孙子节点。
  *
@@ -210,34 +208,57 @@ export function getChildrenIndex<T extends { id: string; parentId: string }>(
 }
 
 /**
- * @function getParents
+ * @function getNodePath
  *
- * 获取一个部件的所有父节点
+ * 获取从根节点到当前节点的完整路径
  *
  * @param treeNodes         数据列表
- * @param widgetId          部件 id
- * @returns 返回所有父节点数组，如果没有则返回空数组，其中的元素既包含节点也包含节点在 treeNodes 中的索引。
+ * @param index             当前节点在 treeNodes 数组中的索引
+ * @returns 以数组的方式返回节点路径，如果没有则返回空数组，其中的元素既包含节点，也包含节点在当前层级的索引。其中根节点的索引为 -1，表示不是数组中的元素。
  */
-export function getParents<T extends { id: string; parentId: string }>(
+export function getNodePath<T extends { id: string; parentId: string }>(
 	treeNodes: ReadonlyArray<T>,
-	widgetId: string
+	index: number
 ): { node: T; index: number }[] {
-	const index = findIndex(treeNodes, (item) => item.id === widgetId);
-	if (index === -1) {
+	if (index < 0 || index > treeNodes.length - 1) {
 		return [];
 	}
 
-	let parentId = treeNodes[index].parentId;
+	// 获取父节点
+	const activeNode = treeNodes[index];
+	let parentId = activeNode.parentId;
 	const parents = treeNodes
 		.slice(0, index + 1)
-		.reduceRight((previousValue: { node: T; index: number }[], currentValue: T, currentIndex: number) => {
-			if (currentValue.id === parentId) {
-				previousValue.push({ node: currentValue, index: currentIndex });
-				parentId = currentValue.parentId;
-			}
-			return previousValue;
-		}, []);
+		.reduceRight(
+			(
+				previousValue: { node: T; globalIndex: number; index: number }[],
+				currentValue: T,
+				currentIndex: number
+			) => {
+				if (currentValue.id === parentId) {
+					previousValue.push({ node: currentValue, globalIndex: currentIndex, index: -1 /* 默认值 */ });
+					parentId = currentValue.parentId;
+				}
+				return previousValue;
+			},
+			[]
+		);
+
+	if (parents.length === 0) {
+		return [];
+	}
 
 	parents.reverse();
-	return parents;
+	parents.push({ node: activeNode, globalIndex: index, index: -1 /* 默认值 */ });
+
+	parents.reduce((previousValue, currentValue, currentIndex) => {
+		if (currentIndex === 0) {
+			currentValue.index = -1; // 第一个节点不归属于任何数组，所以返回 -1
+		} else {
+			currentValue.index = currentValue.globalIndex - previousValue.globalIndex - 1;
+		}
+		return currentValue;
+	});
+
+	return parents.map(({ node, index }) => ({ node, index }));
 }
