@@ -6,6 +6,8 @@ import { WidgetProperties } from "@dojo/framework/core/interfaces";
  *
  * UI 部件信息
  *
+ * 注意，此处将属性和事件分开存储。valueType 为 function 的为事件，其余皆为属性。
+ *
  * @property widgetId           部件标识
  * @property widgetName         部件名称
  * @property widgetCode         部件编码
@@ -27,16 +29,37 @@ export type PropertyValueType = "string" | "int" | "float" | "date" | "boolean" 
 /**
  * @interface WidgetProperty
  *
+ * 部件属性
+ *
  * @property code           属性编码，是属性的基本信息，此字段要存入到页面模型中
  * @property name           属性名，此字段仅做显示用，如果 label 有值则优先使用 label 的值
  * @property defaultValue   属性的默认值
  * @property valueType      属性值类型,支持 string、int、float、date、boolean 和 function 类型
+ * @property argument       仅用于当 valueType 的值为 function 时，表示事件的输入参数，按顺序排列
  */
 export interface WidgetProperty {
 	code: string;
 	name: string;
 	defaultValue?: string;
 	valueType: PropertyValueType;
+	arguments?: EventArgument[];
+}
+
+export type EventArgValueType = PropertyValueType;
+
+/**
+ * @interface EventArgument
+ *
+ * 事件的输入参数
+ *
+ * @property name          参数名
+ * @property valueType     参数值的类型
+ * @property defaultValue  参数的默认值
+ */
+export interface EventArgument {
+	name: string;
+	valueType: EventArgValueType;
+	defaultValue?: string;
 }
 
 /**
