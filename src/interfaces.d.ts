@@ -42,24 +42,7 @@ export interface WidgetProperty {
 	name: string;
 	defaultValue?: string;
 	valueType: PropertyValueType;
-	arguments?: EventArgument[];
-}
-
-export type EventArgValueType = PropertyValueType;
-
-/**
- * @interface EventArgument
- *
- * 事件的输入参数
- *
- * @property name          参数名
- * @property valueType     参数值的类型
- * @property defaultValue  参数的默认值
- */
-export interface EventArgument {
-	name: string;
-	valueType: EventArgValueType;
-	defaultValue?: string;
+	arguments?: FunctionArgument[];
 }
 
 /**
@@ -337,11 +320,155 @@ export interface ComponentRepo {
  *
  * 因为 Function 算是关键字，所以在前面加上 Page。
  *
- * @property id 函数标识
+ * @property id                    函数标识
+ * @property nodes                 节点列表，将一个完整的函数定义看作多个节点，第一个节点是函数签名信息，后续节点是函数体中调用的函数
+ * @property sequenceConnections   序列连接线
+ * @property dataConnections       数据连接线
  */
 export interface PageFunction {
 	id: string;
+	nodes: VisualNode[];
+	sequenceConnections: NodeConnection[];
+	dataConnections: NodeConnection[];
 }
+
+/**
+ * 节点种类，这是按照节点的呈现形式分类的。
+ */
+export type NodeCategory = "flowControl" | "data";
+
+/**
+ * 序列端口
+ *
+ * 专用于描述函数的调用次序
+ *
+ * @property id      序列端口的标识
+ * @property left    序列端口在设计器中的 x 坐标，原点是设计器的左上角
+ * @property top     序列端口在设计器中的 y 坐标，原点是设计器的左上角
+ */
+interface SequencePort {
+	id: string;
+	left?: number;
+	top?: number;
+}
+
+/**
+ * 输入型序列端口
+ */
+export interface InputSequencePort extends SequencePort {}
+
+/**
+ * 输出型序列端口
+ *
+ * @property text  对端口的简短说明
+ */
+export interface OutputSequencePort extends SequencePort {
+	text: string;
+}
+
+/**
+ * 数据端口
+ *
+ * 专用于描述函数的输入参数和返回接口
+ *
+ * @property id    数据端口标识
+ * @property name  数据端口名，通常是输入参数名等
+ * @property type  输入参数或返回结果的数据类型
+ */
+export interface DataPort {
+	id: string;
+	name: string;
+	type: FunctionValueType;
+}
+
+/**
+ * 可视化节点
+ *
+ * @property id                     函数节点标识
+ * @property left                   函数节点左上角在设计器上的 x 坐标，原点是左上角
+ * @property top                    函数节点左上角在设计器上的 y 坐标，原点是左上角
+ * @property caption                标题
+ * @property text                   简述
+ * @property category               节点类型
+ * @property inputSequencePorts     输入型的序列端口列表
+ * @property outputSequencePorts    输出型的序列端口列表
+ * @property inputDataPorts         输入型的数据端口列表
+ * @property outputDataPorts        输出型的数据端口列表
+ */
+export interface VisualNode {
+	id: string;
+	left: number;
+	top: number;
+	caption: string;
+	text: string;
+	category: NodeCategory;
+	inputSequencePorts: InputSequencePort[];
+	outputSequencePorts: OutputSequencePort[];
+	inputDataPorts: DataPort[];
+	outputDataPorts: DataPort[];
+
+	// functionDeclaration?: FunctionDeclaration;
+	// dataId?: string;
+}
+
+/**
+ * 节点连接线
+ *
+ * 用于连接输出型与输入型的序列端口或数据端口。
+ *
+ * @property id           连接线标识
+ * @property fromNode     起始节点标识
+ * @property fromOutput   起始节点中的输出型端口
+ * @property toNode       终止节点标识
+ * @property toInput      终止节点的输入型端口
+ */
+export interface NodeConnection {
+	id: string;
+	fromNode: string;
+	fromOutput: string;
+	toNode: string;
+	toInput: string;
+}
+
+/**
+ * 函数中参数值或返回值的数据类型
+ */
+export type FunctionValueType = PropertyValueType;
+
+/**
+ * @interface FunctionArgument
+ *
+ * 函数的输入参数
+ *
+ * @property id            参数标识 uuid
+ * @property name          参数名
+ * @property valueType     参数值的类型
+ * @property defaultValue  参数的默认值
+ */
+export interface FunctionArgument {
+	id: string;
+	name: string;
+	valueType: FunctionValueType;
+	defaultValue?: string;
+}
+
+// export interface FunctionReturn {
+// 	id: string;
+// 	name: string;
+// 	valueType: FunctionValueType;
+// }
+
+// export interface FunctionDeclaration {
+// 	id: string;
+// 	name: string;
+// 	arguments: FunctionArgument[];
+// 	return?: FunctionReturn;
+// }
+
+// export interface VariableDeclaration {
+// 	dataId: string;
+
+// }
 
 /**
  * 页面模型
@@ -465,7 +592,9 @@ export interface PaneLayout {
  * @property selectedWidgetPropertyIndex   可选，当前选中的事件在属性列表中的索引，是相对于当前选中的部件，要跟 selectedWidgetIndex 结合使用
  * @property highlightWidgetIndex          高亮显示部件的索引，是相对于全页面的索引
  * @property highlightWidgetDimensions     高亮显示部件的位置和大小信息等
- * @property selectedBehaviorIndex         当前选中的行为元素（包括 data 和 method）的索引，是相对于全页面的索引
+ * @property selectedDataItemIndex         当前选中的 data 元素的索引，是相对于全页面的索引
+ * @property selectedFunctionId            当前选中函数的标识，一个页面会包含多个函数
+ * @property selectedFunctionNodeId        当前选中的函数节点标识，一个函数由多个节点组成
  * @property dirty                         判断是否有未保存的内容，如果有则 dirty 的值为 true，否则 dirty 的值为 false，默认为 false
  * @property paneLayout                    定义设计器面板的布局
  */
@@ -482,8 +611,14 @@ export interface State {
 	// 页面中高亮显示部件的信息
 	highlightWidgetIndex: number;
 	highlightWidgetDimensions: DimensionResults;
-	// behavior 的焦点信息，data 和 method 共享焦点信息
-	selectedBehaviorIndex: number;
+	// behavior 的焦点信息
+	// 1. data
+	selectedDataItemIndex: number;
+	// 2. function
+	selectedFunctionId: string;
+	// 3. function node
+	// 函数编辑器中当前选中的节点标识
+	selectedFunctionNodeId: string;
 	// 数据操作状态：保存
 	dirty: boolean;
 	paneLayout: PaneLayout;
