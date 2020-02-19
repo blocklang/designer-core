@@ -198,6 +198,19 @@ describe("utils/treeUtil", () => {
 		assert.deepEqual(getNodePath([{ id: "1", parentId: "-1" }], -2), []);
 	});
 
+	it("getNodePath - root", () => {
+		assert.deepEqual(
+			getNodePath(
+				[
+					{ id: "1", parentId: "-1" },
+					{ id: "2", parentId: "1" }
+				],
+				0
+			),
+			[{ node: { id: "1", parentId: "-1" }, index: -1 }]
+		);
+	});
+
 	it("getNodePath - root/[0]item", () => {
 		assert.deepEqual(
 			getNodePath(

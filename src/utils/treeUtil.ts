@@ -244,10 +244,6 @@ export function getNodePath<T extends { id: string; parentId: string }>(
 			[]
 		);
 
-	if (parents.length === 0) {
-		return [];
-	}
-
 	parents.reverse();
 	parents.push({ node: activeNode, globalIndex: index, index: -1 /* 默认值 */ });
 
