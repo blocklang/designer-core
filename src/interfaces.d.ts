@@ -371,14 +371,24 @@ export interface OutputSequencePort extends SequencePort {
  *
  * 专用于描述函数的输入参数和返回接口
  *
- * @property id    数据端口标识
  * @property name  数据端口名，通常是输入参数名等
  * @property type  输入参数或返回结果的数据类型
  */
-export interface DataPort {
-	id: string;
+export interface DataPort extends SequencePort {
 	name: string;
 	type: FunctionValueType;
+}
+
+/**
+ * 输入型的数据端口
+ *
+ * @property connected    该端口是否已连接，如果未连接，则通过输入框输入值；如果连接了，就从连接线起始处取值
+ * @property value        当 connected 的值为 false 时，通过输入框设置的值存在此处
+ */
+export interface InputDataPort extends DataPort {
+	// 此字段是个冗余字段，因为是否连接，是可以计算出来的
+	connected: boolean;
+	value?: string;
 }
 
 /**
@@ -390,7 +400,7 @@ export interface DataPort {
  * @property caption                标题
  * @property text                   简述
  * @property category               节点类型
- * @property inputSequencePorts     输入型的序列端口列表
+ * @property inputSequencePorts     输入型的序列端口列表，一个节点只能有0或1个
  * @property outputSequencePorts    输出型的序列端口列表
  * @property inputDataPorts         输入型的数据端口列表
  * @property outputDataPorts        输出型的数据端口列表
@@ -402,9 +412,9 @@ export interface VisualNode {
 	caption: string;
 	text: string;
 	category: NodeCategory;
-	inputSequencePorts: InputSequencePort[];
+	inputSequencePort?: InputSequencePort;
 	outputSequencePorts: OutputSequencePort[];
-	inputDataPorts: DataPort[];
+	inputDataPorts: InputDataPort[];
 	outputDataPorts: DataPort[];
 
 	// functionDeclaration?: FunctionDeclaration;
@@ -452,18 +462,18 @@ export interface FunctionArgument {
 	defaultValue?: string;
 }
 
-// export interface FunctionReturn {
-// 	id: string;
-// 	name: string;
-// 	valueType: FunctionValueType;
-// }
+export interface FunctionReturn {
+	id: string;
+	name: string;
+	valueType: FunctionValueType;
+}
 
-// export interface FunctionDeclaration {
-// 	id: string;
-// 	name: string;
-// 	arguments: FunctionArgument[];
-// 	return?: FunctionReturn;
-// }
+export interface FunctionDeclaration {
+	id: string;
+	name: string;
+	arguments: FunctionArgument[];
+	return?: FunctionReturn;
+}
 
 // export interface VariableDeclaration {
 // 	dataId: string;
