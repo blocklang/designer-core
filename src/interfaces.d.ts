@@ -343,13 +343,9 @@ export type NodeCategory = "flowControl" | "data";
  * 专用于描述函数的调用次序
  *
  * @property id      序列端口的标识
- * @property left    序列端口在设计器中的 x 坐标，原点是设计器的左上角
- * @property top     序列端口在设计器中的 y 坐标，原点是设计器的左上角
  */
 interface SequencePort {
 	id: string;
-	left?: number;
-	top?: number;
 }
 
 /**
