@@ -378,12 +378,9 @@ export interface DataPort extends SequencePort {
 /**
  * 输入型的数据端口
  *
- * @property connected    该端口是否已连接，如果未连接，则通过输入框输入值；如果连接了，就从连接线起始处取值
  * @property value        当 connected 的值为 false 时，通过输入框设置的值存在此处
  */
 export interface InputDataPort extends DataPort {
-	// 此字段是个冗余字段，因为是否连接，是可以计算出来的
-	connected: boolean;
 	value?: string;
 }
 
