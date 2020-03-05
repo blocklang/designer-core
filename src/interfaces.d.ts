@@ -6,9 +6,9 @@ import { WidgetProperties } from "@dojo/framework/core/interfaces";
  *
  * UI 部件信息
  *
- * 注意，此处将属性和事件分开存储。valueType 为 function 的为事件，其余皆为属性。
+ * 注意，此处将属性和事件都存在 properties 中，其中 valueType 为 function 的为事件，其余皆为属性。
  *
- * @property widgetId           部件标识
+ * @property widgetId           部件定义标识
  * @property widgetName         部件名称
  * @property widgetCode         部件编码
  * @property canHasChildren     是否可以包含子部件
@@ -50,7 +50,7 @@ export interface WidgetProperty {
  *
  * 添加到页面中的部件信息
  *
- * @property id          部件 id，部件添加到页面中后，新生成的 id
+ * @property id          部件实例标识，即部件添加到页面中后生成的 id
  * @property parentId    部件的父 id，也是添加到页面中后，之前生成的 id
  * @property properties  部件的属性列表，不论是否有值，都要加载全部属性
  */
@@ -66,7 +66,7 @@ export interface AttachedWidget extends Widget {
  *
  * 部件添加到页面后，部件的属性信息
  *
- * @property id         属性标识，是部件添加到页面之后重新生成的 id
+ * @property id         属性实例标识，是部件添加到页面之后重新生成的 id
  * @property value      属性值
  * @property isExpr     属性值是不是包含表达式，默认为 false
  */
@@ -362,17 +362,24 @@ export interface OutputSequencePort extends SequencePort {
 	text: string;
 }
 
+export type PortBindSource = "widgetEventArgument";
 /**
  * 数据端口
  *
  * 专用于描述函数的输入参数和返回接口
  *
- * @property name  数据端口名，通常是输入参数名等
- * @property type  输入参数或返回结果的数据类型
+ * @property name           数据端口名，通常是输入参数名等
+ * @property type           输入参数或返回结果的数据类型
+ * @property bindSource     与哪一类数据绑定，如部件事件参数
+ * @property bindId         绑定标识，取自定义标识，并不是实例标识
  */
 export interface DataPort extends SequencePort {
 	name: string;
 	type: FunctionValueType;
+
+	bindSource: PortBindSource;
+	apiRepoId: number;
+	code: string;
 }
 
 /**
@@ -384,6 +391,17 @@ export interface InputDataPort extends DataPort {
 	value?: string;
 }
 
+type FunctionType =
+	| "function" // 函数定义
+	| "functionCall" // 函数调用
+	| "variableSet" // 为变量设置值
+	| "variableGet"; // 获取变量的值
+
+// 注意，此处不应包含 "widgetEvent"，因为这属于函数与事件之间的绑定关系，并不是函数定义体中使用的数据
+type NodeBindSource =
+	| "data" // 取自页面数据
+	| "service"; // 取自 RESTful API
+
 /**
  * 可视化节点
  *
@@ -392,11 +410,15 @@ export interface InputDataPort extends DataPort {
  * @property top                    函数节点左上角在设计器上的 y 坐标，原点是左上角
  * @property caption                标题
  * @property text                   简述
- * @property category               节点类型
+ * @property category               节点类型，跟节点的布局相关
  * @property inputSequencePorts     输入型的序列端口列表，一个节点只能有0或1个
  * @property outputSequencePorts    输出型的序列端口列表
  * @property inputDataPorts         输入型的数据端口列表
  * @property outputDataPorts        输出型的数据端口列表
+ * @property functionType           函数类型，目前主要用于动态设置节点的 caption 和 text 等属性
+ * @property bindSource             与哪一类数据绑定，如页面数据和 RESTful API 等
+ * @property apiRepoId              API 仓库标识
+ * @property code                   绑定标识，取自定义标识，并不是实例标识。如果是页面数据，则值为数据项标识，即 32 位的 uuid
  */
 export interface VisualNode {
 	id: string;
@@ -410,8 +432,10 @@ export interface VisualNode {
 	inputDataPorts: InputDataPort[];
 	outputDataPorts: DataPort[];
 
-	// functionDeclaration?: FunctionDeclaration;
-	// dataId?: string;
+	functionType: FunctionType;
+	bindSource?: NodeBindSource;
+	apiRepoId?: number;
+	code?: string;
 }
 
 /**
@@ -443,7 +467,7 @@ export type FunctionValueType = PropertyValueType;
  *
  * 函数的输入参数
  *
- * @property id            参数标识 uuid
+ * @property id            参数定义标识 uuid
  * @property name          参数名
  * @property valueType     参数值的类型
  * @property defaultValue  参数的默认值
@@ -461,8 +485,18 @@ export interface FunctionReturn {
 	valueType: FunctionValueType;
 }
 
+/**
+ * FIXNE: 未使用
+ *
+ * 函数定义信息
+ *
+ * 用于：
+ * 1. 部件中的事件
+ *
+ * @property id    属性（此处是指事件）定义标识，不是放置到页面之后生成的标识
+ */
 export interface FunctionDeclaration {
-	id: string;
+	id: number;
 	name: string;
 	arguments: FunctionArgument[];
 	return?: FunctionReturn;
