@@ -21,6 +21,8 @@
     "tslib": "~1.11.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
     "@dojo/cli": "^6.0.0",
     "@dojo/cli-build-app": "^6.0.9",
     "@dojo/cli-build-widget": "^6.0.2",
@@ -28,14 +30,15 @@
     "@types/node": "^9.6.55",
     "@types/sinon": "^7.5.2",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.8",
-    "prettier": "^1.19.1",
+    "lint-staged": "^10.1.1",
+    "prettier": "^2.0.2",
     "shx": "^0.3.2",
-    "sinon": "^9.0.0",
+    "sinon": "^9.0.1",
     "typescript": "~3.4.5"
   },
   "husky": {
     "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
       "pre-commit": "lint-staged"
     }
   },
