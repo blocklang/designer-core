@@ -9,6 +9,6 @@ export default factory(function pageData({ middleware: { store } }) {
 	return {
 		get(): PageDataItem[] {
 			return store.get(store.path("pageModel", "data")) || [];
-		}
+		},
 	};
 });

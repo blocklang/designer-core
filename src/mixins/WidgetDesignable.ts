@@ -109,9 +109,9 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 						width,
 						onmouseup: this._onMouseUp,
 						onmouseover: this._onMouseOver,
-						onmouseout: this._onMouseOut
+						onmouseout: this._onMouseOut,
 					}),
-					this._alwaysRenderFocusBox()
+					this._alwaysRenderFocusBox(),
 				];
 			}
 
@@ -128,7 +128,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 			if (this._canEditingProperty) {
 				// 默认绑定到 oninput 事件上，后续按需扩展
 				const {
-					extendProperties: { onPropertyChanged }
+					extendProperties: { onPropertyChanged },
 				} = this.properties;
 
 				if (onPropertyChanged) {
@@ -145,7 +145,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 							index: this._canEditingPropertyIndex,
 							newValue: value,
 							isChanging: false,
-							isExpr: false
+							isExpr: false,
 						});
 					};
 				}
@@ -197,7 +197,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _shouldFocus() {
 			const { autoFocus } = this.properties.extendProperties;
 			const {
-				widget: { id: widgetId }
+				widget: { id: widgetId },
 			} = this.properties;
 
 			return autoFocus && autoFocus(widgetId);
@@ -229,7 +229,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _setActiveWidgetId() {
 			const {
 				widget,
-				extendProperties: { onFocusing }
+				extendProperties: { onFocusing },
 			} = this.properties;
 
 			const activeWidgetId = widget.id;
@@ -238,7 +238,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 
 		private _measureActiveWidget() {
 			const {
-				extendProperties: { onFocused }
+				extendProperties: { onFocused },
 			} = this.properties;
 
 			const activeWidgetDimensions = this.meta(Dimensions).get(this._key);
@@ -248,7 +248,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _addHighlight() {
 			const {
 				widget: { id: highlightWidgetId },
-				extendProperties: { onHighlight }
+				extendProperties: { onHighlight },
 			} = this.properties;
 
 			const highlightWidgetDimensions = this.meta(Dimensions).get(this._key);
@@ -259,7 +259,7 @@ export function WidgetDesignableMixin<T extends new (...args: any[]) => WidgetBa
 		private _removeHighlight() {
 			const {
 				widget,
-				extendProperties: { onUnhighlight }
+				extendProperties: { onUnhighlight },
 			} = this.properties;
 
 			if (widget.parentId === ROOT_WIDGET_PARENT_ID) {

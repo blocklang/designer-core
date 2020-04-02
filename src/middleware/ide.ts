@@ -18,7 +18,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 	function setActiveWidgetId(): void {
 		const {
 			widget: { id: activeWidgetId },
-			extendProperties: { onFocusing }
+			extendProperties: { onFocusing },
 		} = properties();
 
 		onFocusing(activeWidgetId);
@@ -27,7 +27,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 	function addHighlight(key: string): void {
 		const {
 			widget: { id: highlightWidgetId },
-			extendProperties: { onHighlight }
+			extendProperties: { onHighlight },
 		} = properties();
 
 		const highlightWidgetDimensions = dimensions.get(key);
@@ -38,7 +38,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 	function removeHighlight(): void {
 		const {
 			widget: { parentId },
-			extendProperties: { onUnhighlight }
+			extendProperties: { onUnhighlight },
 		} = properties();
 
 		if (parentId === ROOT_WIDGET_PARENT_ID) {
@@ -50,7 +50,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 	function shouldFocus() {
 		const {
 			widget: { id: widgetId },
-			extendProperties: { autoFocus }
+			extendProperties: { autoFocus },
 		} = properties();
 
 		return autoFocus && autoFocus(widgetId);
@@ -58,7 +58,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 
 	function measureActiveWidget(key: string) {
 		const {
-			extendProperties: { onFocused }
+			extendProperties: { onFocused },
 		} = properties();
 
 		const activeWidgetDimensions = dimensions.get(key);
@@ -67,7 +67,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 
 	function getEditingPropertyIndex(propertyName: string) {
 		const {
-			widget: { properties: attachedWidgetProperties }
+			widget: { properties: attachedWidgetProperties },
 		} = properties();
 
 		return findIndex(
@@ -142,7 +142,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 				onmouseout: (event: MouseEvent) => {
 					event.stopImmediatePropagation();
 					removeHighlight();
-				}
+				},
 			};
 		},
 
@@ -158,14 +158,14 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 			}
 
 			const {
-				extendProperties: { onPropertyChanged }
+				extendProperties: { onPropertyChanged },
 			} = properties();
 
 			onPropertyChanged({
 				index: _canEditingPropertyIndex,
 				newValue: value,
 				isChanging: false,
-				isExpr: false
+				isExpr: false,
 			});
 		},
 
@@ -182,7 +182,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 				top: activeWidgetDimensions.offset.top,
 				left: activeWidgetDimensions.offset.left,
 				height: activeWidgetDimensions.size.height,
-				width: activeWidgetDimensions.size.width
+				width: activeWidgetDimensions.size.width,
 			};
 		},
 
@@ -192,7 +192,7 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 
 		getFromCache(key: string, defaultValue: any) {
 			return icache.getOrSet(key, defaultValue);
-		}
+		},
 	};
 });
 

@@ -13,30 +13,30 @@ const defaultDimensions = {
 		height: 0,
 		left: 0,
 		top: 0,
-		width: 0
+		width: 0,
 	},
 	offset: {
 		height: 0,
 		left: 0,
 		top: 0,
-		width: 0
+		width: 0,
 	},
 	position: {
 		bottom: 0,
 		left: 0,
 		right: 0,
-		top: 0
+		top: 0,
 	},
 	scroll: {
 		height: 0,
 		left: 0,
 		top: 0,
-		width: 0
+		width: 0,
 	},
 	size: {
 		width: 0,
-		height: 0
-	}
+		height: 0,
+	},
 };
 
 export function createMockIdeMiddleware() {
@@ -50,7 +50,7 @@ export function createMockIdeMiddleware() {
 		function setActiveWidgetId(): void {
 			const {
 				widget,
-				extendProperties: { onFocusing }
+				extendProperties: { onFocusing },
 			} = properties();
 
 			const activeWidgetId = widget.id;
@@ -60,7 +60,7 @@ export function createMockIdeMiddleware() {
 		function addHighlight(key: string): void {
 			const {
 				widget: { id: highlightWidgetId },
-				extendProperties: { onHighlight }
+				extendProperties: { onHighlight },
 			} = properties();
 
 			const highlightWidgetDimensions = _dimensionsResult[key] || defaultDimensions;
@@ -71,7 +71,7 @@ export function createMockIdeMiddleware() {
 		function removeHighlight(): void {
 			const {
 				widget,
-				extendProperties: { onUnhighlight }
+				extendProperties: { onUnhighlight },
 			} = properties();
 
 			if (widget.parentId === "-1") {
@@ -82,7 +82,7 @@ export function createMockIdeMiddleware() {
 		function shouldFocus() {
 			const {
 				widget: { id: widgetId },
-				extendProperties: { autoFocus }
+				extendProperties: { autoFocus },
 			} = properties();
 
 			return autoFocus && autoFocus(widgetId);
@@ -90,7 +90,7 @@ export function createMockIdeMiddleware() {
 
 		function measureActiveWidget(key: string) {
 			const {
-				extendProperties: { onFocused }
+				extendProperties: { onFocused },
 			} = properties();
 
 			const activeWidgetDimensions = _dimensionsResult[key] || defaultDimensions;
@@ -99,7 +99,7 @@ export function createMockIdeMiddleware() {
 
 		function getEditingPropertyIndex(propertyName: string) {
 			const {
-				widget: { properties: attachedWidgetProperties }
+				widget: { properties: attachedWidgetProperties },
 			} = properties();
 
 			return findIndex(
@@ -132,7 +132,7 @@ export function createMockIdeMiddleware() {
 					onmouseout: (event: MouseEvent) => {
 						event.stopImmediatePropagation();
 						removeHighlight();
-					}
+					},
 				};
 			},
 			alwaysRenderActiveWidget(): VNode | undefined {
@@ -152,7 +152,7 @@ export function createMockIdeMiddleware() {
 			},
 			changePropertyValue(value: string) {
 				const {
-					extendProperties: { onPropertyChanged }
+					extendProperties: { onPropertyChanged },
 				} = properties();
 
 				onPropertyChanged &&
@@ -160,7 +160,7 @@ export function createMockIdeMiddleware() {
 						index: _canEditingPropertyIndex,
 						newValue: value,
 						isChanging: false,
-						isExpr: false
+						isExpr: false,
 					});
 			},
 			getFocusNodeOffset() {
@@ -169,7 +169,7 @@ export function createMockIdeMiddleware() {
 					top: activeWidgetDimensions.offset.top,
 					left: activeWidgetDimensions.offset.left,
 					height: activeWidgetDimensions.size.height,
-					width: activeWidgetDimensions.size.width
+					width: activeWidgetDimensions.size.width,
 				};
 			},
 			cache(key: string, value: any) {
@@ -178,7 +178,7 @@ export function createMockIdeMiddleware() {
 			},
 			getFromCache(key: string, defaultValue: any) {
 				return cacheMap.get(key) || defaultValue;
-			}
+			},
 		};
 	});
 

@@ -61,18 +61,18 @@ describe("blocklang", () => {
 			propertyWidget: "widget",
 			propertyGroup: [
 				{
-					divider: "vertical"
+					divider: "vertical",
 				},
 				{
-					divider: "horizontal"
+					divider: "horizontal",
 				},
 				{
 					propertyName: "name",
-					target: ["marginLeft"]
-				}
+					target: ["marginLeft"],
+				},
 			],
 			target: [{ widget: "{parent}", propertyName: "flexDirection" }, "alignSelf"],
-			if: { widget: "{parent}", propertyName: "display", propertyValue: ["flex", "inlineFlex"] }
+			if: { widget: "{parent}", propertyName: "display", propertyValue: ["flex", "inlineFlex"] },
 		};
 
 		assert.isObject(layout1);

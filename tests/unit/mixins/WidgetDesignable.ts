@@ -81,20 +81,20 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 		const extendProperties: EditableProperties = {
 			onFocusing: onFocusingStub,
 			onFocused: onFocusedStub,
 			onHighlight: stub(),
 			onUnhighlight: stub(),
-			autoFocus: () => true
+			autoFocus: () => true,
 		};
 
 		harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -117,20 +117,20 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 		const extendProperties: EditableProperties = {
 			onFocusing: onFocusingStub,
 			onFocused: onFocusedStub,
 			onHighlight: stub(),
 			onUnhighlight: stub(),
-			autoFocus: () => false
+			autoFocus: () => false,
 		};
 
 		harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -152,7 +152,7 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 
 		function _autoFocus(widgetId: string) {
@@ -165,13 +165,13 @@ describe("Widget Designable mixin", () => {
 			onFocused: onFocusedStub,
 			onHighlight: stub(),
 			onUnhighlight: stub(),
-			autoFocus: _autoFocus
+			autoFocus: _autoFocus,
 		};
 
 		let h = harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -181,8 +181,8 @@ describe("Widget Designable mixin", () => {
 				key: "key1",
 				onmouseup: () => {},
 				onmouseover: () => {},
-				onmouseout: () => {}
-			})
+				onmouseout: () => {},
+			}),
 		]);
 
 		assert.isTrue(onFocusingStub.notCalled);
@@ -193,7 +193,7 @@ describe("Widget Designable mixin", () => {
 		h = harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -205,9 +205,9 @@ describe("Widget Designable mixin", () => {
 				key: "key1",
 				onmouseup: () => {},
 				onmouseover: () => {},
-				onmouseout: () => {}
+				onmouseout: () => {},
 			}),
-			v("span", { key: "__alwaysRenderFocusBox__" })
+			v("span", { key: "__alwaysRenderFocusBox__" }),
 		]);
 	});
 
@@ -225,7 +225,7 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 
 		function _autoFocus(widgetId: string) {
@@ -238,20 +238,20 @@ describe("Widget Designable mixin", () => {
 			onFocused: onFocusedStub,
 			onHighlight: stub(),
 			onUnhighlight: stub(),
-			autoFocus: _autoFocus
+			autoFocus: _autoFocus,
 		};
 
 		let h = harness(() =>
 			w(Bar, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
 		// 没有聚焦
 		h.expect(() => [
 			v("input", {
-				key: "input1"
+				key: "input1",
 			}),
 			w(Overlay, {
 				top: 0,
@@ -260,8 +260,8 @@ describe("Widget Designable mixin", () => {
 				width: 0,
 				onmouseup: () => {},
 				onmouseover: () => {},
-				onmouseout: () => {}
-			})
+				onmouseout: () => {},
+			}),
 		]);
 
 		assert.isTrue(onFocusingStub.notCalled);
@@ -272,7 +272,7 @@ describe("Widget Designable mixin", () => {
 		h = harness(() =>
 			w(Bar, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -281,7 +281,7 @@ describe("Widget Designable mixin", () => {
 
 		h.expect(() => [
 			v("input", {
-				key: "input1"
+				key: "input1",
 			}),
 			w(Overlay, {
 				top: 0,
@@ -290,9 +290,9 @@ describe("Widget Designable mixin", () => {
 				width: 0,
 				onmouseup: () => {},
 				onmouseover: () => {},
-				onmouseout: () => {}
+				onmouseout: () => {},
 			}),
-			v("span", { key: "__alwaysRenderFocusBox__" })
+			v("span", { key: "__alwaysRenderFocusBox__" }),
 		]);
 	});
 
@@ -308,20 +308,20 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 
 		const extendProperties: EditableProperties = {
 			onFocusing: onFocusingStub,
 			onFocused: onFocusedStub,
 			onHighlight: stub(),
-			onUnhighlight: stub()
+			onUnhighlight: stub(),
 		};
 
 		const h = harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -343,20 +343,20 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 
 		const extendProperties: EditableProperties = {
 			onFocusing: stub(),
 			onFocused: stub(),
 			onHighlight: onHighlightStub,
-			onUnhighlight: onUnhighlightStub
+			onUnhighlight: onUnhighlightStub,
 		};
 
 		const h = harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -379,20 +379,20 @@ describe("Widget Designable mixin", () => {
 			widgetCode: "0001",
 			widgetName: "Widget1",
 			canHasChildren: true,
-			properties: []
+			properties: [],
 		};
 
 		const extendProperties: EditableProperties = {
 			onFocusing: stub(),
 			onFocused: stub(),
 			onHighlight: onHighlightStub,
-			onUnhighlight: onUnhighlightStub
+			onUnhighlight: onUnhighlightStub,
 		};
 
 		const h = harness(() =>
 			w(Foo, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -419,22 +419,22 @@ describe("Widget Designable mixin", () => {
 					isExpr: false,
 					code: "0011",
 					name: "value",
-					valueType: "string"
-				}
-			]
+					valueType: "string",
+				},
+			],
 		};
 
 		const extendProperties: EditableProperties = {
 			onFocusing: stub(),
 			onFocused: stub(),
 			onHighlight: stub(),
-			onUnhighlight: stub()
+			onUnhighlight: stub(),
 		};
 
 		const h = harness(() =>
 			w(InputWidget, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -444,7 +444,7 @@ describe("Widget Designable mixin", () => {
 				key: "input1",
 				onmouseup: () => {},
 				onmouseover: () => {},
-				onmouseout: () => {}
+				onmouseout: () => {},
 			})
 		);
 	});
@@ -468,9 +468,9 @@ describe("Widget Designable mixin", () => {
 					isExpr: false,
 					code: "0011",
 					name: "value",
-					valueType: "string"
-				}
-			]
+					valueType: "string",
+				},
+			],
 		};
 
 		const extendProperties: EditableProperties = {
@@ -478,13 +478,13 @@ describe("Widget Designable mixin", () => {
 			onFocused: stub(),
 			onHighlight: stub(),
 			onUnhighlight: stub(),
-			onPropertyChanged: onPropertyChangedStub
+			onPropertyChanged: onPropertyChangedStub,
 		};
 
 		const h = harness(() =>
 			w(InputWidget, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -494,7 +494,7 @@ describe("Widget Designable mixin", () => {
 				onmouseup: () => {},
 				onmouseover: () => {},
 				onmouseout: () => {},
-				oninput: () => {}
+				oninput: () => {},
 			})
 		);
 
@@ -524,9 +524,9 @@ describe("Widget Designable mixin", () => {
 					isExpr: false,
 					code: "0011",
 					name: "value",
-					valueType: "string"
-				}
-			]
+					valueType: "string",
+				},
+			],
 		};
 
 		const extendProperties: EditableProperties = {
@@ -534,13 +534,13 @@ describe("Widget Designable mixin", () => {
 			onFocused: stub(),
 			onHighlight: stub(),
 			onUnhighlight: stub(),
-			onPropertyChanged: onPropertyChangedStub
+			onPropertyChanged: onPropertyChangedStub,
 		};
 
 		const h = harness(() =>
 			w(SpanWidget, {
 				widget,
-				extendProperties
+				extendProperties,
 			})
 		);
 
@@ -550,7 +550,7 @@ describe("Widget Designable mixin", () => {
 				onmouseup: () => {},
 				onmouseover: () => {},
 				onmouseout: () => {},
-				oninput: () => {}
+				oninput: () => {},
 			})
 		);
 

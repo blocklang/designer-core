@@ -447,7 +447,7 @@ export interface VisualNode {
  * @property fromNode     起始节点标识
  * @property fromOutput   起始节点中的输出型端口
  * @property toNode       终止节点标识
- * @property toInput      终止节点的输入型端口
+ * @property toInput      终止节点中的输入型端口
  */
 export interface NodeConnection {
 	id: string;

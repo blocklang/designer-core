@@ -148,7 +148,7 @@ export function watchingWidgetInstanceMap(widgetInstanceMap: WeakMap<WidgetBaseI
 		// 为什么这样会起作用？
 		// 为什么不是 originSet 和 set 引用的不是同一个方法
 		item.originSet = item.set;
-		item.set = function(key: any, value: any) {
+		item.set = function (key: any, value: any) {
 			widgetInstanceMap.set(key, value);
 			this.originSet(key, value);
 			return this;

@@ -6,7 +6,7 @@ import {
 	getNextIndex,
 	getParentIndex,
 	getChildrenIndex,
-	getNodePath
+	getNodePath,
 } from "../../../src/utils/treeUtil";
 
 describe("utils/treeUtil", () => {
@@ -18,7 +18,7 @@ describe("utils/treeUtil", () => {
 			getAllChildCount(
 				[
 					{ id: "1", parentId: "-1" },
-					{ id: "2", parentId: "1" }
+					{ id: "2", parentId: "1" },
 				],
 				0
 			),
@@ -29,7 +29,7 @@ describe("utils/treeUtil", () => {
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
-					{ id: "3", parentId: "2" }
+					{ id: "3", parentId: "2" },
 				],
 				0
 			),
@@ -42,7 +42,7 @@ describe("utils/treeUtil", () => {
 					{ id: "2", parentId: "1" },
 					{ id: "3", parentId: "2" },
 					{ id: "4", parentId: "2" },
-					{ id: "5", parentId: "1" }
+					{ id: "5", parentId: "1" },
 				],
 				1
 			),
@@ -56,7 +56,7 @@ describe("utils/treeUtil", () => {
 			getChildrenIndex(
 				[
 					{ id: "1", parentId: "-1" },
-					{ id: "2", parentId: "1" }
+					{ id: "2", parentId: "1" },
 				],
 				"1",
 				1
@@ -68,7 +68,7 @@ describe("utils/treeUtil", () => {
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
-					{ id: "3", parentId: "2" }
+					{ id: "3", parentId: "2" },
 				],
 				"1",
 				1
@@ -82,7 +82,7 @@ describe("utils/treeUtil", () => {
 					{ id: "2", parentId: "1" },
 					{ id: "3", parentId: "2" },
 					{ id: "4", parentId: "2" },
-					{ id: "5", parentId: "1" }
+					{ id: "5", parentId: "1" },
 				],
 				"2",
 				2
@@ -106,7 +106,7 @@ describe("utils/treeUtil", () => {
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
-					{ id: "3", parentId: "1" }
+					{ id: "3", parentId: "1" },
 				],
 				2
 			),
@@ -121,7 +121,7 @@ describe("utils/treeUtil", () => {
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
 					{ id: "21", parentId: "2" },
-					{ id: "3", parentId: "1" }
+					{ id: "3", parentId: "1" },
 				],
 				3
 			),
@@ -144,7 +144,7 @@ describe("utils/treeUtil", () => {
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
-					{ id: "3", parentId: "1" }
+					{ id: "3", parentId: "1" },
 				],
 				1
 			),
@@ -159,7 +159,7 @@ describe("utils/treeUtil", () => {
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
 					{ id: "21", parentId: "2" },
-					{ id: "3", parentId: "1" }
+					{ id: "3", parentId: "1" },
 				],
 				1
 			),
@@ -181,7 +181,7 @@ describe("utils/treeUtil", () => {
 			getParentIndex(
 				[
 					{ id: "1", parentId: "-1" },
-					{ id: "2", parentId: "1" }
+					{ id: "2", parentId: "1" },
 				],
 				1
 			),
@@ -203,7 +203,7 @@ describe("utils/treeUtil", () => {
 			getNodePath(
 				[
 					{ id: "1", parentId: "-1" },
-					{ id: "2", parentId: "1" }
+					{ id: "2", parentId: "1" },
 				],
 				0
 			),
@@ -216,13 +216,13 @@ describe("utils/treeUtil", () => {
 			getNodePath(
 				[
 					{ id: "1", parentId: "-1" },
-					{ id: "2", parentId: "1" }
+					{ id: "2", parentId: "1" },
 				],
 				1
 			),
 			[
 				{ node: { id: "1", parentId: "-1" }, index: -1 },
-				{ node: { id: "2", parentId: "1" }, index: 0 }
+				{ node: { id: "2", parentId: "1" }, index: 0 },
 			]
 		);
 	});
@@ -233,14 +233,14 @@ describe("utils/treeUtil", () => {
 				[
 					{ id: "1", parentId: "-1" },
 					{ id: "2", parentId: "1" },
-					{ id: "3", parentId: "2" }
+					{ id: "3", parentId: "2" },
 				],
 				2
 			),
 			[
 				{ node: { id: "1", parentId: "-1" }, index: -1 },
 				{ node: { id: "2", parentId: "1" }, index: 0 },
-				{ node: { id: "3", parentId: "2" }, index: 0 }
+				{ node: { id: "3", parentId: "2" }, index: 0 },
 			]
 		);
 	});
@@ -254,7 +254,7 @@ describe("utils/treeUtil", () => {
 					{ id: "3", parentId: "2" },
 					{ id: "4", parentId: "2" },
 					{ id: "5", parentId: "4" },
-					{ id: "6", parentId: "4" }
+					{ id: "6", parentId: "4" },
 				],
 				5
 			),
@@ -262,7 +262,7 @@ describe("utils/treeUtil", () => {
 				{ node: { id: "1", parentId: "-1" }, index: -1 },
 				{ node: { id: "2", parentId: "1" }, index: 0 },
 				{ node: { id: "4", parentId: "2" }, index: 1 },
-				{ node: { id: "6", parentId: "4" }, index: 1 }
+				{ node: { id: "6", parentId: "4" }, index: 1 },
 			]
 		);
 	});

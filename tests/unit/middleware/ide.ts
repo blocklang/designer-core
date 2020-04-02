@@ -4,7 +4,7 @@ import ideMiddleware from "../../../src/middleware/ide";
 import { stub } from "sinon";
 
 const dimensionsStub = {
-	get: stub().returns({ offset: { top: 1, left: 2 }, size: { height: 3, width: 4 } })
+	get: stub().returns({ offset: { top: 1, left: 2 }, size: { height: 3, width: 4 } }),
 };
 
 const icacheStub = stub();
@@ -16,10 +16,10 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({}),
-			children: () => []
+			children: () => [],
 		});
 		assert.hasAllKeys(ide.activeWidgetEvents(), ["onmouseup", "onmouseover", "onmouseout"]);
 	});
@@ -31,10 +31,10 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({ widget: { id: "1" }, extendProperties: { onFocusing: onFocusingStub } }),
-			children: () => []
+			children: () => [],
 		});
 		ide.activeWidgetEvents().onmouseup({ stopImmediatePropagation: () => {} } as MouseEvent);
 		assert.isTrue(onFocusingStub.calledOnce);
@@ -47,10 +47,10 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({ widget: { id: "1" }, extendProperties: { onHighlight: onHighlightStub } }),
-			children: () => []
+			children: () => [],
 		});
 		ide.activeWidgetEvents().onmouseover({ stopImmediatePropagation: () => {} } as MouseEvent);
 		assert.isTrue(onHighlightStub.notCalled);
@@ -63,10 +63,10 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({ widget: { id: "1" }, extendProperties: { onHighlight: onHighlightStub } }),
-			children: () => []
+			children: () => [],
 		});
 		ide.config("key");
 		ide.activeWidgetEvents().onmouseover({ stopImmediatePropagation: () => {} } as MouseEvent);
@@ -80,13 +80,13 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({
 				widget: { parentId: "1" /* not -1*/ },
-				extendProperties: { onUnhighlight: onUnhighlightStub }
+				extendProperties: { onUnhighlight: onUnhighlightStub },
 			}),
-			children: () => []
+			children: () => [],
 		});
 		ide.config("key");
 		ide.activeWidgetEvents().onmouseout({ stopImmediatePropagation: () => {} } as MouseEvent);
@@ -100,10 +100,10 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({ widget: { parentId: "-1" }, extendProperties: { onUnhighlight: onUnhighlightStub } }),
-			children: () => []
+			children: () => [],
 		});
 		ide.config("key");
 		ide.activeWidgetEvents().onmouseout({ stopImmediatePropagation: () => {} } as MouseEvent);
@@ -175,10 +175,10 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({ extendProperties: { onPropertyChanged: onPropertyChangedStub } }),
-			children: () => []
+			children: () => [],
 		});
 		ide.changePropertyValue("a");
 		assert.isTrue(onPropertyChangedStub.notCalled);
@@ -191,13 +191,13 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },
-				extendProperties: { onPropertyChanged: onPropertyChangedStub }
+				extendProperties: { onPropertyChanged: onPropertyChangedStub },
 			}),
-			children: () => []
+			children: () => [],
 		});
 
 		ide.config("key", "prop2");
@@ -213,13 +213,13 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },
-				extendProperties: { onPropertyChanged: onPropertyChangedStub }
+				extendProperties: { onPropertyChanged: onPropertyChangedStub },
 			}),
-			children: () => []
+			children: () => [],
 		});
 
 		ide.config("key", "prop1");
@@ -235,13 +235,13 @@ describe("middleware/ide", () => {
 			id: "test",
 			middleware: {
 				dimensions: dimensionsStub,
-				icache: icacheStub
+				icache: icacheStub,
 			},
 			properties: () => ({
 				widget: { properties: [{ name: "prop1" }] },
-				extendProperties: { onPropertyChanged: onPropertyChangedStub }
+				extendProperties: { onPropertyChanged: onPropertyChangedStub },
 			}),
-			children: () => []
+			children: () => [],
 		});
 
 		ide.config("key", "prop1");

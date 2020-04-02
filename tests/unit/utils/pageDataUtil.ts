@@ -12,7 +12,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -20,8 +20,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				value: "bar",
-				open: true
-			}
+				open: true,
+			},
 		];
 
 		assert.equal(convertDataIdToJsonPath(pageData, ""), "");
@@ -39,7 +39,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -47,8 +47,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				value: "a",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(convertDataIdToJsonPath(pageData, "3"), "");
 	});
@@ -61,7 +61,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -69,8 +69,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				value: "a",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(convertDataIdToJsonPath(pageData, "2"), "$.foo");
 	});
@@ -82,14 +82,14 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
 				parentId: "1",
 				name: "foo",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "3",
@@ -97,8 +97,8 @@ describe("utils/pageDataUtil", () => {
 				name: "bar",
 				type: "String",
 				value: "a",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(convertDataIdToJsonPath(pageData, "3"), "$.foo.bar");
 	});
@@ -110,14 +110,14 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
 				parentId: "1",
 				name: "foo",
 				type: "Array",
-				open: true
+				open: true,
 			},
 			{
 				id: "3",
@@ -125,8 +125,8 @@ describe("utils/pageDataUtil", () => {
 				name: "0",
 				type: "String",
 				value: "a",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(convertDataIdToJsonPath(pageData, "3"), "$.foo[0]");
 	});
@@ -138,14 +138,14 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
 				parentId: "1",
 				name: "foo",
 				type: "Array",
-				open: true
+				open: true,
 			},
 			{
 				id: "3",
@@ -153,7 +153,7 @@ describe("utils/pageDataUtil", () => {
 				name: "0",
 				type: "String",
 				value: "a",
-				open: true
+				open: true,
 			},
 			{
 				id: "4",
@@ -161,8 +161,8 @@ describe("utils/pageDataUtil", () => {
 				name: "1",
 				type: "String",
 				value: "b",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(convertDataIdToJsonPath(pageData, "4"), "$.foo[1]");
 	});
@@ -174,14 +174,14 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
 				parentId: "1",
 				name: "foo",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "3",
@@ -189,7 +189,7 @@ describe("utils/pageDataUtil", () => {
 				name: "bar",
 				type: "Array",
 				value: "a",
-				open: true
+				open: true,
 			},
 			{
 				id: "4",
@@ -197,7 +197,7 @@ describe("utils/pageDataUtil", () => {
 				name: "0",
 				type: "String",
 				value: "b",
-				open: true
+				open: true,
 			},
 			{
 				id: "5",
@@ -205,8 +205,8 @@ describe("utils/pageDataUtil", () => {
 				name: "0",
 				type: "String",
 				value: "b",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(convertDataIdToJsonPath(pageData, "4"), "$.foo.bar[0]");
 		assert.equal(convertDataIdToJsonPath(pageData, "5"), "$.foo.bar[1]");
@@ -225,7 +225,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -233,8 +233,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				value: "a",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.equal(getValue(pageData, "2"), "a");
 	});
@@ -246,7 +246,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -254,8 +254,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "Number",
 				value: "1",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.strictEqual(getValue(pageData, "2"), 1);
 	});
@@ -267,7 +267,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -275,8 +275,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "Boolean",
 				value: "true",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.isTrue(getValue(pageData, "2"));
 	});
@@ -288,7 +288,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -296,8 +296,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				open: true,
-				value: "bar"
-			}
+				value: "bar",
+			},
 		];
 		assert.deepEqual(getValue(pageData, "1"), { foo: "bar" });
 	});
@@ -309,7 +309,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -317,7 +317,7 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				open: true,
-				value: "a"
+				value: "a",
 			},
 			{
 				id: "3",
@@ -325,8 +325,8 @@ describe("utils/pageDataUtil", () => {
 				name: "bar",
 				type: "String",
 				open: true,
-				value: "b"
-			}
+				value: "b",
+			},
 		];
 		assert.deepEqual(getValue(pageData, "1"), { foo: "a", bar: "b" });
 	});
@@ -338,14 +338,14 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
 				parentId: "1",
 				name: "foo",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "3",
@@ -353,8 +353,8 @@ describe("utils/pageDataUtil", () => {
 				name: "bar",
 				type: "String",
 				open: true,
-				value: "a"
-			}
+				value: "a",
+			},
 		];
 		assert.deepEqual(getValue(pageData, "1"), { foo: { bar: "a" } });
 	});
@@ -366,7 +366,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -374,7 +374,7 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "Array",
 				open: true,
-				value: "a"
+				value: "a",
 			},
 			{
 				id: "3",
@@ -382,7 +382,7 @@ describe("utils/pageDataUtil", () => {
 				name: "0",
 				type: "String",
 				open: true,
-				value: "a"
+				value: "a",
 			},
 			{
 				id: "4",
@@ -390,8 +390,8 @@ describe("utils/pageDataUtil", () => {
 				name: "1",
 				type: "String",
 				open: true,
-				value: "b"
-			}
+				value: "b",
+			},
 		];
 		assert.deepEqual(getValue(pageData, "2"), ["a", "b"]);
 	});
@@ -403,7 +403,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
@@ -411,14 +411,14 @@ describe("utils/pageDataUtil", () => {
 				name: "array",
 				type: "Array",
 				open: true,
-				value: "a"
+				value: "a",
 			},
 			{
 				id: "3",
 				parentId: "2",
 				name: "0",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "4",
@@ -426,8 +426,8 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				open: true,
-				value: "bar"
-			}
+				value: "bar",
+			},
 		];
 		assert.deepEqual(getValue(pageData, "2"), [{ foo: "bar" }]);
 	});
@@ -439,21 +439,21 @@ describe("utils/pageDataUtil", () => {
 				parentId: "-1",
 				name: "$",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "2",
 				parentId: "1",
 				name: "array",
 				type: "Array",
-				open: true
+				open: true,
 			},
 			{
 				id: "3",
 				parentId: "2",
 				name: "0",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "4",
@@ -461,28 +461,28 @@ describe("utils/pageDataUtil", () => {
 				name: "a",
 				type: "String",
 				open: true,
-				value: "1"
+				value: "1",
 			},
 			{
 				id: "5",
 				parentId: "2",
 				name: "1",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "6",
 				parentId: "5",
 				name: "b",
 				type: "Array",
-				open: true
+				open: true,
 			},
 			{
 				id: "7",
 				parentId: "6",
 				name: "0",
 				type: "Object",
-				open: true
+				open: true,
 			},
 			{
 				id: "8",
@@ -490,8 +490,8 @@ describe("utils/pageDataUtil", () => {
 				name: "c",
 				type: "String",
 				value: "2",
-				open: true
-			}
+				open: true,
+			},
 		];
 		assert.deepEqual(getValue(pageData, "2"), [{ a: "1" }, { b: [{ c: "2" }] }]);
 	});

@@ -17,7 +17,7 @@ describe("overlay", () => {
 			width: 0,
 			onmouseup: () => {},
 			onmouseover: () => {},
-			onmouseout: () => {}
+			onmouseout: () => {},
 		};
 		const h = harness(() => <Overlay {...properties} />);
 
@@ -42,7 +42,7 @@ describe("overlay", () => {
 			width: 0,
 			onmouseup: onmouseupStub,
 			onmouseover: () => {},
-			onmouseout: () => {}
+			onmouseout: () => {},
 		};
 		const h = harness(() => <Overlay {...properties} />);
 		h.trigger("@overlay", "onmouseup");
@@ -58,7 +58,7 @@ describe("overlay", () => {
 			width: 0,
 			onmouseup: () => {},
 			onmouseover: onmouseoverStub,
-			onmouseout: () => {}
+			onmouseout: () => {},
 		};
 		const h = harness(() => <Overlay {...properties} />);
 		h.trigger("@overlay", "onmouseover");
@@ -74,7 +74,7 @@ describe("overlay", () => {
 			width: 0,
 			onmouseup: () => {},
 			onmouseover: () => {},
-			onmouseout: onmouseoutStub
+			onmouseout: onmouseoutStub,
 		};
 		const h = harness(() => <Overlay {...properties} />);
 		h.trigger("@overlay", "onmouseout");
