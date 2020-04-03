@@ -486,20 +486,25 @@ export interface FunctionReturn {
 }
 
 /**
- * FIXNE: 未使用
+ * 事件处理函数
  *
- * 函数定义信息
+ * 信息传递流：
  *
- * 用于：
- * 1. 部件中的事件
+ * 1. 部件属性定义（定义了事件名，输入参数等函数签名信息） ->
+ * 2. 生成一个函数定义标识（根据函数签名定义出的函数的标识）->
+ * 3. 将上述两个信息存到 EventHandler 中（作为中转） ->
+ * 4. 根据 EventHandler 生成在可视化函数设计器中的函数定义节点
  *
- * @property id    属性（此处是指事件）定义标识，不是放置到页面之后生成的标识
+ * 专用于部件中的事件。因为事件处理函数不会有返回值，所以没有包含 return
+ *
+ * @property handlerId    事件处理函数的标识，注意不是事件定义的标识，是为事件绑定的处理函数的标识
+ * @property eventName    事件名（事件定义的一部分）
+ * @property eventInputArguments    事件的输入参数（事件定义的一部分）
  */
-export interface FunctionDeclaration {
-	id: number;
-	name: string;
-	arguments: FunctionArgument[];
-	return?: FunctionReturn;
+export interface EventHandler {
+	handlerId: string;
+	eventName: string;
+	eventInputArguments: FunctionArgument[];
 }
 
 // export interface VariableDeclaration {
