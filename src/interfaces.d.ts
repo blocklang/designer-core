@@ -333,11 +333,6 @@ export interface PageFunction {
 }
 
 /**
- * 节点种类，这是按照节点的呈现形式分类的。
- */
-export type NodeCategory = "flowControl" | "data";
-
-/**
  * 序列端口
  *
  * 专用于描述函数的调用次序
@@ -377,9 +372,10 @@ export interface DataPort extends SequencePort {
 	name: string;
 	type: FunctionValueType;
 
-	bindSource: PortBindSource;
-	apiRepoId: number;
-	code: string;
+	// 以下属性，在添加 API 组件时再设计
+	bindSource?: PortBindSource;
+	apiRepoId?: number;
+	code?: string;
 }
 
 /**
@@ -391,14 +387,21 @@ export interface InputDataPort extends DataPort {
 	value?: string;
 }
 
-type FunctionType =
+/**
+ * 节点种类，这是按照节点的呈现形式分类的。
+ */
+export type NodeLayout =
+	| "flowControl" // 流程控制节点
+	| "data"; // 数据节点
+
+export type NodeCategory =
 	| "function" // 函数定义
 	| "functionCall" // 函数调用
 	| "variableSet" // 为变量设置值
 	| "variableGet"; // 获取变量的值
 
 // 注意，此处不应包含 "widgetEvent"，因为这属于函数与事件之间的绑定关系，并不是函数定义体中使用的数据
-type NodeBindSource =
+export type NodeBindSource =
 	| "data" // 取自页面数据
 	| "service"; // 取自 RESTful API
 
@@ -408,14 +411,15 @@ type NodeBindSource =
  * @property id                     函数节点标识
  * @property left                   函数节点左上角在设计器上的 x 坐标，原点是左上角
  * @property top                    函数节点左上角在设计器上的 y 坐标，原点是左上角
- * @property caption                标题
- * @property text                   简述
- * @property category               节点类型，跟节点的布局相关
- * @property inputSequencePorts     输入型的序列端口列表，一个节点只能有0或1个
+ * @property caption                标题，显示在 title 区域
+ * @property text                   简述，显示在输入序列端口和输出序列端口之间
+ * @property layout                 节点布局
+ * @property category               函数定义或调用类型，目前主要用于动态设置节点的 caption 和 text 等属性
+ * @property dataItemId             引用的数据项标识，当 category 为 variableGet 和 variableSet 时需设置此值
+ * @property inputSequencePort      输入型的序列端口，一个节点只能有0或1个
  * @property outputSequencePorts    输出型的序列端口列表
  * @property inputDataPorts         输入型的数据端口列表
  * @property outputDataPorts        输出型的数据端口列表
- * @property functionType           函数类型，目前主要用于动态设置节点的 caption 和 text 等属性
  * @property bindSource             与哪一类数据绑定，如页面数据和 RESTful API 等
  * @property apiRepoId              API 仓库标识
  * @property code                   绑定标识，取自定义标识，并不是实例标识。如果是页面数据，则值为数据项标识，即 32 位的 uuid
@@ -426,13 +430,14 @@ export interface VisualNode {
 	top: number;
 	caption: string;
 	text: string;
+	layout: NodeLayout;
 	category: NodeCategory;
+	dataItemId?: string;
 	inputSequencePort?: InputSequencePort;
 	outputSequencePorts: OutputSequencePort[];
 	inputDataPorts: InputDataPort[];
 	outputDataPorts: DataPort[];
 
-	functionType: FunctionType;
 	bindSource?: NodeBindSource;
 	apiRepoId?: number;
 	code?: string;
@@ -445,9 +450,9 @@ export interface VisualNode {
  *
  * @property id           连接线标识
  * @property fromNode     起始节点标识
- * @property fromOutput   起始节点中的输出型端口
+ * @property fromOutput   起始节点中的输出型端口标识
  * @property toNode       终止节点标识
- * @property toInput      终止节点中的输入型端口
+ * @property toInput      终止节点中的输入型端口标识
  */
 export interface NodeConnection {
 	id: string;
@@ -473,7 +478,7 @@ export type FunctionValueType = PropertyValueType;
  * @property defaultValue  参数的默认值
  */
 export interface FunctionArgument {
-	id: string;
+	id: string; // -> number?
 	name: string;
 	valueType: FunctionValueType;
 	defaultValue?: string;
