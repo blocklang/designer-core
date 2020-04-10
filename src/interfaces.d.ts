@@ -551,18 +551,18 @@ export type PageDataItemValueType = "String" | "Number" | "Date" | "Boolean" | "
  *
  * 页面数据是由多条有父子关系的数据项组成。
  *
- * @property id         页面数据标识
- * @property parentId   数据项的父标识
- * @property name       变量名
- * @property value      变量的值
- * @property type       变量值的类型
- * @property open       如果包含子数据项，是否展开，默认为不展开
+ * @property id               页面数据标识
+ * @property parentId         数据项的父标识
+ * @property name             变量名
+ * @property defaultValue     变量的默认值
+ * @property type             变量值的类型
+ * @property open             如果包含子数据项，是否展开，默认为不展开
  */
 export interface PageDataItem {
 	id: string;
 	parentId: string;
 	name: string;
-	value?: string;
+	defaultValue?: string;
 	type: PageDataItemValueType;
 	open: boolean;
 }
