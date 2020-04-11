@@ -555,6 +555,7 @@ export type PageDataItemValueType = "String" | "Number" | "Date" | "Boolean" | "
  * @property parentId         数据项的父标识
  * @property name             变量名
  * @property defaultValue     变量的默认值
+ * @property value            在运行时为变量设置的值
  * @property type             变量值的类型
  * @property open             如果包含子数据项，是否展开，默认为不展开
  */
@@ -563,6 +564,7 @@ export interface PageDataItem {
 	parentId: string;
 	name: string;
 	defaultValue?: string;
+	value?: string;
 	type: PageDataItemValueType;
 	open: boolean;
 }
