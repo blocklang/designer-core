@@ -218,6 +218,27 @@ describe("utils/pageDataUtil", () => {
 		assert.isUndefined(getValue(pageData, "1"));
 	});
 
+	it("getValue: string defult value", () => {
+		const pageData: PageDataItem[] = [
+			{
+				id: "1",
+				parentId: "-1",
+				name: "$",
+				type: "Object",
+				open: true,
+			},
+			{
+				id: "2",
+				parentId: "1",
+				name: "foo",
+				type: "String",
+				defaultValue: "a",
+				open: true,
+			},
+		];
+		assert.equal(getValue(pageData, "2"), "a");
+	});
+
 	it("getValue: string value", () => {
 		const pageData: PageDataItem[] = [
 			{
@@ -232,11 +253,33 @@ describe("utils/pageDataUtil", () => {
 				parentId: "1",
 				name: "foo",
 				type: "String",
-				value: "a",
+				defaultValue: "a",
+				value: "aa", // 会优先取 value 的值，如果 value 不存在，才取 defaultValue
 				open: true,
 			},
 		];
-		assert.equal(getValue(pageData, "2"), "a");
+		assert.equal(getValue(pageData, "2"), "aa");
+	});
+
+	it("getValue: number defult value", () => {
+		const pageData: PageDataItem[] = [
+			{
+				id: "1",
+				parentId: "-1",
+				name: "$",
+				type: "Object",
+				open: true,
+			},
+			{
+				id: "2",
+				parentId: "1",
+				name: "foo",
+				type: "Number",
+				defaultValue: "1",
+				open: true,
+			},
+		];
+		assert.strictEqual(getValue(pageData, "2"), 1);
 	});
 
 	it("getValue: number value", () => {
@@ -253,11 +296,33 @@ describe("utils/pageDataUtil", () => {
 				parentId: "1",
 				name: "foo",
 				type: "Number",
-				value: "1",
+				defaultValue: "1",
+				value: "11",
 				open: true,
 			},
 		];
-		assert.strictEqual(getValue(pageData, "2"), 1);
+		assert.strictEqual(getValue(pageData, "2"), 11);
+	});
+
+	it("getValue: boolean defult value", () => {
+		const pageData: PageDataItem[] = [
+			{
+				id: "1",
+				parentId: "-1",
+				name: "$",
+				type: "Object",
+				open: true,
+			},
+			{
+				id: "2",
+				parentId: "1",
+				name: "foo",
+				type: "Boolean",
+				defaultValue: "true",
+				open: true,
+			},
+		];
+		assert.isTrue(getValue(pageData, "2"));
 	});
 
 	it("getValue: boolean value", () => {
@@ -274,6 +339,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "1",
 				name: "foo",
 				type: "Boolean",
+				defaultValue: "false",
 				value: "true",
 				open: true,
 			},
@@ -296,7 +362,7 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				open: true,
-				value: "bar",
+				defaultValue: "bar",
 			},
 		];
 		assert.deepEqual(getValue(pageData, "1"), { foo: "bar" });
@@ -317,7 +383,7 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				open: true,
-				value: "a",
+				defaultValue: "a",
 			},
 			{
 				id: "3",
@@ -325,7 +391,7 @@ describe("utils/pageDataUtil", () => {
 				name: "bar",
 				type: "String",
 				open: true,
-				value: "b",
+				defaultValue: "b",
 			},
 		];
 		assert.deepEqual(getValue(pageData, "1"), { foo: "a", bar: "b" });
@@ -353,7 +419,7 @@ describe("utils/pageDataUtil", () => {
 				name: "bar",
 				type: "String",
 				open: true,
-				value: "a",
+				defaultValue: "a",
 			},
 		];
 		assert.deepEqual(getValue(pageData, "1"), { foo: { bar: "a" } });
@@ -374,7 +440,7 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "Array",
 				open: true,
-				value: "a",
+				defaultValue: "a",
 			},
 			{
 				id: "3",
@@ -382,7 +448,7 @@ describe("utils/pageDataUtil", () => {
 				name: "0",
 				type: "String",
 				open: true,
-				value: "a",
+				defaultValue: "a",
 			},
 			{
 				id: "4",
@@ -390,7 +456,7 @@ describe("utils/pageDataUtil", () => {
 				name: "1",
 				type: "String",
 				open: true,
-				value: "b",
+				defaultValue: "b",
 			},
 		];
 		assert.deepEqual(getValue(pageData, "2"), ["a", "b"]);
@@ -411,7 +477,7 @@ describe("utils/pageDataUtil", () => {
 				name: "array",
 				type: "Array",
 				open: true,
-				value: "a",
+				defaultValue: "a",
 			},
 			{
 				id: "3",
@@ -426,7 +492,7 @@ describe("utils/pageDataUtil", () => {
 				name: "foo",
 				type: "String",
 				open: true,
-				value: "bar",
+				defaultValue: "bar",
 			},
 		];
 		assert.deepEqual(getValue(pageData, "2"), [{ foo: "bar" }]);
@@ -461,7 +527,7 @@ describe("utils/pageDataUtil", () => {
 				name: "a",
 				type: "String",
 				open: true,
-				value: "1",
+				defaultValue: "1",
 			},
 			{
 				id: "5",
@@ -489,7 +555,7 @@ describe("utils/pageDataUtil", () => {
 				parentId: "7",
 				name: "c",
 				type: "String",
-				value: "2",
+				defaultValue: "2",
 				open: true,
 			},
 		];
