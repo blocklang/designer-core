@@ -123,6 +123,93 @@ export interface EditableWidgetProperties extends WidgetProperties {
 	extendProperties: EditableProperties;
 }
 
+/**
+ * @interface ServiceRepo
+ *
+ * 主要描述 API 仓库中的 Service 信息
+ *
+ * @property apiRepoId         API 仓库标识
+ * @property apiRepoName       API 仓库名称，对应于 api.json 中的 name 属性
+ * @property group             分组名
+ */
+export interface ServiceRepo {
+	apiRepoId: number;
+	apiRepoName: string;
+	group: ServiceGroup[];
+}
+
+export interface ServiceGroup {
+	name: string;
+	paths: PathItem[];
+}
+
+export interface PathItem {
+	name: string;
+	description?: string;
+	operations: Operation[];
+}
+
+export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS" | "HEAD" | "PATCH" | "TRACE";
+export interface Operation {
+	httpMethod: HttpMethod;
+	operationId: string;
+	description?: string;
+	parameters: Parameter[];
+	requestBody?: RequestBody;
+	responses: ApiResponse[];
+}
+
+export type ParameterLocation = "path" | "query" | "header" | "cookie";
+export interface Parameter {
+	name: string;
+	in: ParameterLocation;
+	description?: string;
+	required: boolean;
+	allowEmptyValue: boolean;
+	schema?: Schema;
+}
+
+export interface RequestBody {
+	description?: string;
+	content: MediaTypeContent[];
+}
+
+export type MediaType =
+	| "application/json"
+	| "application/octet-stream"
+	| "application/x-www-form-urlencoded"
+	| "text/plain"
+	| "application/xml";
+export interface MediaTypeContent {
+	name: MediaType;
+	// 只包含 schema，未考虑 openApi 中的 examples
+	schema: Schema;
+}
+
+export interface ApiResponse {
+	name: string;
+	description?: string;
+	content: MediaTypeContent[];
+}
+
+export type SchemaType = "string" | "number" | "boolean" | "object" | "array";
+
+export interface Schema {
+	name: string;
+	type: SchemaType;
+	format?: string;
+	title?: string;
+	description?: string;
+	minimum?: number;
+	maximum?: number;
+	minLength?: number;
+	maxLength?: number;
+	pattern?: string;
+	required?: string[];
+	default?: string;
+	properties?: Schema[];
+}
+
 /****************以下为第三方组件库的模型*****************/
 
 // FIXME: 此接口中的值需要逐步细化
@@ -634,6 +721,7 @@ export interface PaneLayout {
  *
  * @property project                       项目基本信息
  * @property widgetRepos                   项目依赖的所有 widget，类型为 widget 的 API 库，按 API 库分组。
+ * @property serviceRepos                  项目依赖的所有 Service
  * @property ideRepos                      项目依赖的 ide 组件库信息
  * @property pageModel                     页面模型
  * @property selectedWidgetIndex           当前选中的部件索引，是相对于全页面的索引
@@ -650,6 +738,7 @@ export interface PaneLayout {
 export interface State {
 	project: Project;
 	widgetRepos: WidgetRepo[];
+	serviceRepos: ServiceRepo[];
 	ideRepos: ComponentRepo[];
 	pageModel: PageModel;
 	// ui 的焦点信息
