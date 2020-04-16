@@ -1,5 +1,5 @@
-import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
 import { WidgetProperties } from "@dojo/framework/core/interfaces";
+import { DimensionResults } from "@dojo/framework/core/meta/Dimensions";
 
 /**
  * @type Widget
@@ -130,19 +130,35 @@ export interface EditableWidgetProperties extends WidgetProperties {
  *
  * @property apiRepoId         API 仓库标识
  * @property apiRepoName       API 仓库名称，对应于 api.json 中的 name 属性
- * @property group             分组名
+ * @property groups            服务分组
  */
 export interface ServiceRepo {
 	apiRepoId: number;
 	apiRepoName: string;
-	group: ServiceGroup[];
+	groups: ServiceGroup[];
 }
 
+/**
+ * @interface ServiceGroup
+ *
+ * Service 的分组信息，通常按资源分组，如将用户资源相关的所有 Service 放在一个组，并取名为 `users`
+ *
+ * @property name     分组名
+ * @property paths    路径列表
+ *
+ */
 export interface ServiceGroup {
 	name: string;
 	paths: PathItem[];
 }
 
+/**
+ * @interface PathItem
+ *
+ * @property name           服务对应的请求路径，相对路径，必须以 `/` 开头，如 `/users/{userId}`
+ * @property description    详细描述
+ * @property operations     操作列表，一个 HttpMethod 对应一个操作
+ */
 export interface PathItem {
 	name: string;
 	description?: string;
@@ -150,6 +166,19 @@ export interface PathItem {
 }
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "OPTIONS" | "HEAD" | "PATCH" | "TRACE";
+
+/**
+ * @interface Operation
+ *
+ * 操作，一个 HttpMethod 对应一个操作
+ *
+ * @property httpMethod     http method
+ * @property operationId    操作标识，需要确保全局唯一，如 `getUserById`
+ * @property description    详细描述
+ * @property parameters     输入参数列表
+ * @property requestBody    请求体，常用于 `POST` 和 `PUT`
+ * @property responses      响应列表，不同的状态码对应不同的响应结果
+ */
 export interface Operation {
 	httpMethod: HttpMethod;
 	operationId: string;
@@ -160,15 +189,34 @@ export interface Operation {
 }
 
 export type ParameterLocation = "path" | "query" | "header" | "cookie";
+
+/**
+ * @interface Parameter
+ *
+ * 输入参数
+ *
+ * @property name              参数名
+ * @property in                 参数的所在位置
+ * @property description        详细描述
+ * @property required           是否必填
+ * @property allowEmptyValue    参数值是否允许为空
+ * @property schema             输入参数的结构信息
+ */
 export interface Parameter {
 	name: string;
 	in: ParameterLocation;
 	description?: string;
-	required: boolean;
-	allowEmptyValue: boolean;
+	required?: boolean;
+	allowEmptyValue?: boolean;
 	schema?: Schema;
 }
 
+/**
+ * @interface RequestBody
+ *
+ * @property description    详细描述
+ * @property content        请求体的内容列表
+ */
 export interface RequestBody {
 	description?: string;
 	content: MediaTypeContent[];
@@ -180,23 +228,55 @@ export type MediaType =
 	| "application/x-www-form-urlencoded"
 	| "text/plain"
 	| "application/xml";
+
+/**
+ * @interface MediaTypeContent
+ *
+ * @property name      media type
+ * @property schema    请求体的结构信息
+ */
 export interface MediaTypeContent {
 	name: MediaType;
 	// 只包含 schema，未考虑 openApi 中的 examples
 	schema: Schema;
 }
 
+/**
+ * @interface ApiResponse
+ *
+ * @property name           值为 `default` 或 http status code，如 `200`、`400` 等
+ * @property description    详细描述
+ * @property content        响应内容列表，为不同的 media type 设置各自的内容
+ */
 export interface ApiResponse {
-	name: string;
+	name: string; // default or http status code
 	description?: string;
 	content: MediaTypeContent[];
 }
 
 export type SchemaType = "string" | "number" | "boolean" | "object" | "array";
 
+/**
+ * @interface Schema
+ *
+ * @property type           数据类型
+ * @property name           属性名
+ * @property format         格式化
+ * @property title          简述
+ * @property description    详细描述
+ * @property minimum        最小值
+ * @property maximum        最大值
+ * @property minLength      最小长度
+ * @property maxLength      最大长度
+ * @property pattern        正则表达式
+ * @property required       是否必填
+ * @property default        默认值
+ * @property items          专用于 type 为 array，说明数组元素的结构
+ * @property properties     属性列表
+ */
 export interface Schema {
-	name: string;
 	type: SchemaType;
+	name?: string;
 	format?: string;
 	title?: string;
 	description?: string;
@@ -207,6 +287,7 @@ export interface Schema {
 	pattern?: string;
 	required?: string[];
 	default?: string;
+	items?: Schema;
 	properties?: Schema[];
 }
 
