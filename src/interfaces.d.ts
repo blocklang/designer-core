@@ -124,15 +124,15 @@ export interface EditableWidgetProperties extends WidgetProperties {
 }
 
 /**
- * @interface ServiceRepo
+ * @interface RepoServiceList
  *
- * 主要描述 API 仓库中的 Service 信息
+ * 主要描述 API 仓库中的 Service 信息，一个 git repo 中定义的所有 Service。
  *
  * @property apiRepoId         API 仓库标识
  * @property apiRepoName       API 仓库名称，对应于 api.json 中的 name 属性
  * @property groups            服务分组
  */
-export interface ServiceRepo {
+export interface RepoServiceList {
 	apiRepoId: number;
 	apiRepoName: string;
 	groups: ServiceGroup[];
@@ -431,15 +431,15 @@ export interface Project {
 }
 
 /**
- * @interface WidgetRepo
+ * @interface RepoWidgetList
  *
- * 主要描述 API 部件仓库中的部件信息
+ * 主要描述 API 部件仓库中的部件信息，一个 Repo 中存储的部件列表
  *
  * @property apiRepoId         API 仓库标识
  * @property apiRepoName       API 仓库名称，对应于 api.json 中的 name 属性
  * @property widgetCategories  分组的部件信息
  */
-export interface WidgetRepo {
+export interface RepoWidgetList {
 	apiRepoId: number;
 	apiRepoName: string;
 	widgetCategories: WidgetCategory[];
@@ -455,6 +455,8 @@ export interface WidgetCategory {
 	name: string;
 	widgets: Widget[];
 }
+
+export type RepoCategory = "Widget" | "Service";
 
 /**
  * @interface ComponentRepo
@@ -478,7 +480,7 @@ export interface ComponentRepo {
 	gitRepoOwner: string;
 	gitRepoName: string;
 	name: string;
-	category: string;
+	category: RepoCategory;
 	version: string;
 	std: boolean;
 }
@@ -801,9 +803,9 @@ export interface PaneLayout {
  * 设计器的共享状态
  *
  * @property project                       项目基本信息
- * @property widgetRepos                   项目依赖的所有 widget，类型为 widget 的 API 库，按 API 库分组。
- * @property serviceRepos                  项目依赖的所有 Service
- * @property ideRepos                      项目依赖的 ide 组件库信息
+ * @property projectDependencies           项目依赖的组件库信息，包括 Widget 的 IDE 版仓库和 Service 仓库
+ * @property repoWidgets                   项目依赖的所有 widget，类型为 widget 的 API 库，按 API 库分组
+ * @property repoServices                  项目依赖的所有 Service，类型为 Service 的 API 库
  * @property pageModel                     页面模型
  * @property selectedWidgetIndex           当前选中的部件索引，是相对于全页面的索引
  * @property activeWidgetDimensions        当前选中部件的位置和大小信息等
@@ -818,9 +820,9 @@ export interface PaneLayout {
  */
 export interface State {
 	project: Project;
-	widgetRepos: WidgetRepo[];
-	serviceRepos: ServiceRepo[];
-	ideRepos: ComponentRepo[];
+	projectDependencies: ComponentRepo[];
+	repoWidgets: RepoWidgetList[];
+	repoServices: RepoServiceList[];
 	pageModel: PageModel;
 	// ui 的焦点信息
 	selectedWidgetIndex: number;
