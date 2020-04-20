@@ -24,7 +24,7 @@ export interface Widget {
 	properties: WidgetProperty[];
 }
 
-export type PropertyValueType = "string" | "int" | "float" | "date" | "boolean" | "function";
+export type PropertyValueType = "string" | "int" | "float" | "date" | "boolean" | "function" | "object" | "array";
 
 /**
  * @interface WidgetProperty
@@ -562,13 +562,15 @@ export interface InputDataPort extends DataPort {
  */
 export type NodeLayout =
 	| "flowControl" // 流程控制节点
-	| "data"; // 数据节点
+	| "data" // 数据节点
+	| "async"; // 异步节点
 
 export type NodeCategory =
 	| "function" // 函数定义
 	| "functionCall" // 函数调用
 	| "variableSet" // 为变量设置值
-	| "variableGet"; // 获取变量的值
+	| "variableGet" // 获取变量的值
+	| "service"; // 数据服务 RESTful API
 
 // 注意，此处不应包含 "widgetEvent"，因为这属于函数与事件之间的绑定关系，并不是函数定义体中使用的数据
 export type NodeBindSource =
