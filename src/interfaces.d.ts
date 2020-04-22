@@ -485,6 +485,27 @@ export interface ComponentRepo {
 	std: boolean;
 }
 
+// 用于定义项目依赖的函数库
+export interface RepoFunctionList {
+	apiRepoId: number;
+	apiRepoName: string;
+	func: MethodSignature[];
+}
+
+export interface MethodSignature {
+	id: string;
+	name: string;
+	parameters: MethodParameter[];
+	returnType: string;
+}
+
+export interface MethodParameter {
+	name: string;
+	type: string;
+	optional: boolean;
+	variable: boolean;
+}
+
 /**
  * 函数定义
  *
