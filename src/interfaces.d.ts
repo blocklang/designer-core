@@ -456,7 +456,13 @@ export interface WidgetCategory {
 	widgets: Widget[];
 }
 
-export type RepoCategory = "Widget" | "Service";
+/**
+ * git 仓库种类
+ */
+export type RepoCategory =
+	| "Widget" // UI 部件
+	| "Service" // RESTful API
+	| "ClientAPI"; // 客户端专用的函数
 
 /**
  * @interface ComponentRepo
@@ -793,6 +799,13 @@ export type PageViewType = "ui" | "behavior";
 export type UIOperateTab = "widgets" | "properties";
 
 /**
+ * @type BehaviorFunctionOperateTab
+ *
+ * Behavior 设计视图函数设计器中操作面板
+ */
+export type BehaviorFunctionOperateTab = "services" | "functions";
+
+/**
  * @type PaneLayout
  *
  * 控制编辑器中当前显示的面板。
@@ -808,16 +821,22 @@ export type UIOperateTab = "widgets" | "properties";
  *                 widgets
  *                 properties
  *         behavior
+ *             function
+ *                 operate-tab
+ *                     services
+ *                     functions
  * ```
  *
- * @property editMode        设计器的编辑模式
- * @property pageViewType    页面视图类型，分为界面和行为
- * @property uiOperateTab
+ * @property editMode                      设计器的编辑模式
+ * @property pageViewType                  页面视图类型，分为界面和行为
+ * @property uiOperateTab                  ui 视图中的操作面板
+ * @property behaviorFunctionOperateTab    behavior 视图中函数设计器中的操作面板
  */
 export interface PaneLayout {
 	editMode: EditMode;
 	pageViewType: PageViewType;
 	uiOperateTab: UIOperateTab;
+	behaviorFunctionOperateTab: BehaviorFunctionOperateTab;
 }
 
 /**
@@ -829,6 +848,7 @@ export interface PaneLayout {
  * @property projectDependencies           项目依赖的组件库信息，包括 Widget 的 IDE 版仓库和 Service 仓库
  * @property repoWidgets                   项目依赖的所有 widget，类型为 widget 的 API 库，按 API 库分组
  * @property repoServices                  项目依赖的所有 Service，类型为 Service 的 API 库
+ * @property repoFunctions                 项目依赖的所有客户端函数，类型为 ClientAPI 的 API 库
  * @property pageModel                     页面模型
  * @property selectedWidgetIndex           当前选中的部件索引，是相对于全页面的索引
  * @property activeWidgetDimensions        当前选中部件的位置和大小信息等
@@ -846,6 +866,7 @@ export interface State {
 	projectDependencies: ComponentRepo[];
 	repoWidgets: RepoWidgetList[];
 	repoServices: RepoServiceList[];
+	repoFunctions: RepoFunctionList[];
 	pageModel: PageModel;
 	// ui 的焦点信息
 	selectedWidgetIndex: number;
