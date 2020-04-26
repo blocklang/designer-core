@@ -495,7 +495,7 @@ export interface ComponentRepo {
 export interface RepoFunctionList {
 	apiRepoId: number;
 	apiRepoName: string;
-	func: MethodSignature[];
+	functions: MethodSignature[];
 }
 
 export interface MethodSignature {
