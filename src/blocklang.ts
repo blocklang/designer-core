@@ -1,5 +1,5 @@
 import global from "@dojo/framework/shim/global";
-import { ExtensionWidgetMap, GitUrlSegment, PropertyLayout } from "./interfaces";
+import { ExtensionWidgetMap, GitUrlSegment, PropertyLayout, ExtensionJsObjectMap } from "./interfaces";
 import { WidgetBaseInterface } from "@dojo/framework/core/interfaces";
 import { WidgetData } from "@dojo/framework/core/vdom";
 import dimensions from "@dojo/framework/core/middleware/dimensions";
@@ -98,6 +98,7 @@ export function getRepoUrl(gitUrlSegment: GitUrlSegment): string {
  */
 export function clearExtensionComponents(): void {
 	delete global._block_lang_widgets_;
+	delete global._block_lang_web_apis_;
 }
 
 /**
@@ -240,4 +241,41 @@ export function getStoreMiddleware(): any {
 
 export function clearMiddlewares() {
 	delete global._middlewares_;
+}
+
+/**
+ * 注册第三方 web api 组件库中的 javascript 对象
+ *
+ * @param gitUrlSegment     第三方组件库地址，解析后的格式为 {website}/{owner}/{repoName}，如：github.com/blocklang/ide-web-api
+ * @param jsObjects         第三方组件库中定义 JavaScript 对象列表
+ */
+export function registerJsObjects(gitUrlSegment: GitUrlSegment, jsObjects: ExtensionJsObjectMap): void {
+	// 统一在 global._block_lang_web_apis 中存放部件信息，是一个全局变量
+	if (!global._block_lang_web_apis_) {
+		global._block_lang_web_apis_ = {};
+	}
+
+	const repoUrl = getRepoUrl(gitUrlSegment);
+	if (global._block_lang_web_apis_[repoUrl]) {
+		throw `已注册过 ${repoUrl} 下的 JavaScript 对象，不能重复注册！`;
+	}
+
+	global._block_lang_web_apis_[repoUrl] = jsObjects;
+}
+
+/**
+ * 获取 JavaScript 对象，预览页面时使用
+ *
+ * @param gitUrlSegment    托管 web api 的 git 仓库地址信息
+ * @param objectName       JavaScript 对象名，在一个 git 仓库中必须确保唯一
+ *
+ * @returns                返回的是 object 类型；如果没有找到，则返回 undefined
+ */
+export function findJsObject(gitUrlSegment: GitUrlSegment | string, objectName: string): any {
+	const repoUrl = typeof gitUrlSegment === "string" ? gitUrlSegment : getRepoUrl(gitUrlSegment);
+	return (
+		global._block_lang_web_apis_ &&
+		global._block_lang_web_apis_[repoUrl] &&
+		global._block_lang_web_apis_[repoUrl][objectName]
+	);
 }

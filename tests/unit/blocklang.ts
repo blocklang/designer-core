@@ -11,6 +11,11 @@ class Foo extends WidgetBase {}
 
 class IdeFoo extends Foo {}
 
+const webApiObj = {
+	func1: () => {},
+	func2: () => {},
+};
+
 describe("blocklang", () => {
 	afterEach(() => {
 		blocklang.clearExtensionComponents();
@@ -135,5 +140,24 @@ describe("blocklang", () => {
 
 		blocklang.registerDimensionsMiddleware("a");
 		assert.equal(blocklang.getDimensionsMiddleware(), "a");
+	});
+
+	it("register webApis - repeat register", () => {
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const webApis = { webApiObj };
+		blocklang.registerJsObjects(gitUrlSegment, webApis);
+		assert.throw(() => {
+			blocklang.registerJsObjects(gitUrlSegment, webApis);
+		});
+	});
+
+	it("register webApis - find web api", () => {
+		const gitUrlSegment: GitUrlSegment = { website: "a", owner: "b", repoName: "c" };
+		const webApis = { webApiObj };
+		blocklang.registerJsObjects(gitUrlSegment, webApis);
+
+		assert.isUndefined(blocklang.findJsObject(gitUrlSegment, "not-exist"));
+		assert.deepEqual(blocklang.findJsObject(gitUrlSegment, "webApiObj"), webApiObj);
+		assert.deepEqual(blocklang.findJsObject("a/b/c", "webApiObj"), webApiObj);
 	});
 });

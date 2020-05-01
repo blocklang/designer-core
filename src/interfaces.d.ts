@@ -349,6 +349,13 @@ export interface ExtensionWidgetMap {
 }
 
 /**
+ * JavaScript 对象名与对象的对应关系
+ */
+export interface ExtensionJsObjectMap {
+	[objectName: string]: object;
+}
+
+/**
  * @type ChangedPropertyValue
  *
  * 存储修改的属性值，onPropertyChanged 事件的参数
