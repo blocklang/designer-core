@@ -1,6 +1,6 @@
 {
   "name": "designer-core",
-  "version": "0.0.1-alpha.84",
+  "version": "0.0.1-alpha.85",
   "repository": {
     "type": "git",
     "url": "https://github.com/blocklang/designer-core.git"
@@ -30,7 +30,7 @@
     "@types/node": "^9.6.55",
     "@types/sinon": "^7.5.2",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.1",
+    "lint-staged": "^10.2.2",
     "prettier": "^2.0.5",
     "shx": "^0.3.2",
     "sinon": "^9.0.2",

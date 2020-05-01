@@ -271,7 +271,7 @@ export function registerJsObjects(gitUrlSegment: GitUrlSegment, jsObjects: Exten
  *
  * @returns                返回的是 object 类型；如果没有找到，则返回 undefined
  */
-export function findJsObject(gitUrlSegment: GitUrlSegment | string, objectName: string): any {
+export function findJsObject(gitUrlSegment: GitUrlSegment | string, objectName: string): object {
 	const repoUrl = typeof gitUrlSegment === "string" ? gitUrlSegment : getRepoUrl(gitUrlSegment);
 	return (
 		global._block_lang_web_apis_ &&
