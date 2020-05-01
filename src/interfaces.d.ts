@@ -469,7 +469,7 @@ export interface WidgetCategory {
 export type RepoCategory =
 	| "Widget" // UI 部件
 	| "Service" // RESTful API
-	| "ClientAPI"; // 客户端专用的函数
+	| "WebAPI"; // 客户端专用的函数
 
 /**
  * @interface ComponentRepo
