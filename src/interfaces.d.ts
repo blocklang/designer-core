@@ -502,12 +502,18 @@ export interface ComponentRepo {
 export interface RepoFunctionList {
 	apiRepoId: number;
 	apiRepoName: string;
+	jsObjects: JsObject[];
+}
+
+export interface JsObject {
+	name: string;
+	code: string;
 	functions: MethodSignature[];
 }
 
 export interface MethodSignature {
-	id: string;
 	name: string;
+	code: string;
 	parameters: MethodParameter[];
 	returnType: string;
 }
@@ -609,6 +615,7 @@ export type NodeCategory =
 // 注意，此处不应包含 "widgetEvent"，因为这属于函数与事件之间的绑定关系，并不是函数定义体中使用的数据
 export type NodeBindSource =
 	| "data" // 取自页面数据
+	| "webApi" // 取自 web api
 	| "service"; // 取自 RESTful API
 
 /**
@@ -628,7 +635,7 @@ export type NodeBindSource =
  * @property outputDataPorts        输出型的数据端口列表
  * @property bindSource             与哪一类数据绑定，如页面数据和 RESTful API 等
  * @property apiRepoId              API 仓库标识
- * @property code                   绑定标识，取自定义标识，并不是实例标识。如果是页面数据，则值为数据项标识，即 32 位的 uuid
+ * @property funcInfo               web api 中定义的函数信息
  */
 export interface VisualNode {
 	id: string;
@@ -646,7 +653,14 @@ export interface VisualNode {
 
 	bindSource?: NodeBindSource;
 	apiRepoId?: number;
-	code?: string;
+	funcInfo?: FuncInfo;
+}
+
+export interface FuncInfo {
+	objectCode: string;
+	objectName: string;
+	funcCode: string;
+	funcName: string;
 }
 
 /**
