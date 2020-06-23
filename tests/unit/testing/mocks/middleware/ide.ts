@@ -1,7 +1,7 @@
 import createMockIdeMiddleware from "../../../../../src/testing/mocks/middleware/ide";
 import ide from "../../../../../src/middleware/ide";
 import { create, v, w } from "@dojo/framework/core/vdom";
-import harness from "@dojo/framework/testing/harness";
+import harness from "@dojo/framework/testing/harness/harness";
 
 const { describe, it } = intern.getInterface("bdd");
 

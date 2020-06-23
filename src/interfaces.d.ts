@@ -308,6 +308,17 @@ interface PropertyTarget {
 	[index: number]: string | { widget: WidgetPointer; propertyName: string };
 }
 
+interface PropertyGroupItem {
+	propertyName?: string;
+	target?: string[];
+	divider?: Divider;
+}
+
+// FIXME: 关于 interface 名称的几点疑问：
+// 1. PropertyLayout 中定义的并不是 Widget 所有属性的 Layout 信息，而是其中一个属性的定义，所以使用 layout 不太妥
+// 2. propertyGroup 属性中存放的是不是也应该是 PropertyLayout 类型，这样就可以支持多层嵌套，但是具体还要看是否有这样的应用场景。
+// 需进一步优化
+
 /**
  * 一个属性布局信息
  *
@@ -322,7 +333,7 @@ interface PropertyLayout {
 	propertyLabel: string;
 	propertyWidget: any;
 	propertyName?: string;
-	propertyGroup?: { propertyName?: string; target?: string[]; divider?: Divider }[];
+	propertyGroup?: PropertyGroupItem[];
 	if?: { widget: WidgetPointer; propertyName: string; propertyValue: string[] };
 	// 如果是针对当前部件的，则直接填写属性名，否则指定部件地址信息
 	target?: PropertyTarget;

@@ -1,7 +1,7 @@
 const { describe, it } = intern.getInterface("bdd");
 const { assert } = intern.getPlugin("chai");
 
-import harness from "@dojo/framework/testing/harness";
+import harness from "@dojo/framework/testing/harness/harness";
 import { w, v } from "@dojo/framework/core/vdom";
 import { WidgetDesignableMixin } from "../../../src/mixins/WidgetDesignable";
 import WidgetBase from "@dojo/framework/core/WidgetBase";
