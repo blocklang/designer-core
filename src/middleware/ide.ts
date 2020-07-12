@@ -1,4 +1,4 @@
-import { create, v } from "@dojo/framework/core/vdom";
+import { create, v, invalidator } from "@dojo/framework/core/vdom";
 import { findIndex } from "@dojo/framework/shim/array";
 import { TopLeft, Size } from "@dojo/framework/core/meta/Dimensions";
 import { VNode } from "@dojo/framework/core/interfaces";
@@ -9,9 +9,9 @@ const ROOT_WIDGET_PARENT_ID = "-1";
 const dimensions = blocklang.getDimensionsMiddleware();
 const icache = blocklang.getICacheMiddleware();
 
-const factory = create({ dimensions, icache }).properties<EditableWidgetProperties>();
+const factory = create({ dimensions, icache, invalidator }).properties<EditableWidgetProperties>();
 
-export const ide = factory(({ properties, middleware: { dimensions, icache } }) => {
+export const ide = factory(({ properties, middleware: { dimensions, icache, invalidator } }) => {
 	let _nodeKey: string;
 	let _canEditingPropertyIndex: number = -1;
 
@@ -120,6 +120,28 @@ export const ide = factory(({ properties, middleware: { dimensions, icache } }) 
 				// 如果是系统内使用的字符串，则在字符串的前后分别增加两个 '_'
 				return { key: "__alwaysRenderFocusBox__" };
 			});
+		},
+
+		renderActionWidget() {
+			if (!shouldFocus()) {
+				return;
+			}
+			if (!_nodeKey) {
+				console.warn("请先调用 config() 函数设置 node 的 key 值");
+				return;
+			}
+			invalidator();
+		},
+
+		measureActiveWidget() {
+			if (!shouldFocus()) {
+				return;
+			}
+			if (!_nodeKey) {
+				console.warn("请先调用 config() 函数设置 node 的 key 值");
+				return;
+			}
+			measureActiveWidget(_nodeKey);
 		},
 
 		/**
