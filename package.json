@@ -31,12 +31,12 @@
     "@dojo/cli-test-intern": "^7.0.0",
     "@dojo/framework": "^7.0.5",
     "@types/node": "^14.14.7",
-    "@types/sinon": "^9.0.8",
+    "@types/sinon": "9.0.11",
     "husky": "^4.3.0",
     "lint-staged": "^10.5.1",
     "prettier": "^2.1.2",
     "shx": "^0.3.3",
-    "sinon": "^9.2.1",
+    "sinon": "9.2.4",
     "typescript": "^3.9.7"
   },
   "husky": {
